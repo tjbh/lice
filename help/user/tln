@@ -1,0 +1,6 @@
+Usage: TLN [channel]
+   Makes a topic of the last NOTICE sent to you.
+   The channel is optional, defaults to your current channel.
+
+See also: [WLM] [TLW] [RELM] [oper]
+

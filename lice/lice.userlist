@@ -1,0 +1,351 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+#
+# Userlist structure:
+#   Userlist		= list of user handles
+#   User{Hand}		= list of n!u@h patterns for obsfucated handle
+#   ChanUser{Hand}	= list of channels for obsfucated handle
+#   main_PL[Hand]	= password for handle
+#
+# same for Shit except the passwords. i know, it's messy but it works fast!
+#
+ALIAS ulecho {ECHO $fmt.banner_userlist() $*};
+
+# adds a new handle to the list.
+ALIAS _proc.ul_add (indx,hand,patt) {
+  UNLESS (hand) {RETURN};
+  @ :list = indx ## [list];
+  @ :test = finditem($list $hand);
+  IF (test < 0) {
+    IF (setitem($list $numitems($list) $hand) < 0) {
+      ulecho $indx\list: failed to add '$hand\'.;
+      RETURN;
+    };
+    @ :host = strlen($patt) ? patt : get_uh($hand);
+    IF (strlen($host)) {
+      # Mask was originally 11, but appears not to work, so I've set to 0 for the moment.
+      # Will be fixed in later epic5 release hopefully. tjh
+      @ :host = strlen($patt) ? uhc($patt) : mask(0 $host);
+      @ :list = indx ## hash_32bit($hand);
+      IF (setitem($list $numitems($list) $host) >= 0) {
+        ulecho $indx\list: added \[$hand\]$host\.;
+        IF (!isset(Q) && !strlen($patt) && indx != [Shit]) {
+          @ :serv = winserv();
+          _proc.quote_add $serv NOTICE $hand :You've been added to my LiCe Friend List!;
+          _proc.quote_add $serv NOTICE $hand :Your handle is '$hand\', please remember this.;
+          _proc.quote_add $serv NOTICE $hand :For help, type: /MSG $N !HELP;
+          _proc.quote_flush $serv;
+        };
+      }{
+        ulecho $indx\list: failed to add '$host\' to '$hand\'.;
+        ulecho $indx\list: added \[$hand\] with no hosts.;
+      };
+    }{
+      ulecho $indx\list: added \[$hand\] with no hosts.;
+    };
+  }{
+    @ :hand = getitem($list $test);
+    ulecho $indx\list: handle '$hand\' already exists. ${strlen($patt) ? [\(adding ] ## patt ## [\)] : []};
+    IF (strlen($patt)) {_proc.ul_chg $indx $hand $patt};
+  };
+_proc.ul_save;
+};
+# updates our channel cookies
+ALIAS _proc.ul_cookie_update (indx,chan,hand,mode) {
+  IF (mode == [-]) {
+    @ :oper = mode;
+    @ :rest = [];
+  }{
+    @ :oper = [];
+    @ :rest = hand ## [ ] ## mode;
+  }
+  IF (chan == [#*]) {
+    FOREACH Cookie.${indx} h_chan {
+      FOREACH Cookie.${indx}.$h_chan nick {
+        IF (word(0 $Cookie[$indx][$h_chan][$nick]) == hand) {
+          ^ASSIGN ${oper}Cookie[$indx][$h_chan][$nick] $rest;
+        };
+      };
+    };
+  }{
+    @ :h_chan = hash_32bit($chan);
+    FOREACH Cookie.${indx}.$h_chan nick {
+      IF (word(0 $Cookie[$indx][$h_chan][$nick]) == hand) {
+        ^ASSIGN ${oper}Cookie[$indx][$h_chan][$nick] $rest;
+      };
+    };
+  };
+};
+# deletes an existing handle
+ALIAS _proc.ul_del (indx,hand) {
+  UNLESS (hand) {RETURN};
+  @ :mlist = indx ## [list];
+  @ :test = getmatches($mlist $hand);
+  UNLESS (strlen($test)) {
+    ulecho $indx\list: no handles matching '$hand\' were found.;
+    RETURN;
+  };
+  FE ($test) item {
+    @ :hand = getitem($mlist $item);
+    IF (delitem($mlist $item) >= 0) {
+      @ :hash = hash_32bit($hand);
+      @ :list = indx ## hash;
+      @ delarray($list);
+      @ delarray(Chan$list);
+      @lice.del(main_PL$hash);
+      _proc.ul_cookie_update $indx #* $hash -;
+      ulecho $indx\list: deleted handle '$hand\'.;
+    }{
+      ulecho $indx\list: failed to delete '$hand\'.;
+    };
+  };
+_proc.ul_save;
+};
+# change host attributes for a user
+#XXX - should auto-remove users with no host lists (?)
+#ALIAS _proc.ul_chg_host (indx,hand,mode,spatt) {
+ALIAS _proc.ul_chg_host (indx,hand,spatt) {
+ FE ($spatt) patt {
+  @ :mode = pass(-+ $left(1 $patt)) ? left(1 $patt) : [+];
+  @ :host = pass(-+ $left(1 $patt)) ? uhc($rest(1 $patt)) : uhc($patt);
+  @ :hash = hash_32bit($hand);
+  @ :list = indx ## hash;
+  @ :test = finditem($list $host);
+  IF (mode == [-]) {
+    IF (test < 0) {
+      ulecho $indx\list: could not find '$host\' in '$hand\'.;
+      #RETURN
+      #TODO Figure out WTF is going on here.
+      CONTINUE;
+    };
+    IF (delitem($list $test)) {
+      ulecho $indx\list: failed to delete '$host\' from '$hand\'.;
+      RETURN;
+    };
+    ulecho $indx\list: deleted '$host\' from '$hand\'.;
+    _proc.ul_cookie_update $indx #* $hash -;
+  }{
+    IF (test >= 0) {
+      ulecho $indx\list: '$host\' already matches '$hand\'.;
+      CONTINUE;
+    };
+    @ :test.1 = getmatches($list $host);
+    FE ($reverse($test.1)) host.1 {
+      @ :temp.1 = getitem($list $host.1);
+      UNLESS (delitem($list $host.1)) {
+        ulecho $indx\list: deleted redundant host '$temp.1\' from '$hand\'.;
+      };
+    };
+    @ :test.2 = getrmatches($list $host);
+    FE ($reverse($test.2)) host.2 {
+      @ :temp.2 = getitem($list $host.2);
+      UNLESS (delitem($list $host.2)) {
+        ulecho $indx\list: deleted redundant host '$temp.2\' from '$hand\'.;
+      };
+    };
+    IF (setitem($list $numitems($list) $host) >= 0) {
+      ulecho $indx\list: added \[$hand\]$host\.;
+    }{
+      ulecho $indx\list: failed to add '$host\' to '$hand\'.;
+    };
+  };};
+_proc.ul_save;
+};
+# converts +AOP-P to a bit-wise value
+# $0=type $1=new $2=old
+ALIAS _proc.ul_a2m (indx,text,mode) {
+  ^LOCAL flag +;
+  FEC ($toupper($text)) mode.1 {
+    @ :test = index($mode.1 $temp.mode_list[$indx]);
+    IF (test == -1) {
+      IF (pass(+- $mode.1)) {@ :flag = mode.1};
+      CONTINUE;
+    };
+    @ :bits = 1 << test;
+    IF (flag == [+]) {@ :mode |= bits}{@ :mode &= ~bits};
+  };
+  @ function_return = mode;
+};
+# converts from bit string to string array
+# $0=type $1=bits
+ALIAS _proc.ul_m2a (indx,mode) {
+  ^LOCAL str;
+  @ :cnt = 0;
+  FEC ($temp[mode_list][$indx]) flag {
+    @ :bit = 1 << cnt;
+    IF (mode & bit) {@ :str #= flag};
+    @ :cnt++;
+  };
+  @ FUNCTION_RETURN = str;
+};
+# change channel attributes for a user
+ALIAS _proc.ul_chg_chan (indx,hand,mode,chan,flag,text) {
+  @ :hash = hash_32bit($hand);
+  @ :list = [Chan] ## indx ## hash;
+  @ :test = matchitem(Chan$indx$hash $chan *);
+  IF (mode == [+]) {
+    IF (test < 0) {
+      @ :mode = _proc.ul_a2m($indx $flag 0);
+      IF (mode <= 0) {
+        ulecho $indx\list: deleted '$chan\' from '$hand\' (no modes).;
+        RETURN;
+      };
+      IF (chan == [#*] && numitems($list)) {
+        @ delarray($list);
+        ulecho $indx\list: global channel #* must be unique, old channels removed.;
+      };
+      IF (setitem($list $numitems($list) $chan $mode $text) < 0) {
+        ulecho $indx\list: failed to add '$chan\' to '$hand\'.;
+        RETURN;
+      };
+      ulecho $indx\list: added '$chan\' to '$hand\'.;
+      _proc.ul_cookie_update $indx $chan $hash -;
+    }{
+      @ :prev = getitem($list $test);
+      @ :mode = _proc.ul_a2m($indx $flag $word(1 $prev));
+      IF (mode) {
+        IF (setitem($list $test $chan $mode $text) < 0) {
+          ulecho $indx\list: failed to change '$chan\' for '$hand\'.;
+          RETURN;
+        };
+        ulecho $indx\list: changed '$chan\' for '$hand\'.;
+        _proc.ul_cookie_update $indx $chan $hash $mode;
+      }{
+        UNLESS (delitem($list $test)) {
+          _proc.ul_cookie_update $indx $chan $hash -;
+          ulecho $indx\list: deleted '$chan\' from '$hand\' (no modes).;
+        };
+      };
+    };
+  }{
+    IF (test < 0) {
+      ulecho $indx\list: could not find '$chan\' in '$hand\'.;
+      RETURN;
+    };
+    UNLESS (delitem($list $test)) {
+      _proc.ul_cookie_update $indx $chan $hash -;
+      ulecho $indx\list: deleted '$chan\' from '$hand\'.;
+    }{
+      ulecho $indx\list: failed to delete '$chan\' from '$hand\'.;
+    };
+  };
+_proc.ul_save;
+};
+# change channel/host attributes for a user
+ALIAS _proc.ul_chg (indx,hand,flag,text) {
+  UNLESS (flag) {RETURN};
+  @ :list = indx ## [list];
+  @ :test = finditem($list $hand);
+  IF (test < 0) {
+    ulecho $indx\list: handle '$hand\' not found.;
+    RETURN;
+  };
+  @ :hand = getitem($list $test);
+  @ :mode = left(1 $flag);
+  IF (pass(-+ $mode)) {
+    @ :test = rest(1 $flag);
+  }{
+    ^LOCAL test $flag;
+    ^LOCAL mode +;
+  };
+  UNLESS (strlen($test)) {RETURN};
+  IF (ischannel($test)) {
+    _proc.ul_chg_chan $indx $hand $mode $test $text;
+  }{
+    _proc.ul_chg_host $indx $hand $mode$test $text;
+###${pass(-+ $left(1 $text)) ? rest(1 $text) : text}
+  };
+_proc.ul_save;
+};
+# display users
+ALIAS _proc.ul_show (indx,hand) {
+  @ :list = indx ## [list];
+  UNLESS (numitems($list)) {
+    ulecho $indx\list: no handles found.;
+    RETURN;
+  };
+  IF (strlen($hand)) {
+    @ :test = finditem($list $hand);
+    IF (test < 0) {
+      ulecho $indx\list: handle '$hand\' not found.;
+      RETURN;
+    };
+    @ :hand = getitem($list $test);
+    @ :hash = hash_32bit($hand);
+    @ :host = numitems($indx$hash);
+    @ :chan = numitems(Chan$indx$hash);
+    ulecho ------- $indx Handle Information --------------------;
+    IF (indx == [User]) {
+      @ :hack = strlen($lice.get(main_PL$hash)) ? [With password\: ] ## lice.get(main_PL$hash) : [Without password];
+      ulecho Handle: $hand \($hack\);
+    }{
+      ulecho Handle: $hand;
+    };
+    ulecho +----- Hosts ---------------------------------------;
+    IF (host > 0) {
+      FOR (@ :cnt=0, host > cnt, @ cnt++) {
+        ulecho  [$[-3]{cnt + 1}] $getitem($indx$hash $cnt);
+      };
+    }{
+      ulecho        <No hosts found>;
+    };
+    ulecho +----- Channel ------------------ Mode -------------;
+    IF (chan > 0) {
+      FOR (@ :cnt=0, chan > cnt, @ cnt++) {
+        @ :item = getitem(Chan$indx$hash $cnt);
+        @ :name = word(0 $item);
+        @ :mode = _proc.ul_m2a($indx $word(1 $item));
+        @ :text = restw(2 $item);
+        ulecho  [$[-3]{cnt + 1}] $[26]name $mode;
+        IF (text) {
+          ulecho        ${(indx == [User])?[Greet]:[Reason]}\: \"$text\";
+        };
+      };
+    }{
+      ulecho        <No channels found>;
+    };
+  }{
+    ulecho ----- Handle -------- Description ----------------;
+    FOR (@ :cnt=0, numitems($list) > cnt, @ :cnt++) {
+      @ :user = getitem($list $cnt);
+      @ :hash = indx ## hash_32bit($user);
+      @ :host = numitems($hash);
+      @ :chan = numitems(Chan$hash);
+      ulecho [$[-3]{cnt+1}] $[15]user $center(8 $host host$plural($host)) | $chan channel$plural($chan);
+    };
+  };
+};
+ALIAS _proc.ul_main (list,opts,text) {
+  SWITCH ($opts) {
+    (-A) {_proc.ul_add $list $text};
+    (-C) (-H) {_proc.ul_chg $list $text};
+    (-D) {_proc.ul_del $list $text};
+    (-L) {_proc.ul_show $list $text};
+    (*) () {
+        @ :cmd = list == [User] ? [FRIEND] : [SHIT];
+        uecho Usage: /$cmd -a <handle> [host];
+        uecho Usage: /$cmd -c <handle> <[+|-]channel|#*> [[<-|+>modes] [greet]];
+        uecho Usage: /$cmd -d <handle|pattern>;
+        uecho Usage: /$cmd -h <handle> <[+|-]host>;
+        uecho Usage: /$cmd -l [handle];
+    };
+  };
+};
+# the actual commands
+ALIAS friend {_proc.ul_main User $*};
+ALIAS shit {_proc.ul_main Shit $*};
+#tjh/11

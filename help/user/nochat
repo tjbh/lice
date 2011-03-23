@@ -1,0 +1,5 @@
+Usage: NOCHAT <nick> 
+   End DCC CHAT with a nick (if one already exists)
+
+See also: [CHAT]
+

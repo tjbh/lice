@@ -1,0 +1,12 @@
+Usage: UPDATE
+
+  Checks for LiCe updates and downloads the new version file
+  if needed. Also, displays any current LiCe News from the
+  LiCe website (http://lice.muppetz.com).
+
+  NOTE: If you did not install LiCe yourself, it's possible
+        that your system administrator might have disabled this
+        command. In that case, this command will not exist.
+
+  See also: [NSL] [DUMP] [FINGER]
+

@@ -1,0 +1,6 @@
+Usage: OP <nick1 nick2 ... nicks> 
+
+   Gives channel operator status (+o) to the specified nick(s)
+
+See also: [REOP] [DOP] [QUIET] [VOICE] [MASS]
+

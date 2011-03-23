@@ -1,0 +1,28 @@
+Usage: REXC <nick/pattern> 
+Usage: REXC -<flag> 
+Usage: REXC <#exception number> 
+   Removes exception(s) for a certain nick or exception(s) for user@host
+   mask that matches with pattern(s).
+ 
+Flags:
+	a	ALL. Removes all the exceptions in your channel.
+	s	SELECTIVE. Removes only the exceptions you select.
+Only one flag can be used at a time.
+ie. /REXC SrfRoG		unexcs "SrfRoG", if online.
+    /REXC *.edu			unexcs all *.edu hosts excned.
+    /REXC *root@*		unexcs all root users excned.
+    /REXC *anon?????@*.fi	unexcs host matching mask.
+    /REXC *@*			removes all excs.
+    /REXC #2			removes exc number 2.
+    /REXC -a			removes all excs.
+    /REXC -s			prompts you before unexc.
+
+Note: pattern "*@*" and flag "-a" have the same effect.
+   The third form of the command lets you specify excs to remove single
+   excs by number or multiple excs if more than one number are selected.
+
+   This command is only available on networks with +e channel
+   mode support.
+
+See also: [BEXC] [KICK] [C] [RBAN] [RINV]
+

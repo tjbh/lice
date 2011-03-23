@@ -1,0 +1,5 @@
+!PASS <password>
+   This sets a password, which lets you use other commands,
+   like IDENT.
+!PASS <oldpass> <newpass>
+   This is how you change your password.

@@ -1,0 +1,11 @@
+Usage: FINGER [[-h] <nickname>][[user]@full.hostname] 
+   Just like the shell FINGER, and like many already in scripts.
+ie.
+  /FINGER SrfRoG          - Launches finger to SrfRoG's user@host
+                            (e.g. srfrog@nema.com)
+  /FINGER -h SrfRoG       - UNIX fingers SrfRoG's host (e.g. @nema.com)
+  /FINGER @nema.com       - same as above.
+  /FINGER srfrog@nema.com - Launches regular UNIX finger command.
+
+  See also: [NSL] [DUMP]
+

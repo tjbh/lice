@@ -1,0 +1,36 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# Random kicks (Orig. by YaZoO, rewritten by SrfRoG)
+ALIAS rk {
+  WHILE (option = getopt(optopt optarg "alo" $*)) {
+    SWITCH ($option) {
+      (a) { @ :rk.l = remw($N $chanusers($C)) };
+      (l) { @ :rk.l = nochops($C) };
+      (o) { @ :rk.l = remw($N $chops($C)) };
+      (!) {uecho Usage: /RK -<a|l|o> [kick reason]};
+    };
+  };
+  UNLESS (rk.l) {
+   uecho Usage: /RK -<a|l|o> [kick reason];
+   RETURN;
+  };
+  @ :rk.m = strlen($1) ? [$1-] : randread($main.reason_kick);
+  @ :rk.n = rand(${#rk.l});
+  //KICK $C $word($rk.n $rk.l) [Random Kick] $rk.m;
+  ECHO $fmt.banner_kick() Random kick: $word($rk.n $rk.l);
+};
+#tjh/09

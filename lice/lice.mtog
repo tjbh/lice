@@ -1,0 +1,78 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+#
+# Modified by tjh 2010
+#
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS _proc.setup_mtog {
+  iecho +--- Current LiCe Message Toggle Settings -----------------------+;
+  iecho | Description                              | Tog | Set | Default |;
+  iecho +------------------------------------------+-----+-----+---------+;
+  iecho Notify auto-reply in hidden windows.       |  1  | $[3]isset.show($ismset(1)) | On;
+  iecho Allow auto-reply to update TAB reply list. |  2  | $[3]isset.show($ismset(2)) | Off;
+  iecho Recording of ACTIONs when AWAY.            |  A  | $[3]isset.show($ismset(A)) | On;
+  iecho Beep when receiving new MSGs.              |  B  | $[3]isset.show($ismset(B)) | Off;
+  iecho Recording of DCC CHATs when AWAY.          |  C  | $[3]isset.show($ismset(C)) | Off;
+  iecho Logging Away messages to disk.             |  E  | $[3]isset.show($ismset(E)) | Off;
+  iecho Highlight auto-reply words in context.     |  H  | $[3]isset.show($ismset(H)) | Off;
+  iecho Auto WHOIS details on inital MSG.          |  I  | $[3]isset.show($ismset(I)) | Off;
+  iecho LAME set to avoid "too many targets" errata|  L  | $[3]isset.show($ismset(L)) | Off;
+  iecho Recording of MSGs when AWAY.               |  M  | $[3]isset.show($ismset(M)) | On;
+  iecho Recording of NOTICEs when AWAY.            |  N  | $[3]isset.show($ismset(N)) | On;
+  iecho Note reminders on WHOIS/WHOWAS.            |  O  | $[3]isset.show($ismset(O)) | On;
+  iecho Recording of PUBLICs when AWAY.            |  P  | $[3]isset.show($ismset(P)) | On;
+  iecho Quiet display of AWAY message.             |  Q  | $[3]isset.show($ismset(Q)) | On;
+  iecho Gone time AWAY reply (for MSG's).          |  R  | $[3]isset.show($ismset(R)) | Off;
+  iecho Event time stamping.                       |  T  | $[3]isset.show($ismset(T)) | Off;
+  iecho Personal log of events (view with /PLAY)   |  U  | $[3]isset.show($ismset(U)) | On;
+  iecho Extended view status. Details on displays. |  V  | $[3]isset.show($ismset(V)) | On;
+  iecho Recording of channel WALLOPs when AWAY.    |  W  | $[3]isset.show($ismset(W)) | Off;
+  INPUT "Letters to change toggles (ENTER to skip): " IF (@) {mtog $*};
+};
+ALIAS mtog {
+  UNLESS (@) {
+    _proc.setup_mtog;
+    RETURN;
+  };
+  FEC ($toupper($0)) _t {
+    IF (ismset($_t)) {
+      @ lice.set(main.mset $strip($_t $lice.get(main.mset)));
+      SWITCH ($_t) {
+        (B) {^ON #-MSG 617 -};
+        (E) {IF ((fexist($lice.save_path/lice.awaylog)) == 1) {
+               @ close($awayfd);
+               @ unlink($lice.save_path/lice.awaylog)}};
+        (L) {@ main.mns = main.old_mns ? main.old_mns : 5;^ASSIGN -main.old_mns};
+        (T) {^SET -OUTPUT_REWRITE};
+      };
+    }{
+      @ lice.set(main.mset $pass(12ABCEHILMNOPQRTUVW $lice.get(main.mset) $_t));
+      SWITCH ($_t) {
+        (B) {^ON #-MSG 617 * {IF (A) {BEEP}}};
+        (E) { @ awayfd = open($lice.save_path/lice.awaylog W);
+              FOR num from 0 to ${numitems(AM) - 1} {
+                @ write($awayfd + $encode($getitem(AM $num)));
+              };
+            };
+        (L) {@ main.old_mns = main.mns;@ main.mns = 1};
+        (T) {^SET OUTPUT_REWRITE [$$strftime\($$lice.get(main.tsfmt)\)] $$1-};
+      };
+    };
+  };
+  UNLESS (lice.get(main.mset)) {@lice.del(main.mset)};
+  XECHO -B Message toggles now: $lice.get(main.mset);
+
+};
+#tjh/10

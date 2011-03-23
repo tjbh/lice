@@ -1,0 +1,28 @@
+Usage: RINV <nick/pattern> 
+Usage: RINV -<flag> 
+Usage: RINV <#inv number> 
+   Removes invite(s) for a certain nick or invite(s) for user@host mask that
+   matches with pattern(s).
+ 
+Flags:
+	a	ALL. Removes all the invites in your channel.
+	s	SELECTIVE. Removes only the invites you select.
+Only one flag can be used at a time.
+ie. /RINV SrfRoG		uninvs "SrfRoG", if online.
+    /RINV *.edu			uninvs all *.edu hosts invned.
+    /RINV *root@*		uninvs all root users invned.
+    /RINV *anon?????@*.fi	uninvs host matching mask.
+    /RINV *@*			removes all invs.
+    /RINV #2			removes inv number 2.
+    /RINV -a			removes all invs.
+    /RINV -s			prompts you before uninv.
+
+Note: pattern "*@*" and flag "-a" have the same effect.
+   The third form of the command lets you specify invs to remove single
+   invs by number or multiple invs if more than one number are selected.
+
+   This command is only available on networks with +I channel
+   mode support.
+
+See also: [BINV] [KICK] [C] [RBAN] [REXC]
+

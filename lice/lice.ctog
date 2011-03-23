@@ -1,0 +1,124 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+# Modifications by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS _proc.setup_ctog {
+  IF (C) {
+    @ :hash = hash_32bit($C);
+    iecho +------ $C Toggle Settings $pad(${40 - strlen($C)} - -)+;
+    iecho | Description                              | Tog | Set | Default |;
+    iecho +------------------------------------------+-----+-----+---------+;
+    iecho Ban flooders with the worse possible ban.  |  1  | $[3]isset.show($iscset(1 $hash)) | Off;
+    iecho Ban cycle dorks. (Prevent JOIN/PART floods)|  2  | $[3]isset.show($iscset(2 $hash)) | Off;
+    iecho Save channel's toggles permanently.        |  A  | $[3]isset.show($iscset(A $hash)) | Off;
+    iecho Enable SHIT channel actions.               |  B  | $[3]isset.show($iscset(B $hash)) | On;
+    iecho Channel protection. (AutoKICK of flooders) |  C  | $[3]isset.show($iscset(C $hash)) | On;
+    iecho Auto KICK users matching channel bans.     |  D  | $[3]isset.show($iscset(D $hash)) | Off;
+    iecho Note reminders on JOIN.                    |  E  | $[3]isset.show($iscset(E $hash)) | Off;
+    iecho Auto BAN channel flooders.                 |  F  | $[3]isset.show($iscset(F $hash)) | On;
+    iecho Bitch Mode. Let only +O friends get ops.   |  G  | $[3]isset.show($iscset(G $hash)) | Off;
+    iecho Auto lookup IP addresses on JOIN.          |  H  | $[3]isset.show($iscset(H $hash)) | Off;
+    iecho Auto JOIN on INVITE, always.               |  I  | $[3]isset.show($iscset(I $hash)) | Off;
+    iecho Auto clone bot detection on JOIN.          |  J  | $[3]isset.show($iscset(J $hash)) | Off;
+    iecho Disallow channel keys by users on channel. |  K  | $[3]isset.show($iscset(K $hash)) | Off;
+    iecho Lock channel with certain modes.           |  L  | $[3]isset.show($iscset(L $hash)) | Off;
+    iecho Auto KICK users on bogus channel keys.     |  M  | $[3]isset.show($iscset(M $hash)) | Off;
+    iecho Nethack protection. (Auto DOP hacked ops)  |  N  | $[3]isset.show($iscset(N $hash)) | Off;
+    iecho Don't kick channel operators that flood.   |  O  | $[3]isset.show($iscset(O $hash)) | On;
+    iecho Enable FRIEND channel actions (AutoOp).    |  P  | $[3]isset.show($iscset(P $hash)) | On;
+    iecho Quiet Channel. Ignore JOIN/PART/CTCP/NICKs.|  Q  | $[3]isset.show($iscset(Q $hash)) | Off;
+    iecho Auto SHIT users that flood the channel.    |  S  | $[3]isset.show($iscset(S $hash)) | Off;
+    iecho Lock channel with certain topic.           |  T  | $[3]isset.show($iscset(T $hash)) | Off;
+    iecho Don't kick channel voices that flood.      |  V  | $[3]isset.show($iscset(V $hash)) | Off;
+    INPUT "Letters to change toggles for $C (ENTER to skip): " IF (@) {ctog $*}
+  }{
+    XECHO -B You are not on any channel. Default Channel sets are: \"$lice.get(main.cset)\";
+    INPUT "Letters to change for default channel sets (ENTER to skip): " IF (@) {
+      @ :_nc = toupper($0);
+      FEC ($_nc) _ac {
+        @ :_c = pass(12ABCDEFGHIJKLMNOPQSTV $_ac);
+        UNLESS (pass($_c $lice.get(main.cset))) {@lice.set(main.cset ${lice.get(main.cset)##[$_c]})} 
+        {@ lice.set(main.cset $strip($_c $lice.get(main.cset)))};
+      };
+      XECHO -B Default Channel togs are now set to \"$lice.get(main.cset)\";
+    };
+  };
+};
+ALIAS _proc.ctog_do_locks (type,mode,hash,chan,serv) {
+  # allow both locks to be updated sequentially
+  IF (strlen($tmp.chan)) {
+    ^QUEUE -ADD CTOG {_proc.ctog_do_locks $type $mode $hash $chan $serv};
+    RETURN;
+  };
+  @ tmp.type = type;
+  @ tmp.serv = serv;
+  @ tmp.mode = mode;
+  @ tmp.hash = hash;
+  @ tmp.chan = chan;
+  INPUT "Enter $type lock for $ch($chan)\: " {
+    IF (@) {
+      IF (tmp.mode == [L]) {
+        @lice.set(chan[$tmp.hash][L] $pass(0123456789mnstipal $*));
+        IF (ischanop($N $tmp.chan)) {XQUOTE -S $tmp.serv MODE $tmp.chan +$lice.get(chan[$tmp.hash][L])}
+      }{
+        @lice.set(chan[$tmp.hash][T] $*);
+        IF (ischanop($N $tmp.chan)) {XQUOTE -S $tmp.serv TOPIC $tmp.chan :$lice.get(chan[$tmp.hash][T])};
+      };
+      XECHO -B $tmp.type lock $tmp.chan now: $lice.get(chan[$tmp.hash][$tmp.mode]);
+    }{
+      @lice.set(chan[$tmp.hash][S] $strip($tmp.mode $chan[$tmp.hash][S]));
+      @lice.del(chan[$tmp.hash][$tmp.mode]);
+      XECHO -B Toggles for $tmp.chan now: +$lice.get(chan[$tmp.hash][S]);
+    };
+    purge tmp;
+    ^QUEUE -DO CTOG;
+  };
+};
+ALIAS ctog {
+  UNLESS (@) {
+    _proc.setup_ctog;
+    RETURN;
+  };
+  @ :_c = hash_32bit($C);
+  @ :_o = lice.get(chan[$_c][S]);
+  FEC ($toupper($0)) _t {
+    IF (pass($_t $_o)) {
+      @ :_o = strip($_t $_o);
+      SWITCH ($_t) {
+        (L) (T) {@lice.del(chan[$_c][$_t])}; 
+        (Q) {//IGNORE $C NONE;@lice.del(|hash_32bit($C));};
+      };
+    }{
+      @ :_o #= pass(12ABCDEFGHIJKLMNOPQSTV $_t);
+      SWITCH ($_t) {
+        (L) (T) {_proc.ctog_do_locks ${(_t == [L]) ? [Mode] : [Topic]} $_t $_c $C $winserv()};
+        (Q) {
+            //^IGNORE $C TOPICS JOINS NICKS PARTS QUITS;
+            @lice.set(|$hash_32bit($C) $C TOPICS JOINS NICKS PARTS QUITS);
+            ECHO $fmt.banner_alert() Ignoring JOINS NICKS TOPICS PARTS and QUITS on $C;
+            };
+      };
+    };
+  };
+  UNLESS (_o) {
+    @lice.del(chan[$_c][S]);
+    @ :_o = [disabled];
+  }{
+    @ lice.set(chan[$_c][S] $_o);
+  };
+  XECHO -B Toggles for $C are now: $_o;
+};
+#tjh/10

@@ -1,0 +1,8 @@
+Usage: ET <channel> 
+   Puts the topic from <channel> or your current channel on the
+   input line for quick editing. To quit without changing the topic
+   either leave topic unchanged, or blank the link (^u) and press
+   return.
+
+See also: [T] [oper]
+

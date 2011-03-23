@@ -1,0 +1,38 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# Description: gives some channel statistics
+ALIAS chanst {
+  @ :ch.name = ischannel($0) ? [$0] : C;
+  UNLESS (onchannel($N $ch.name)) {
+    XECHO -B $ch($ch.name)\: You're not on that channel.;
+    RETURN;
+  };
+  @ :ch.o = 0;
+  @ :ch.d = 0;
+  @ :ch.v = 0;
+  @ :ch.t = 0;
+  @ :ch.h = hash_32bit($ch.name);
+  @ :ch.b = numitems(B$winserv()\-$ch.h);
+  FE ($channel($ch.name)) ch.1 {
+    IF (left(1 $ch.1) == [@]) { @ ch.o++ }{ @ ch.d++ };
+    IF (mid(1 1 $ch.1) == [+]) { @ ch.v++ };
+    @ ch.t++;
+  };
+  @ :sets = strlen($lice.get(chan[$ch.h][S])) ? [\(Sets\: \+] ## lice.get(chan[$ch.h][S]) ## [\)] : [];
+  XECHO -B Stats $ch($ch.name)\: \($ch.t\) +o[$ch.o] -o[$ch.d] +b[$ch.b] +v[$ch.v] $sets;
+};
+#tjh/09

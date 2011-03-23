@@ -1,0 +1,11 @@
+Usage: WI [nick1 nick2 ... nicks | nick mask] 
+   Requests the server WHOIS information about nicks. The second form of
+   WI might work with all servers, it asks the server for WHOIS
+   information about nicks matching a certain nick mask.
+ 
+ie. /WI SrfRoG asmodean LiCe
+	requests the server WHOIS information about
+	nicks: SrfRoG, asmodean and LiCe.
+
+See also: [W] [WW] [WII]
+

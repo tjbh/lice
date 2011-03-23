@@ -1,0 +1,66 @@
+Usage: MTOG [message toggle letter(s)] 
+   Control the behavior of all message logging in the program.
+
+1
+   Notify of auto-reply triggers in hidden windows.
+
+2
+   Allow auto-reply (public) to update the TAB reply list.
+
+A
+   Record ACTIONs that are revelant to you, when you
+   are AWAY.
+
+B
+   Beep when a new MSG arrives.
+
+C
+   Record all text comming via DCC CHAT when you are AWAY.
+
+E
+   When enabled, any messages logged to your away log are also saved 
+   to disk.  This means in the event the client crashes or is killed
+   that you still have all messages saved when you load lice again.
+   All messages in the away log are saved as soon as you enable
+   this.  The disk log is deleted as soon as you disable this.
+   All messages on disk are obfuscated.
+
+M
+   Record all incoming MSGs (not server MSGs) when you are AWAY.
+
+N
+   Record all incoming NOTICEs (not server NOTICEs) when you are AWAY.
+
+O
+   Activates nickname-note reminders on WHOIS and WHOWAS.
+
+P
+   Record all instances of "auto reply" in the away log.
+
+Q
+   Toggle quiet away display. If disabled, it will send a message to
+   the last party you had contact with (nick or channel) that you are
+   AWAY. "The auto away message"
+
+R
+   When enabled, sends people that MSG you a notice saying how long
+   you've been AWAY.
+
+T
+   Event time stamping. When enabled, all important events will display
+   their time of occurrance. You can change the format under /SENSORS:w
+
+U
+   Personal Status Logs. Records some important information while you
+   are AWAY.
+
+V
+   Extended view status. Display USERHOST info in all MSG/NOTICE/BANs.
+   Also display additional verbose messages.
+
+W
+   Record channel WALLOPs that are revelant to you, when you are AWAY.
+
+
+See also: [SENSORS] [TOG] [AR] [DTOG] [CTOG] [WTOG]
+

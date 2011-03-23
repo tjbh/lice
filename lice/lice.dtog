@@ -1,0 +1,48 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+#
+# Modified by tjh 2010
+#
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS _proc.setup_dtog {
+  iecho +------- Current LiCe DCC Toggle Settings -----------------------+;
+  iecho | Description                              | Tog | Set | Default |;
+  iecho +------------------------------------------+-----+-----+---------+;
+  iecho DCC AutoCLOSE all incoming GET requests.   |  C  | $[3]isset.show($isdset(C)) | Off;
+  iecho DCC AutoGET files sent to You.             |  G  | $[3]isset.show($isdset(G)) | On;
+  iecho DCC AutoSEND files offered in packs.       |  S  | $[3]isset.show($isdset(S)) | On;
+  iecho Overwrite files on DCC GET downloads.      |  O  | $[3]isset.show($isdset(O)) | Off;
+  iecho DCC QUIET MODE. Supress error notices.     |  Q  | $[3]isset.show($isdset(Q)) | Off;
+  iecho DCC AutoRESUME incomplete file transfers.  |  R  | $[3]isset.show($isdset(R)) | On;
+  INPUT "Letters to change toggles (ENTER to skip): " IF (@) {dtog $*;};
+};
+ALIAS dtog {
+  UNLESS (@) {
+    _proc.setup_dtog;
+    RETURN;
+  };
+  FEC ($toupper($0)) _t {
+    IF (isdset($_t)) {
+      @ lice.set(main.dset $strip($_t $lice.get(main.dset)));
+      IF (_t == [R]) {^SET MIRC_BROKEN_DCC_RESUME OFF};
+    }{
+       @ lice.set(main.dset $pass(CGSOQR $lice.get(main.dset) $_t));
+      IF (_t == [R]) {^SET MIRC_BROKEN_DCC_RESUME ON};
+    };
+  };
+  UNLESS (lice.get(main.dset)) {@lice.del(main.dset)};
+  XECHO -B DCC toggles now: $lice.get(main.dset);
+};
+#tjh/10

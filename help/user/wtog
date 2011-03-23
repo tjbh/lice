@@ -1,0 +1,20 @@
+Usage: WTOG [window toggle letter(s)] 
+   Control the behavior of all new windows.
+
+B
+   Beep even if window is hidden.
+
+D
+   Use double status bars.
+
+C
+   Dedicated Chat Window. All DCC CHATs are sent to a special
+   when this is set.
+
+W
+   Message View Window. Moves all incoming MSG's to a window. For people
+   that join large channels and loose their MSGs in scroll, this option
+   creates another window were all MSGs are sent.
+
+See also: [SENSORS] [TOG] [AR] [DTOG] [CTOG] [MTOG]
+

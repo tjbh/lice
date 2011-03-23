@@ -1,0 +1,8 @@
+Usage: CHG [channel]
+   Makes you PART your current channel and JOIN the channel specified.
+   If no '#' or '&' is specified in the channel name, '#' is appended.
+   If not channel is given, it will just make you leave your current
+   channel.
+
+See also: [J] [L] [CYCLE]
+

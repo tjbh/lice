@@ -1,0 +1,149 @@
+# simlpex
+# Author: Q <Q@ping.be>
+# last changed: 19990103
+# bases on the lice3 theme by SrfRoG (srfrog@mistik.net)
+
+PACKAGE LiCeTheme
+# Status sets
+SET CLOCK ON
+SET CLOCK_24HOUR ON
+SET STATUS_AWAY A
+SET STATUS_CHANNEL %C
+SET STATUS_CHANOP @
+SET STATUS_CLOCK [%T]
+SET -STATUS_CPU_SAVER
+SET STATUS_DOES_EXPANDOS OFF
+SET STATUS_FORMAT %T %*%N%# %@%=%C%+ %W%A %H%B %F%M%Q %>[Lag: %2] [%1:%0]
+SET STATUS_FORMAT1 %T %*%N%# %@%=%C%+ %A %>%Q %M  [%1:%0]
+SET STATUS_FORMAT2 [Win: %W%R%F] [Lag: %2] [%3]  %H%B %>%D
+SET STATUS_HOLD Press ENTER
+SET STATUS_HOLD_LINES :%B
+SET -STATUS_INSERT
+SET STATUS_MAIL [Mail: %M]
+SET STATUS_MODE (+%+)
+SET STATUS_NICKNAME %N
+SET STATUS_NOTIFY (%F)
+SET STATUS_NO_REPEAT ON
+SET STATUS_OPER *
+SET -STATUS_OVERWRITE
+SET STATUS_QUERY [Query: %Q]
+SET STATUS_SERVER %S
+SET STATUS_TRUNCATE_RHS ON
+SET STATUS_UMODE (+%#)
+SET STATUS_VOICE +
+SET STATUS_WINDOW +
+
+^WINDOW DOUBLE ON
+
+# Event formats
+ALIAS fmt.action	RETURN * $0${iscurchan($1)?[]:[\:]##ch($1)} $2-
+ALIAS fmt.action_me	RETURN  $uh($0)  * $0 $2-
+ALIAS fmt.auto_reply	RETURN <$0> $2-
+ALIAS fmt.auto_reply_other RETURN <$0:$ch($1)\> $2-
+ALIAS fmt.channel_nick	RETURN $1 is now known as $2
+ALIAS fmt.channel_signoff  RETURN Signoff $ch($0)\: $1 \($2-\)
+ALIAS fmt.ctcp_channel	RETURN CTCP $toupper($2) from $uh($0) to $ch($1) ${!strlen($3)?[]:[:$3-]}
+ALIAS fmt.ctcp_me	RETURN CTCP $toupper($2) from $uh($0) to You ${!strlen($3)?[]:[:$3-]}
+ALIAS fmt.ctcp_server	RETURN CTCP $toupper($2-) from $uh($0) to $1 ${!strlen($3)?[]:[:$3-]}
+ALIAS fmt.dcc_chat	RETURN =$0= $1-
+ALIAS fmt.invite	RETURN $0 \($2\) invites you to $1
+ALIAS fmt.join		RETURN $0 \($2\) joined $ch($1)
+ALIAS fmt.kick		RETURN $1 kicked $0 from $ch($2) \($3-\)
+ALIAS fmt.kick_me	RETURN $1 kicked You from $ch($2) \($3-\)
+ALIAS fmt.leave		RETURN $0 \($2\) left $ch($1) ${!strlen($3)?[]:[\($3-\)]}
+ALIAS fmt.mode		RETURN Mode change \"$2-\" on $ch($1) by $0
+ALIAS fmt.mode_bans	RETURN Mode stack \($2\) on $ch($1) by $0
+ALIAS fmt.mode_me	RETURN User mode change \"$N $2-\" on $S
+ALIAS fmt.mode_server	RETURN Mode change \"$2-\" on $ch($1) \($0\)
+ALIAS fmt.msg		RETURN  $uh($0)  $1-
+ALIAS fmt.msg_group	RETURN -$uh($0)- [$1] $2-
+ALIAS fmt.notice	RETURN [$uh($0)] $1-
+ALIAS fmt.notify_signoff   RETURN Signoff detected: $0
+ALIAS fmt.notify_signon RETURN Signon detected: $0
+ALIAS fmt.notify_signon_uh RETURN Signon detected: $0 \($1\)
+ALIAS fmt.public	RETURN <$0> $2-
+ALIAS fmt.public_msg	RETURN \($0:$ch($1)\) $2-
+ALIAS fmt.public_other	RETURN <$0:$ch($1)\> $2-
+ALIAS fmt.public_notice RETURN [$uh($0):$ch($1)] $2-
+ALIAS fmt.send_action	RETURN * $N${iscurchan($0)?[]:[\:]##ch($0)} $1-
+ALIAS fmt.send_action_me   RETURN >  $0  * $N $1-
+ALIAS fmt.send_dcc_chat	RETURN > =$0= $1-
+ALIAS fmt.send_msg	RETURN >  $0  $1-
+ALIAS fmt.send_notice	RETURN > [$0] $1-
+ALIAS fmt.send_public	RETURN <$N${iscurchan($0)?[]:[\:]##ch($0)}\> $1-
+ALIAS fmt.server_notice	RETURN #$0# $1-
+ALIAS fmt.talk_reply	RETURN $0:
+ALIAS fmt.topic		RETURN Topic change on $ch($1) by $0: $2-
+ALIAS fmt.topic_set	RETURN Topic on $ch($0)\: $1-
+ALIAS fmt.usercmd	RETURN Friend $1 request: $0 \($userhost()\)
+ALIAS fmt.wallop	RETURN Wallop: <$0> $2-
+ALIAS fmt.wallop_me	RETURN [WallOp:$ch($0)\\($1\)]  $N  $2-
+ALIAS fmt.whois_top	RETURN Whois   : $1!$2@$3
+ALIAS fmt.whois_mid	RETURN $[8]0: $1-
+ALIAS -fmt.whois_bot
+ALIAS fmt.sc_top        RETURN $fmt.banner_chan() Names on $ch($0)\:
+ALIAS fmt.sc_mid (list) {
+  FE ($list) xx {
+    @ :mod = pass(@+ $xx)
+    @ :spc = mod ? mod : [ ]
+    @ :nic = strip(@+ $xx)
+    @ :ret #= [%n] ## spc ## [%n] ## [$[9]nic] ## [ ]
+  }
+  RETURN $cparse($ret)
+}
+ALIAS fmt.sc_bot        RETURN $fmt.banner_chan() Ministats: +o[$1] -o[$3] +v[$2] - total: $4
+
+# Event banner colors
+ALIAS fmt.banner_info	RETURN 3$G
+ALIAS fmt.banner_party	RETURN :::
+ALIAS fmt.banner_join	RETURN 12$G
+ALIAS fmt.banner_leave	RETURN 2$G
+ALIAS fmt.banner_signon	RETURN 7$G
+ALIAS fmt.banner_signoff	RETURN 4$G
+ALIAS fmt.banner_invite	RETURN 12$G
+ALIAS fmt.banner_mode	RETURN 10$G
+ALIAS fmt.banner_kick	RETURN 8$G
+ALIAS fmt.banner_nick	RETURN 9$G
+ALIAS fmt.banner_ctcp	RETURN 13$G
+ALIAS fmt.banner_dcc	RETURN 6$G
+ALIAS fmt.banner_alert	RETURN 8$G
+ALIAS fmt.banner_userlist	RETURN 9$G
+ALIAS fmt.banner_server	RETURN $G
+ALIAS fmt.banner_chan	RETURN $G
+ALIAS fmt.banner_usage	RETURN 14$G
+ALIAS fmt.banner_tip    RETURN +++
+#ALIAS fmt.banner_whois	RETURN 13$G
+ALIAS fmt.banner_whois	RETURN 11$G
+ALIAS fmt.whois_top     {
+   ^ASSIGN sim.nick $1
+   ^ASSIGN sim.user $2
+   ^ASSIGN sim.host $3
+}
+ALIAS fmt.whois_bot     {purge sim}
+ALIAS fmt.whois_mid     {
+   SWITCH ($0) {
+    (Away)	{RETURN $fmt.banner_whois() $sim.nick is away: $1-}
+    (Ircname)	{RETURN $fmt.banner_whois() $sim.nick is $sim.user@$sim.host \($1-\)}
+    (Channels)	{RETURN $fmt.banner_whois() $sim.nick on channels: $1-}
+    (Operator)	{RETURN $fmt.banner_whois() $1-}
+    (Server)	{RETURN $fmt.banner_whois() $sim.nick on irc via $1-}
+    (Services)	{RETURN $fmt.banner_whois() $1-}
+    (Shitlist)	{RETURN $fmt.banner_whois() $sim.nick has $1-}
+    (Userlist)	{RETURN $fmt.banner_whois() $sim.nick has $1-}
+    (Spoof)	{RETURN $fmt.banner_whois() $1-}
+    (Idle)	{RETURN $fmt.banner_whois() $sim.nick has been idle for $1-}
+    (Signon)	{RETURN $fmt.banner_whois() $sim.nick signed on at $1-}
+   }
+}
+
+#whois - screwes up other theme's (obsolete)
+#ON ^311 * {ECHO $fmt.banner_whois() $1 is $2@$3 \($5-\)}
+#ON ^312 * {ECHO $fmt.banner_whois() $1 on irc via $2 \($3-\)}
+#ON ^313 * {ECHO $fmt.banner_whois() $1-}
+#ON ^314 * {ECHO $fmt.banner_whois() $1 was $2@$3 \($5-\)}
+#ON ^317 * {ECHO $fmt.banner_whois() $1 has been idle for $tdiff($2)${!isnumber($3)?[]:[, signed on at $strftime($3 %c)} }
+#ON ^318 * {}
+#ON ^319 * {ECHO $fmt.banner_whois() $1 on channels: $2-}
+#ON ^369 * {}
+#ON ^301 * {ECHO $fmt.banner_whois() $0 is away: $1-}
+

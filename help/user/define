@@ -1,0 +1,11 @@
+Usage: DEFINE <word | phrase> 
+
+Attempts to define <word> using dictd dictionary server
+using the dict.org hostname. One or more words or phrases
+can be specified.
+
+Examples:
+
+	/DEFINE test
+	/DEFINE unix guru
+

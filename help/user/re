@@ -1,0 +1,16 @@
+Usage: RE <nick|channel> <command> [arguments] 
+   Redirects the output of your commands to a nick or channel. Even if the 
+   command doesnt exists, this output if sent.
+ie. /RE #LiCe WI
+	shows #LiCe the output of a WHOIS request.
+    /RE #LiCe MSG Vassago Phoenix is lame!
+	shows #LiCe the output of sending a MSG to Vassago.
+Note: Dont use this command repeatedly.
+
+   This command is well known for its bugs, it's not very stable, you
+   could end up flooding yourself or your channel if you try to redirect
+   extensively complicated commands or commands that use WAIT states.
+   ie. USERHOST, USER.
+
+See also: [REX] [epic 5 REDIRECT]
+

@@ -1,0 +1,25 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS oops {
+  UNLESS (@) {
+    uecho Usage: /OOPS <nick>;
+    RETURN;
+  };
+  @ :old_msg = B;
+  //MSG $. $randread($main.reason_oops);
+  //MSG $0 $old_msg;
+};

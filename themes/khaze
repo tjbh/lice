@@ -1,0 +1,64 @@
+PACKAGE LiCeTheme
+EVAL XECHO -r $chr(27)\(U
+^SET BANNER .%o
+SET status_no_repeat off
+SET status_does_expandos on
+SET status_away 14,1[10a14,1]
+SET status_channel %C
+SET status_chanop @
+SET status_clock 14,1[14time14,1.11$tolower(%T)14,1]
+SET status_format 14,11ktheme does not support single line statusbar. /theme or ^WD to resolve...
+SET status_format1 14[11%@%=10%N%#14]1,1Ä14[10%314][10lag14.11%214]1,1Ä%>14[10%1.11$tolower(%0)14]1,1 14%F1,114[win.11%R14]%W1,1ÄÄ¿
+SET status_format2 14%9%Q%\  [10,1$servername($winserv())14,1\]%D1,1Ä%>14%H%M%A%T1,1ÄÙ
+SET status_hold 14,1[14more14,1]
+SET status_insert 14,1[14ins14,1]
+SET status_mail 14,1[14m14,1.11%M14,1]
+SET status_mode 14,1/11+%+
+SET status_nickname %N
+SET status_notify 14,1[14a14,1.11%F14,1]
+SET status_oper *
+SET status_overwrite 14,1[14ovr14,1]
+SET status_query 14,1[14q14,1.11%Q14,1]
+SET status_scrollback 14,1[11buf14,1]
+SET status_server %S
+SET status_umode 14,1/14,1+%#
+SET status_user9 ${C?[14,1[10o14,1.11$#chops()14,1/10n14,1.11$#nochops()14,1/10t14,1.11$numonchannel()14,1]] : []}
+SET status_voice +
+SET status_window 14,1[14+14,1]
+SET input_prompt 14[$C14]11+$chanmode()14> 
+
+ALIAS fmt.talk_reply    RETURN $0-
+ALIAS fmt.whois_bot     RETURN 14... end.14of.14$0 ...
+ALIAS fmt.whois_mid     RETURN 14: 14$[-9]0 16: $1-
+ALIAS fmt.whois_top     RETURN 16.15.14. whodat! $1 \14[10$211@10$3\14] ..
+ALIAS fmt.msg           RETURN 14[15[2$uh($0)\15] $1-
+ALIAS fmt.msg_group     RETURN 14[15[2$uh($0)\15] \($1:$S\) $2-
+ALIAS fmt.send_msg      RETURN 14>> 15[ 2$0 15] $1-
+ALIAS fmt.dcc_chat      RETURN 14=:$0:14= $1-
+ALIAS fmt.send_dcc_chat RETURN 14>> =$014= $1-
+ALIAS fmt.notice        RETURN 16- 11$uh($0)\ 16- $1-
+ALIAS fmt.titlebar	RETURN 14[10$014] [$1-14]
+ALIAS fmt.send_notice   RETURN 14>> 16- 10$0 16- $1-
+
+
+ALIAS fmt.banner_info   RETURN 4$G
+ALIAS fmt.banner_party  RETURN 3$G
+ALIAS fmt.banner_join   RETURN 4$G
+ALIAS fmt.banner_leave  RETURN 2$G
+ALIAS fmt.banner_signon RETURN 12$G
+ALIAS fmt.banner_signoff        RETURN 2$G
+ALIAS fmt.banner_invite RETURN 12$G
+ALIAS fmt.banner_mode   RETURN 10$G
+ALIAS fmt.banner_kick   RETURN 11$G
+ALIAS fmt.banner_nick   RETURN 7$G
+ALIAS fmt.banner_ctcp   RETURN 13$G
+ALIAS fmt.banner_dcc    RETURN 6$G
+ALIAS fmt.banner_alert  RETURN 8$G
+ALIAS fmt.banner_userlist       RETURN 9$G
+ALIAS fmt.banner_server RETURN 14$G
+ALIAS fmt.banner_chan   RETURN 14$G
+ALIAS fmt.banner_usage  RETURN 16$G
+ALIAS fmt.banner_tip    RETURN 16+++
+
+XECHO -b (k) 11haze theme by invalid
+XECHO -b <invalid@worldnetoh.com>

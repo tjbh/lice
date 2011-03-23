@@ -1,0 +1,124 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# List-removal routine
+ALIAS _proc.remove_list1 {
+  UNLESS (P == [@]) {
+    XECHO -B $ch($C)\: You are not channel operator.;
+    RETURN;
+  };
+  SWITCH ($0) {
+    () (*!*) (*.*) (*@*) (-*) (#*) {_proc.remove_list $*};
+    (*) {
+      @ :uh = get_uh($0);
+      UNLESS (strlen($uh)) {
+        XECHO -B $0: No such nick.;
+        RETURN;
+      };
+      _proc.remove_list $0!$uh;
+    };
+  };
+};
+ALIAS _proc.remove_list {
+  @ :serv = winserv();
+  @ :list = [$[1]list[name]] ## serv ## [-] ## hash_32bit($C);
+  IF (numitems($list) == 0) {
+    XECHO -B No ${list.name}s found on $C \($servername($serv)\);
+    RETURN;
+  };
+  SWITCH ($0) {
+    (*!*) (*@*) (*.*) {^LOCAL patt $uhc($0)};
+    (-a) {^LOCAL patt *!*@*};
+    (-s) {^LOCAL patt};
+    (-n) {^LOCAL patt $1};
+    (-l) {@ :patt = isnumber($1) ? [$1] : [00:00]};
+    (-t) {@ :patt = isnumber($1) ? [$1] : [00:00]};
+    (#*) {@ :patt = isnumber($rest(1 $0)) ? [$0] : []};
+  };
+  iecho Current ${list.name}s on $C \($servername($serv)\);
+  FOR (@ :cnt=0, numitems($list) > cnt, @cnt++) {
+    @ :str = getitem($list $cnt);
+    UNLESS (patt) {ECHO [$[-2]{cnt + 1}] $ch($C)\: $str};
+    IF (patt && pattern($patt $word(0 $str)) || rpattern($patt $word(0 $str))) {
+       #HS_proc.mode_add $serv $C -$list.mode $str
+       _proc.mode_add $serv $C -$list.mode $word(0 $str);
+       #ECHO [$[-2]{cnt + 1}] $ch($C)\: $str
+    };
+    IF (patt && (patt == word(2 $str) || patt == before(! $word(2 $str)))) {
+       _proc.mode_add $serv $C -$list.mode $word(0 $str);
+    };
+    IF (patt && isnumber($patt)) {
+       @ :in.time = strip(\) $word(4 $str));
+       @ :ban_min = before(\: $in.time) * 60 + after(\: $in.time);
+       @ :my_min = before(\: $strftime(%H:%M)) * 60 + after(\: $strftime(%H:%M));
+       @ :lg_min = my_min - ban_min;
+       UNLESS (lg_min < patt) {
+         _proc.mode_add $serv $C -$list.mode $word(0 $str);
+       };
+    };
+  };
+  _proc.mode_flush $serv $C;
+  UNLESS (patt) {
+    INPUT "Remove ${list.name}s # (ENTER to cancel): " IF (@) {
+      ^LOCAL text $*;
+      @ :serv = winserv();
+      @ :list = [$[1]list[name]] ## serv ## [-] ## hash_32bit($C);
+      FE ($text) foo {
+        @ :num = pass(0123456789 $foo) - 1;
+        @ :str = getitem($list $num);
+        IF (str) {
+          #HS_proc.mode_add $serv $C -$list.mode $str
+          _proc.mode_add $serv $C -$list.mode $word(0 $str);
+          XECHO -B Removing $list.name #${num + 1} from $C ...;
+        }{
+          XECHO -B Item #${num + 1} is not valid.;
+        };
+      };
+      _proc.mode_flush $serv $C;
+    };
+  }{
+    IF (left(1 $patt) == [#]) {
+      @ :num = pass(0123456789 $patt) - 1;
+      @ :str = getitem($list $num);
+      IF (str) {
+        #HS-QUOTE MODE $C -$list.mode $str
+        QUOTE MODE $C -$list.mode $word(0 $str);
+        XECHO -B Removing $list.name $patt from $C ...;
+        #ECHO [$[-2]{rb.1 + 1}] $ch($C)\: $str
+      }{
+        XECHO -B No such $list.name $patt on $C\.;
+      };
+    };
+  };
+};
+ALIAS rban {
+  ^ASSIGN list.name Ban;
+  ^ASSIGN list.mode b;
+  _proc.remove_list1 $*;
+};
+ALIAS unban {rban $*};
+ALIAS rexc {
+  ^ASSIGN list.name Exc;
+  ^ASSIGN list.mode e;
+  _proc.remove_list1 $*;
+};
+ALIAS rinv {
+  ^ASSIGN list.name Inv;
+  ^ASSIGN list.mode I;
+  _proc.remove_list1 $*;
+};
+#HS unknown
+#tjh/09

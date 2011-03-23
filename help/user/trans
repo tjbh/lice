@@ -1,0 +1,25 @@
+Usage: TRANS [[-fFgGiIpPsS][-o][-m <target>][-n <target>]] <text>
+
+Attempts to translate <text> using altavista's babelfish server.
+If no language option is selected, English to Spanish is the default.
+
+Options:
+
+    -f  English to French        -F  French to English
+    -g  English to German        -G  German to English
+    -p  English to Portuguese    -S  Spanish to English
+    -s  English to Spanish       -P  Portuguese to English
+    -i  English to Italian       -I  Italian to English
+
+    -m <target> Sends translation of text to "target" in a MSG.
+    -n <target> Sends translation of text to "target" in a NOTICE.
+    -o          Sends translation of text to your current channel.
+
+Examples:
+
+    /TRANS -m SrfRoG -f you rule man!
+    /TRANS -n $*.com -s this is a server wallop in Spanish
+    /TRANS -o -p i am pretending i know Portuguese
+    /TRANS -S hola amigo
+
+

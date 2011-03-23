@@ -1,0 +1,164 @@
+#
+# Modular loading for LiCe.
+# Updated by tjh for LiCe5 - http://lice.muppetz.com/
+# tjh - tim@muppetz.com
+#
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# operator commands
+STUB ALIAS ban $LiCePath/lice/lice.banlist;
+STUB ALIAS bexc $LiCePath/lice/lice.exclist;
+STUB ALIAS binv $LiCePath/lice/lice.invlist;
+STUB ALIAS boot $LiCePath/lice/lice.boot;
+STUB ALIAS bword $LiCePath/lice/lice.bword;
+STUB ALIAS k $LiCePath/lice/lice.kick;
+STUB ALIAS kb $LiCePath/lice/lice.kickban;
+STUB ALIAS kbi $LiCePath/lice/lice.kickban;
+STUB ALIAS ka $LiCePath/lice/lice.kickban;
+STUB ALIAS kh $LiCePath/lice/lice.kickban;
+STUB ALIAS kf $LiCePath/lice/lice.kickban;
+STUB ALIAS ku $LiCePath/lice/lice.kickban;
+STUB ALIAS ki $LiCePath/lice/lice.kickban;
+STUB ALIAS mass $LiCePath/lice/lice.mass;
+STUB ALIAS mk $LiCePath/lice/lice.mk;
+STUB ALIAS rban $LiCePath/lice/lice.remove_list;
+STUB ALIAS rexc $LiCePath/lice/lice.remove_list;
+STUB ALIAS rinv $LiCePath/lice/lice.remove_list;
+STUB ALIAS rk $LiCePath/lice/lice.rk;
+STUB ALIAS unban $LiCePath/lice/lice.remove_list;
+STUB ALIAS wall $LiCePath/lice/lice.wall;
+
+# general user commands
+STUB ALIAS adcc $LiCePath/lice/lice.adcc;
+STUB ALIAS dcc $LiCePath/lice/lice.adcc;
+STUB ALIAS alarm $LiCePath/lice/lice.alarm;
+STUB ALIAS back $LiCePath/lice/lice.back;
+STUB ALIAS book $LiCePath/lice/lice.imail;
+STUB ALIAS bye $LiCePath/lice/lice.signoff;
+STUB ALIAS chanlog $LiCePath/lice/lice.chanlog;
+STUB ALIAS chanst $LiCePath/lice/lice.chanst;
+STUB ALIAS color $LiCePath/extra/lice.color;
+STUB ALIAS country $LiCePath/lice/lice.dom;
+STUB ALIAS ctog $LiCePath/lice/lice.ctog;
+STUB ALIAS cwho $LiCePath/lice/lice.cwho;
+STUB ALIAS define $LiCePath/lice/lice.define;
+STUB ALIAS dict $LiCePath/lice/lice.define;
+STUB ALIAS dns $LiCePath/lice/lice.dns;
+STUB ALIAS dom $LiCePath/lice/lice.dom;
+STUB ALIAS dtog $LiCePath/lice/lice.dtog;
+STUB ALIAS dump $LiCePath/lice/lice.dump;
+STUB ALIAS erase $LiCePath/lice/lice.play;
+STUB ALIAS et $LiCePath/lice/lice.et;
+STUB ALIAS exit $LiCePath/lice/lice.signoff;
+STUB ALIAS findip $LiCePath/lice/lice.dns;
+STUB ALIAS finger $LiCePath/lice/lice.finger;
+STUB ALIAS fwall $LiCePath/extra/lice.fwall;
+STUB ALIAS gdcc $LiCePath/extra/lice.sdcc;
+STUB ALIAS gone $LiCePath/lice/lice.gone;
+STUB ALIAS help $LiCePath/lice/lice.help;
+STUB ALIAS ignore $LiCePath/lice/lice.ignore;
+STUB ALIAS imail $LiCePath/lice/lice.imail;
+STUB ALIAS invite $LiCePath/lice/lice.invite;
+STUB ALIAS memo $LiCePath/lice/lice.memo;
+STUB ALIAS mme $LiCePath/lice/lice.mme;
+STUB ALIAS msay $LiCePath/lice/lice.msay;
+STUB ALIAS mtog $LiCePath/lice/lice.mtog;
+STUB ALIAS news $LiCePath/lice/lice.news;
+STUB ALIAS noig $LiCePath/lice/lice.noig;
+STUB ALIAS note $LiCePath/lice/lice.note;
+STUB ALIAS nsl $LiCePath/lice/lice.dns;
+STUB ALIAS oops $LiCePath/lice/lice.oops;
+STUB ALIAS pager $LiCePath/lice/lice.pager;
+STUB ALIAS pic $LiCePath/lice/lice.pic;
+STUB ALIAS play $LiCePath/lice/lice.play;
+STUB ALIAS ppl $LiCePath/lice/lice.ppl;
+STUB ALIAS protect $LiCePath/lice/lice.ignore;
+STUB ALIAS quit $LiCePath/lice/lice.signoff;
+STUB ALIAS redcc $LiCePath/lice/lice.redcc;
+STUB ALIAS refriend $LiCePath/lice/lice.refriend;
+STUB ALIAS relm $LiCePath/lice/lice.rel;
+STUB ALIAS relmk $LiCePath/lice/lice.rel;
+STUB ALIAS reln $LiCePath/lice/lice.rel;
+STUB ALIAS relnk $LiCePath/lice/lice.rel;
+STUB ALIAS relw $LiCePath/lice/lice.rel;
+STUB ALIAS relwk $LiCePath/lice/lice.rel;
+STUB ALIAS reuser $LiCePath/lice/lice.refriend;
+STUB ALIAS rdcc $LiCePath/lice/lice.rdcc;
+STUB ALIAS scan $LiCePath/extra/lice.scan;
+STUB ALIAS sc $LiCePath/lice/lice.sc;
+STUB ALIAS sb $LiCePath/lice/lice.show_list;
+STUB ALIAS sdcc $LiCePath/extra/lice.sdcc;
+STUB ALIAS se $LiCePath/lice/lice.show_list;
+STUB ALIAS sensors $LiCePath/lice/lice.sensors;
+STUB ALIAS si $LiCePath/lice/lice.show_list;
+STUB ALIAS signoff $LiCePath/lice/lice.signoff;
+STUB ALIAS silence $LiCePath/lice/lice.silence;
+STUB ALIAS tab_completion $LiCePath/lice/lice.tab_comp;
+STUB ALIAS theme $LiCePath/lice/lice.theme;
+STUB ALIAS tlm $LiCePath/lice/lice.rel;
+STUB ALIAS tln $LiCePath/lice/lice.rel;
+STUB ALIAS tlw $LiCePath/lice/lice.rel;
+STUB ALIAS tog $LiCePath/lice/lice.tog;
+STUB ALIAS trace $LiCePath/extra/lice.trace;
+STUB ALIAS trans $LiCePath/lice/lice.trans;
+STUB ALIAS msg_completion $LiCePath/lice/lice.tab_comp;
+UNLESS (dlu == 1) {
+  STUB ALIAS update $LiCePath/lice/lice.update;
+  STUB ALIAS upgrade $LiCePath/lice/lice.update;
+};
+STUB ALIAS wlm $LiCePath/lice/lice.rel;
+STUB ALIAS wln $LiCePath/lice/lice.rel;
+STUB ALIAS wtog $LiCePath/lice/lice.wtog;
+
+# userlist
+STUB ALIAS shit $LiCePath/lice/lice.userlist;
+STUB ALIAS friend $LiCePath/lice/lice.userlist;
+STUB ALIAS _proc.ul_add $LiCePath/lice/lice.userlist;
+STUB ALIAS _proc.ulw_help $LiCePath/lice/lice.ulw_help;
+STUB ALIAS _proc.ulw_ident $LiCePath/lice/lice.ulw_ident;
+STUB ALIAS _proc.ul_save $LiCePath/lice/lice.ul_save;
+STUB ALIAS _proc.ul_m2a $LiCePath/lice/lice.userlist;
+
+# partyline
+STUB ALIAS party $LiCePath/lice/lice.party;
+
+# proc's
+STUB ALIAS _proc.ban $LiCePath/lice/lice.banlist;
+STUB ALIAS _proc.dcc_queue_check $LiCePath/lice/lice.dcclist;
+STUB ALIAS _proc.dcc_queue_load $LiCePath/lice/lice.dcclist;
+STUB ALIAS _proc.flood_chan $LiCePath/lice/lice.floodlist;
+STUB ALIAS _proc.flood_nick $LiCePath/lice/lice.floodlist;
+STUB ALIAS _proc.join_clones $LiCePath/lice/lice.joinlist;
+STUB ALIAS _proc.join_socks $LiCePath/extra/lice.scan;
+STUB ALIAS _proc.join_shit $LiCePath/lice/lice.joinlist;
+STUB ALIAS _proc.join_bans $LiCePath/lice/lice.joinlist;
+STUB ALIAS _proc.join_usr1 $LiCePath/lice/lice.joinlist;
+STUB ALIAS _proc.join_usr2 $LiCePath/lice/lice.joinlist;
+STUB ALIAS _proc.join_ip $LiCePath/lice/lice.joinlist;
+STUB ALIAS _proc.join_rest $LiCePath/lice/lice.joinlist;
+STUB ALIAS _proc.log_j $LiCePath/lice/lice.chanlog;
+STUB ALIAS _proc.log_k $LiCePath/lice/lice.chanlog;
+STUB ALIAS _proc.log_p $LiCePath/lice/lice.chanlog;
+STUB ALIAS _proc.loop_kick $LiCePath/lice/lice.looplist;
+STUB ALIAS _proc.loop_mode $LiCePath/lice/lice.looplist;
+STUB ALIAS _proc.loop_send $LiCePath/lice/lice.looplist;
+STUB ALIAS _proc.note_dup $LiCePath/lice/lice.note;
+STUB ALIAS _proc.note_get $LiCePath/lice/lice.note;
+STUB ALIAS _proc.note_rem $LiCePath/lice/lice.note;
+STUB ALIAS _proc.note_set $LiCePath/lice/lice.note;
+STUB ALIAS _proc.note_wget $LiCePath/lice/lice.note;
+STUB ALIAS _proc.open_log  $LiCePath/lice/lice.chanlog;
+STUB ALIAS _proc.redraw_tl $LiCePath/lice/lice.theme;
+STUB ALIAS _proc.ssupport $LiCePath/lice/lice.silence;
+STUB ALIAS _proc.split_save $LiCePath/lice/lice.splitlist;
+STUB ALIAS _proc.split_info $LiCePath/lice/lice.splitlist;
+STUB ALIAS _proc.split_jump $LiCePath/lice/lice.splitlist;
+STUB ALIAS _proc.wget_main $LiCePath/lice/lice.wget;
+
+#tjh/11

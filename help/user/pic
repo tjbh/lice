@@ -1,0 +1,13 @@
+Usage: PIC
+Usage: PIC <picture> <target> [message]
+
+Displays an ASCII picture to the target (nick or channel)
+that you specify. The picture is taken from the
+~/.epic/pics directory. The message gets appended at the
+end of the picture.
+
+The command without arguments, displays all the available
+pictures.
+
+See also: [SV] [SB] [THEME]
+

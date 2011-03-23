@@ -1,0 +1,66 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# this is a port of asmodean's /ppl command from skuld3 (R.I.P.)
+ALIAS _rdots @FUNCTION_RETURN = right($0 $repeat($0 .)$1-);
+ALIAS _dots @FUNCTION_RETURN = left($0 $1-$repeat($0 .));
+ALIAS ppl {
+  ^ASSIGN ppl.h *!*@*;
+  ^ASSIGN ppl.n *;
+  ^ASSIGN ppl.s *.*;
+  ^ASSIGN ppl.k 999;
+  #@ :ppl.foo = getopt();
+  WHILE (option = getopt(optopt optarg "c:ghilop:n:s:v" $*)) {
+    SWITCH ($option) {
+      (c) {IF (isnumber($optarg)) {@ ppl.k = optarg}};
+      (g) {@ ppl.x #= [G]};
+      (h) {@ ppl.x #= [H]};
+      (i) {@ ppl.x #= [*]};
+      (l) {@ ppl.x #= [X]};
+      (o) {@ ppl.x #= [@]};
+      (p) {@ ppl.h = uhc($optarg)};
+      (n) {@ ppl.n = optarg};
+      (s) {@ ppl.s = optarg};
+      (v) {@ ppl.x #= [+]};
+    };
+  };
+  @ ppl.c = optarg ? optarg : C;
+  ^ON ^WHO "\\$ppl.c *" {
+    ^LOCAL modes $2;
+    IF (pass(@ $modes)) {@ ppl.o++}{
+    IF (pass(+ $modes)) {@ ppl.v++}{@ ppl.l++};};
+    @ ppl.i += !!pass(* $modes);
+    IF (pass(X $ppl.x)) {
+      IF (pass(@ $modes)) {RETURN};
+    }{
+      IF (strlen($ppl.x) && !pass($ppl.x $modes)) {RETURN};
+    };
+    IF (!match($ppl.h $1!$3@$4) || !match($ppl.s $5) || !match($ppl.n $stripcrap(ALL $7-)) || (ppl.k < [$6] && isdigit($6)) ) {RETURN};
+    @ ppl.m++;
+    #XECHO -C $cparse(%W$[2]2\%n$_dots(11 $left(9 $1))$_rdots(11 $strip(-+=~ $3))%B@%n$4$_rdots(${word(0 $geom()) - (27 + strlen($4))} $5)%C$6%n)
+    XECHO -C 16$[2]2$_dots(11 $left(9 $1))$_rdots(11 $strip(-+=~ $3))12@$4$_rdots(${word(0 $geom()) - (26 + strlen($4))} $5)${isdigit($6) ? [$6] : []};
+  };
+  @ ppl.i = ppl.l = ppl.m = ppl.o = ppl.v = 0;
+  //WHO $ppl.c -END {
+    ^ON ^WHO -"$1 *";
+    @ :total = ppl.o + ppl.v + ppl.l;
+    cecho $ppl.c - matched $ppl.m user$plural($ppl.m) \(*=$ppl.i -o=$ppl.l +v=$ppl.v +o=$ppl.o\) / $total total users;
+    purge ppl;
+    ^SET HOLD_MODE OFF;
+  };
+  ^SET HOLD_MODE ON;
+};
+#tjh/09

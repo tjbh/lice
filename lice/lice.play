@@ -1,0 +1,149 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# MSG answering machine
+ALIAS play {
+  IF (temp.nrm > 0) {
+    _proc.play_main ${isnumber($pass(0123456789 $0))?[$0] - 1:0};
+    RETURN;
+  };
+  XECHO -B No messages in record.;
+  IF (fexist($lice.save_path/LiCeAway.log) == 1) {
+    INPUT_CHAR "View messages saved in AWAY file (y/n) ? " {
+      IF ([$0]==[Y]) {
+        XECHO -B Playing messages from $lice.save_path/LiCeAway.log;
+        pager $open($lice.save_path/LiCeAway.log R);
+      };
+    };
+  };
+};
+ALIAS _proc.play_main {
+  IF (temp.nrm > [$0]) {
+    @ :pp.rec = getitem(AM $0);
+    @ :pp.str = restw(3 $pp.rec);
+    @ :pp.wid = word(0 $geom()) - 2;
+    ECHO [ Message #${[$0]+1}/$temp.nrm : $stime($word(0 $pp.rec)) \($tdiff2(${time() - word(0 $pp.rec)}) ago\) ];
+    ECHO : From : $word(1 $pp.rec) \($word(2 $pp.rec)\);
+    ECHO $pp.str;
+    ECHO;
+    UNLESS (strlen($1)) {_proc.play_prompt $0}{_proc.play_main ${[$0] + 1} OK};
+  }{
+    IF (strlen($1)) {_proc.play_prompt ${[$0] - 1}};
+  };
+};
+ALIAS _proc.play_prompt {
+  ^ASSIGN old_idx $0;
+  INPUT "[${old_idx + 1}/$temp.nrm] Enter option (ENTER to continue, ? for help): " {
+    UNLESS ([$0]==[Q]) {
+      UNLESS (isdigit($0)) {
+        SWITCH ($0) {
+          () {_proc.play_main ${old_idx + 1}};
+          (D) {_proc.play_erase};
+          (E) {
+            _proc.play_erase $old_idx;
+            _proc.play_main $old_idx;
+          };
+          (S) {
+            _proc.play_save $old_idx;
+            _proc.play_main $old_idx;
+          };
+          (W) {_proc.play_save};
+          (V) {
+            _proc.play_view;
+            _proc.play_main 0;
+          };
+          (A) {_proc.play_main ${old_idx + 1} OK};
+          (*) {
+            uecho PLAY prompt options:;
+            uecho   D = erase all messages stored;
+            uecho   E = erase current displayed message;
+            uecho   W = save all messages stored;
+            uecho   S = save current displayed message;
+            uecho   V = view all message headings;
+            uecho   A = display all messages;
+            uecho;
+            uecho Usage: /PLAY <message #>;
+            _proc.play_prompt $old_idx OK;
+          };
+        };
+      }{
+        @ :idx = [$0] - 1;
+        IF (idx > temp.nrm) {
+          XECHO -B Message #$0 does not exists \($temp.nrm total\);
+        }{
+          _proc.play_main $idx;
+        };
+      };
+    };
+  };
+};
+ALIAS _proc.play_view {
+  ECHO # Message headings - $temp.nrm total;
+  ECHO # No. | Nick      | Time of arrival;
+  FOR (@ :cnt=0, temp.nrm > cnt, @cnt++) {
+    @ :v_rec = getitem(AM $cnt);
+    ECHO # $[-3]{cnt + 1} : $[9]word(1 $v_rec) : $strftime($word(0 $v_rec) %b %d/%H:%M) \($tdiff2(${time() - word(0 $v_rec)}) ago\);
+  };
+  ECHO;
+};
+ALIAS _proc.play_erase {
+  IF (isdigit($0)) {
+    IF (ismset(E)) {@ write($awayfd - $encode($getitem(AM $0)))};
+    UNLESS (delitem(AM $0)) {
+      XECHO -B Erased message #${[$0]+1} ...;
+      @ temp.nrm--;
+    };
+  }{
+    UNLESS (delarray(AM)) {XECHO -B Erasing $temp.nrm message$plural($temp.nrm) ...};
+    IF (ismset(E) && (fexist($twiddle(~/.lice/lice.awaylog)) == 1)) {
+      @ close($awayfd);
+      @ unlink($twiddle(~/.lice/lice.awaylog));
+      @ awayfd = open($twiddle(~/.lice/lice.awaylog) W);
+    };
+    @ temp.nrm = 0;
+    ^ASSIGN -old_idx;
+  };
+  ^SET STATUS_USER1 $temp.nrm;
+};
+ALIAS erase {_proc.play_erase};
+ALIAS _proc.play_save {
+  @ :fd = open(~/.lice/LiCeAway.log W);
+  IF (@) {
+    @ :w_rec = getitem(AM $0);
+    IF (w_rec) {
+      @ write($fd # From: $word(1 $w_rec) \($word(2 $w_rec)\));
+      @ write($fd # Date: $strftime($word(0 $w_rec) %c));
+      @ write($fd $restw(3 $w_rec));
+      @ write($fd .);
+      UNLESS (delitem(AM $0)) {@ temp.nrm--};
+      XECHO -B Saving message #${[$0]+1} ...;
+    };
+  }{
+    FOR (@ :cnt=0, temp.nrm > cnt, @cnt++) {
+      @ w_rec = getitem(AM $cnt);
+      @ write($fd # From: $word(1 $w_rec) \($word(2 $w_rec)\));
+      @ write($fd # Date: $strftime($word(0 $w_rec) %c));
+      @ write($fd $restw(3 $w_rec));
+      @ write($fd .);
+    };
+    XECHO -B Saving all messages \($cnt\);
+    @ delarray(AM);
+    @ temp.nrm = 0;
+  };
+  @ close($fd);
+  ^SET STATUS_USER1 $temp.nrm;
+};
+#tjh/09

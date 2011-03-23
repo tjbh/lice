@@ -1,0 +1,875 @@
+# This is just a bunch of the default scripts that came with epic5-1.0
+# Original authors names are intact and I claim no credit for this.
+# Thanks to all the epic contributors for this.
+#
+# The copyrights are all intact but I have removed all extra comments.
+
+if (word(2 $loadinfo()) != [pf]) {
+	load -pf $word(1 $loadinfo());
+	return;
+};
+
+# Silence DCC Noise!
+^ON ^WINDOW '% \$BANNER A\ non-blocking\ connect*' #;
+
+#	Written by David B. Kratter (BlackJac@EFNet)
+#	Version: 1.0.2005.06.25.1
+
+alias addset (name, type, ...) {
+        if (@name && type) {
+                @ symbolctl(create $name);
+                @ symbolctl(set $name 1 builtin_variable type $type);
+                if (@) {
+                        @ symbolctl(set $name 1 builtin_variable script $*);
+                };
+        };
+};
+
+alias delset (name, void) {
+        if (@name) {
+                @ symbolctl(delete $name builtin_variable);
+                @ symbolctl(check $name);
+        };
+};
+
+#	Copyright (c) 2007 BlackJac@EFNet
+#	Version: 1.2.2007.09.28.1
+
+alias history (index, void) {
+	xecho -b -c Command History:;
+	if (index > (:numitems = numitems(array.history)) || !index) {
+		@ index = numitems;
+	};
+	if (index > 0) {
+		fe ($jot(0 ${index - 1} 1)) hh {
+			@ :item = getitem(array.history $hh);
+			xecho -c $hh${getset(history_timestamp) == 'on' ? "  \[$word(3 $stime($word(0 $item)))\]  " : "\: "}$restw(1 $item);
+		};
+	};
+};
+
+alias history.add (...) {
+	if (@) {
+		if (getset(history_remove_dupes) == 'on') {
+			@ delitems(array.history $getmatches(array.history % $*));
+			@ delitems(array.history $getmatches(array.history % $* ));
+		};
+		if (numitems(array.history) == history) {
+			@ delitem(array.history 0);
+		};
+		@ setitem(array.history $numitems(array.history) $time() $*);
+		@ history.index = '';
+	};
+};
+
+alias history.erase (void) {
+	@ history.index = '';
+	parsekey reset_line;
+};
+
+alias history.get (direction, void) {
+	if (direction == 1) {
+		if (@L && @history.index == 0) {
+			history.add $L;
+		};
+		if ((history.index == (:numitems = numitems(array.history) - 1) || @history.index == 0)) {
+			if (getset(history_circleq) == 'on') {
+				history.show 0;
+			} else {
+				history.erase;
+			};
+		} else if (history.index < numitems && @history.index) {
+			history.show ${history.index + 1};
+		};
+	} else if (direction == -1) {
+		if (@L && @history.index == 0) {
+			history.add $L;
+			@ history.index = numitems(array.history) - 1;
+		};
+		if ((history.index == 0 && getset(history_circleq) == 'on') || @history.index == 0) {
+			history.show ${numitems(array.history) - 1};
+		} else if (history.index > 0) {
+			history.show ${history.index - 1};
+		};
+	};
+};
+
+alias history.shove (void) {
+	history.add $L;
+	parsekey reset_line;
+};
+
+alias history.show (index, void) {
+	if (@index) {
+		@ history.index = index;
+		parsekey reset_line $restw(1 $getitem(array.history $history.index));
+	};
+};
+
+alias historyctl (action, ...) {
+	switch ($action) {
+		(add) {
+			if (history) {
+				history.add $*;
+				return 1;
+			};
+			return 0;
+		};
+		(delete) {
+			@ delitem(array.history $0);
+		};
+		(get) {
+			return $restw(1 $getitem(array.history $0));
+		};
+		(index) {
+			if (strlen($getitem(array.history $0))) {
+				@ history.index = *0;
+				return 1;
+			};
+			return 0;
+		};
+		(read) {
+			if ((:fd = open("${*0 ? *0 : getset(history_save_file)}" R)) > -1) {
+				while (:line = read($fd)) {
+					if (numitems(array.history) == history) {
+						@ delitem(array.history 0);
+					};
+					@ setitem(array.history $numitems(array.history) $line);
+				};
+				@ close($fd);
+				return $fd;
+			};
+		};
+		(reset) {
+			@ history.index = '';
+			@ delarray(array.history);
+		};
+		(save) {
+			if ((:fd = open("${*0 ? *0 : getset(history_save_file)}" W)) > -1) {
+				fe ($jot(0 ${numitems(array.history) - 1} 1)) hh {
+					@ write($fd $getitem(array.history $hh));
+				};
+				@ close($fd);
+				return $fd;
+			};
+		};
+		(set) {
+			^set history $0;
+			return 1;
+		};
+	};
+};
+
+alias sendline (...) {
+	if (@) {
+		history.add $*;
+		//sendline $*;
+	};
+};
+
+@ bindctl(function BACKWARD_HISTORY create "history.get -1");
+
+@ bindctl(function ERASE_HISTORY create history.erase);
+
+@ bindctl(function FORWARD_HISTORY create "history.get 1");
+
+@ bindctl(function SHOVE_TO_HISTORY create history.shove);
+
+fe (N [OB [[B) hh {
+	@ bindctl(sequence ^$hh set forward_history);
+};
+
+fe (P [OA [[A) hh {
+	@ bindctl(sequence ^$hh set backward_history);
+};
+                
+@ bindctl(sequence ^U set erase_history);
+
+^on ^input "/!*" {
+	@ :find = after(! $0);
+	if (isnumber($find)) {
+		if (:found = getitem(array.history $find)) {
+			xtype -l $restw(1 $found)${*1 ? "$1-" : ""};
+		} else {
+			xecho -b -c No such history entry: $find;
+		};
+	} else if (:found = getmatches(array.history % /$find*) ## ' ' ## getmatches(array.history % $find*)) {
+		@ :index = rightw(1 $numsort($found));
+		if (getset(history_save_position) == 'on') {
+			@ history.index = index;
+		};
+		xtype -l $restw(1 $getitem(array.history $index))${*1 ? " $1-" : ""};
+	} else {
+		xecho -b -c No match;
+	};
+};
+
+addset history int {
+	if (*0 == 0) {
+		@ delarray(array.history);
+		@ history.index = '';
+		^bind ^] nothing;
+		^on #input 2 -"*";
+		^on #input 2 -"/!*";
+	} else if (@) {
+		if (numitems(array.history) > history) {
+			until (numitems(array.history) == history) {
+				@ delitem(array.history 0);
+			};
+		};
+		^bind ^] shove_to_history;
+		^on #-input 2 "*" {
+			history.add $*;
+		};
+		^on #-input 2 "/!*" #;
+	};
+};
+
+set history 150;
+
+addset history_circleq bool;
+
+set history_circleq on;
+
+addset history_persistent bool {
+	if (*0 == 'on') {
+		^on #-exit 2 "*" {
+			@ historyctl(save $getset(history_save_file));
+		};
+	} else if (@) {
+		^on #exit 2 -"*";
+	};
+};
+
+set history_persistent off;
+
+addset history_save_file str;
+
+set history_save_file ~/.epic_history;
+
+addset history_remove_dupes bool;
+
+set history_remove_dupes off;
+
+addset history_save_position bool;
+
+set history_save_position on;
+
+addset history_timestamp bool;
+
+set history_timestamp off;
+
+if (getset(history_persistent) == 'on' && fexist("$getset(history_save_file)") == 1) {
+	@ historyctl(read $getset(history_save_file));
+};
+
+#	Copyright (c) 2007 BlackJac@EFNet
+#	Version: 1.9.2007.09.28.2
+
+alias bye (...) {
+	//quit $*;
+};
+
+alias date (...) {
+	//time $*;
+};
+
+alias exit (...) {
+	//quit $*;
+};
+
+alias host (...) {
+	//userhost $*;
+};
+
+alias irchost (...) {
+	//hostname $*;
+};
+
+alias ircname (...) {
+	//^set realname $*;
+};
+
+alias ircuser (...) {
+	//^set default_username $*;
+};
+
+alias leave (...) {
+	//part $*;
+};
+
+alias realname (...) {
+	//set realname $*;
+};
+
+alias signoff (...) {
+	//quit $*;
+};
+
+alias whowas (nick, args default "$getset(num_of_whowas)") {
+	//whowas $nick $args;
+};
+
+# FUNCTIONS #
+
+alias b64decode (...) {
+	return $xform(-B64 $*);
+};
+
+alias b64encode (...) {
+	return $xform(+B64 $*);
+};
+
+alias decode (...) {
+	return $xform(-ENC $*);
+};
+
+alias encode (...) {
+	return $xform(+ENC $*);
+};
+
+alias igmask (pattern, void) {
+	return $ignorectl(pattern $pattern);
+};
+
+alias igtype (pattern, void) {
+	fe ($ignorectl(get $ignorectl(refnum $pattern) levels)) ii {
+		push function_return ${ii =~ [+*] ? [$rest(1 $ii)] : sar(#/##$sar(#^#DONT-#$ii))};
+	};
+};
+
+alias lastserver (void) {
+	return $serverctl(last_server);
+};
+
+alias myservers (arg, void) {
+	fe ($serverctl(omatch *)) mm {
+		if (serverctl(get $mm connected)) {
+			push :servers $mm;
+		};
+	};
+	fe ($servers) nn {
+		push function_return ${@arg ? nn : servername($nn)};
+	};
+		
+};
+
+alias notifywindows (void) {
+	fe ($windowctl(refnums)) nn {
+		if (windowctl(get $nn notified)) {
+			push function_return $nn;
+		};
+	};
+};
+
+alias rigmask (pattern, void) {
+	return $ignorectl(rpattern $pattern);
+};
+
+alias rigtype (...) {
+	return $ignorectl(with_type $*);
+};
+
+alias sedcrypt (encode, who, ...) {
+	if (!(:val = encryptparm(who))) {
+		return;
+	};
+	@ :key = word(1 $val);
+	if (encode == 1) {
+		return $xform(+SED $key $who $*);
+	} else if (encode == 0) {
+		return $xform(-SED $key $who $*);
+	};
+	return;
+};
+
+alias servergroup (refnum default "$serverctl(from_server)", void) {
+	if (:group = serverctl(get $refnum group)) {
+		return $group;
+	};
+	return <default>;
+};
+
+alias servername (refnum default "$serverctl(from_server)", void) {
+	if (:name = serverctl(get $refnum itsname)) {
+		return $name;
+	};
+	return <none>;
+};
+
+alias servernick (refnum default "$serverctl(from_server)", void) {
+	return $serverctl(get $refnum nickname);
+};
+
+alias servernum (refnum default "$serverctl(from_server)", void) {
+	if ((:num = serverctl(refnum $refnum)) >= -1) {
+		return $num;
+	};
+	return -1;
+};
+
+alias serverourname (refnum default "$serverctl(from_server)", void) {
+	if (:ourname = serverctl(get $refnum name)) {
+		return $ourname;
+	};
+	return <none>;
+};
+
+alias servertype (refnum default "$serverctl(from_server)", void) {
+	return $serverctl(get $refnum protocol);
+};
+
+alias servports (refnum default "$serverctl(from_server)", void) {
+	return $serverctl(get $refnum port) $serverctl(get $refnum localport);
+};
+
+alias sha256 (...) {
+	return $xform(+SHA256 $*);
+};
+
+alias urldecode (...) {
+	return $xform(-URL $*);
+};
+
+alias urlencode (...) {
+	return $xform(+URL $*);
+};
+
+alias winbound (winnum default 0, void) {
+	return;
+};
+
+alias wincursorline (winnum default 0, void) {
+	if ((:cursorline = windowctl(get $windowctl(refnum $winnum) cursor)) >= -1) {
+		return $cursorline;
+	};
+	return -1;
+};
+
+alias winlevel (winnum default 0, void) {
+	return $windowctl(get $windowctl(refnum $winnum) window_level);
+};
+
+alias winline (linenum, winnum default 0, void) {
+	if ((:line = windowctl(get $windowctl(get refnum $winnum) line $linenum)) >= -1) {
+		return $line;
+	};
+	return -1;
+};
+
+alias winnam (winnum default 0, void) {
+	return $windowctl(get $windowctl(refnum $winnum) name);
+};
+
+alias winnicklist (winnum default 0, void) {
+	return $windowctl(get $windowctl(refnum $winnum) nicklist);
+};
+
+alias winnum (winnum default 0, void) {
+	if (:num = windowctl(get $windowctl(refnum $winnum) refnum)) {
+		return $num;
+	};
+	return -1;
+};
+
+alias winquery (winnum default 0, void) {
+	return $windowctl(get $windowctl(refnum $winnum) query);
+};
+
+alias winrefs (void) {
+	return $windowctl(refnums);
+};
+
+alias winscreen (winnum default 0, void) {
+	if ((:screen = windowctl(get $windowctl(refnum $winnum) screen)) >= -1) {
+		return $screen;
+	};
+	return -1;
+};
+
+alias winscrollbacksize (winnum default 0, void) {
+	if ((:scrollbacksize = windowctl(get $windowctl(refnum $winnum) display_buffer_size)) >= -1) {
+		return $scrollbacksize;
+	};
+	return -1;
+};
+
+alias winserv (winnum default 0, void) {
+	if ((:serv = windowctl(get $windowctl(refnum $winnum) server)) >= -2) {
+		return $serv;
+	};
+	return -1;
+};
+
+alias winsize (winnum default 0, void) {
+	return $windowctl(get $windowctl(refnum $winnum) display_size);
+};
+
+alias winstatsize (winnum default 0, void) {
+	if ((:statsize = windowctl(get $windowctl(refnum $winnum) double)) > -1) {
+		return ${statsize + 1};
+	};
+	return -1;
+};
+
+alias winvisible (winnum default 0, void) {
+	if ((:visible = windowctl(get $windowctl(refnum $winnum) visible)) >= -1) {
+		return $visible;
+	};
+	return -1;
+};
+
+# HOOKS #
+
+^on ^send_public "*" {
+	echo ${!iscurchan($0) ? (*) : ''}> $1-;
+};
+
+# SETS #
+
+# AUTO_NEW_NICK
+
+
+#	Copyright (c) 2005 David B. Kratter (BlackJac@EFNet)
+#	Version: 1.0.2005.05.16.1
+
+alias newnick.mangle (nick, void) {
+	@ :length = getset(auto_new_nick_length);
+	return ${@nick < length ? nick ## getset(auto_new_nick_char) : right(1 $nick) ## mid(0 ${length - 1} $nick)};
+};
+
+^on ^new_nickname "*" {
+	if (getset(auto_new_nick) == [on]) {
+		if (:nicklist = getset(auto_new_nick_list)) {
+			if (!(:nick = word(${findw($2 $nicklist) + 1} $nicklist))) {
+				@ :nick = newnick.mangle($2);
+			};
+		} else {
+			@ :nick = newnick.mangle($2);
+		};
+		xeval -s $0 nick $nick;
+	} else {
+		input "Nickname: " {
+			nick $0;
+		};
+	};
+};
+
+addset auto_new_nick bool;
+set auto_new_nick on;
+
+addset auto_new_nick_char char;
+set auto_new_nick_char _;
+
+addset auto_new_nick_length int;
+set auto_new_nick_length 9;
+
+addset auto_new_nick_list str;
+# AUTO_REJOIN, AUTO_REJOIN_DELAY
+
+addset auto_rejoin bool;
+
+set auto_rejoin off;
+
+addset auto_rejoin_delay int;
+
+set auto_rejoin_delay 0;
+
+^on #-kick 1 '$$servernick() *' {
+	if (getset(auto_rejoin) == 'on') {
+		if (:delay = getset(auto_rejoin_delay)) {
+			timer -w $winnum() $delay join $2;
+		} else {
+			defer join $2;
+		};
+	};
+};
+
+# AUTO_UNMARK_AWAY
+
+addset auto_unmark_away bool;
+
+set auto_unmark_away off;
+
+^on #-input 1 "*" {
+	if (getset(auto_unmark_away) == 'on' && serverctl(get $servernum() away) && ([$0])) {
+		away;
+	};
+};
+
+^on #-input 1 "/*" {
+	if (getset(auto_unmark_away) == 'on' && serverctl(get $servernum() away) && findw($0 /m /n /me /msg /notice /say) > -1) {
+		away;
+	};
+};
+
+# AUTO_WHOWAS
+
+addset auto_whowas bool;
+
+set auto_whowas on;
+
+^on #-401 1 "*" {
+	if (getset(auto_whowas) == 'on' && !ischannel($1)) {
+		whowas $1;
+	};
+};
+
+# BEEP_ON_MSG
+
+addset beep_on_msg str;
+
+set beep_on_msg none;
+
+^on #-action 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(action $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-channel_sync 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(crap $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-ctcp 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(ctcp $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-dcc_activity 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(dcc $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-dcc_connect 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(dcc $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-dcc_list 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(dcc $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-dcc_lost 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(dcc $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-dcc_offer 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(dcc $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-dcc_request 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(dcc $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-join 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(crap $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-mail 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(crap $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-mode 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(crap $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-msg 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(msgs $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-notice 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(notices $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-numeric 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(crap $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-oper_notice 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(opnotes $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-pong 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(crap $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-public 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(public $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-server_notice 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(snotes $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-wallop 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(wallops $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+^on #-who 1 "*" {
+	if (getset(beep_on_msg) == 'all' || findw(crap $getset(beep_on_msg)) > -1) {
+		beep;
+	};
+};
+
+set beep_on_msg none;
+
+# COMMAND_MODE
+
+addset command_mode bool;
+
+set command_mode off;
+
+^on ^input "*" {
+	//sendline ${getset(command_mode) == 'on' ? '/' : ''}$*;
+};
+
+^on ^input "'*" {
+	//send ${getset(command_mode) == 'on' ? rest(1 $*) : (*)};
+};
+
+^on ^input "/*" {
+	//sendline $*;
+};
+
+# DCC_TIMEOUT
+
+addset dcc_timeout int;
+
+set dcc_timeout 3600;
+
+^on #-timer 1 "*" {
+	if (:timeout = getset(dcc_timeout)) {
+		fe ($dccctl(refnums)) dd {
+			if (time() - word(0 $dccctl(get $dd lasttime)) >= timeout) {
+				@ :nick = dccctl(get $dd user);
+				@ :type = dccctl(get $dd type);
+				shook dcc_lost $nick $type $urlencode($dccctl(get $dd description)) IDLE TIME EXCEEDED;
+				dcc close $type $nick;
+			};
+		};
+	};
+};
+
+# FULL_STATUS_LINE
+
+addset full_status_line bool {
+	if (*0 == 'on') {
+		^set status_format $before(-1  $status_format);
+		^set status_format1 $before(-1  $status_format1);
+		^set status_format2 $before(-1  $status_format2);
+	} else {
+		^set status_format $status_format;
+		^set status_format1 $status_format1;
+		^set status_format2 $status_format2;
+	};
+};
+
+set full_status_line on;
+
+# NUM_OF_WHOWAS
+
+addset num_of_whowas int;
+
+set num_of_whowas 1;
+
+# REALNAME
+
+^on %set "REALNAME *" {
+	^set default_realname $1-;
+};
+
+# SHOW_END_OF_MSGS
+
+addset show_end_of_msgs bool;
+
+set show_end_of_msgs on;
+
+fe (219 232 262 315 318 347 349 365 366 368 369 374 394) ss {
+	^on ?$ss "*" {
+		return ${getset(show_end_of_msgs) == 'on' ? 0 : 1};
+	};
+};
+
+# SHOW_WHO_HOPCOUNT
+
+addset show_who_hopcount bool;
+
+set show_who_hopcount on;
+
+^on ?who "*" {
+	if (getset(show_who_hopcount) == 'on') {
+		echo $[15]0 $[9]1 $[3]2 $3@$4 \($7-\);
+		return 1;
+	};
+	return 0;
+};
+
+# VERBOSE_CTCP
+
+addset verbose_ctcp bool;
+
+set verbose_ctcp on;
+
+^on ?ctcp "*" {
+	return ${getset(verbose_ctcp) == 'on' ? 0 : 1};
+};
+
+# hop's script to return the old epic4 way of shortened commands...
+on ?unknown_command "*" (cmd, args) {
+  @ :bonly = 0;
+  if (left(2 $cmd) == [//]) {
+    @ :bonly = 1;
+    @ :cmd = rest(2 $cmd);
+  };
+  @ :matches = symbolctl(pmatch builtin_command $cmd*);
+  if (!bonly) {
+    push matches $symbolctl(pmatch alias $cmd*);
+  };
+  @ :matches = uniq($matches);
+  @ :num = #matches;
+  if (num > 1) {
+    xecho -b Ambiguous ${bonly ? [builtin ] : []}command $cmd. Matches \($num\): $unsplit(", " $leftw(5 $matches))${num > 5 ? [, ...] : []};
+    return 1;
+  };
+  if (num == 1) {
+    $matches $args;
+    return 1;
+  };
+  return 0;
+};

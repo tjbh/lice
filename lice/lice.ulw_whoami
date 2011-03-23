@@ -1,0 +1,52 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# !WHOAMI command
+ALIAS _proc.ulw_whoami (nick,uh,serv,pass,void) {
+  @ :myhand = find_in_list(User $nick!$uh);
+  UNLESS (myhand) {RETURN};
+  FE ($myhand) hand {
+  UNLESS (lice.get(main_PL$hand)) {
+    XQUOTE -S $serv NOTICE $nick :You don't have a password set. Type: /MSG $servernick($serv) !HELP PASS;
+    RETURN;
+  };
+  IF (pass != lice.get(main_PL$hand)) {
+    XQUOTE -S $serv NOTICE $nick :Invalid password. $randread($main.reason_error);
+    RETURN;
+  };
+  FOR (@:cnt=0, numitems(Userlist) > cnt, @ :cnt++) {
+    @ :hn = getitem(Userlist $cnt);
+    @ :hash = hash_32bit($hn);
+    IF (hash == hand) {
+      @ :handle = hn;
+      BREAK;
+    };
+  };
+  _proc.quote_add $serv NOTICE $nick :That host matches handle '$handle\';
+  @ :host = numitems(User$hand);
+  FOR (@ :cnt=0, host > cnt, @ cnt++) {
+    _proc.quote_add $serv NOTICE $nick :+ Host ${cnt + 1}: $getitem(User$hand $cnt);
+  };
+  @ :chan = numitems(ChanUser$hand);
+  FOR (@ :cnt=0, chan > cnt, @ cnt++) {
+    @ :item = getitem(ChanUser$hand $cnt);
+    @ :mode = _proc.ul_m2a(User $word(1 $item));
+    _proc.quote_add $serv NOTICE $nick :+ Chan ${cnt + 1}: $word(0 $item) | Mode: +$mode;
+  };
+  };
+  _proc.quote_flush $serv;
+};
+#tjh/09

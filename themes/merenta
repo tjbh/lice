@@ -1,0 +1,152 @@
+#
+# Description: Merenta, theme for LiCe.
+# Author: HSOC <hsoc@irc.gr>
+# started @ Wed May 17 19:57:15 MST 2000
+# updated @ Tue Jun  6 13:13:18 MST 2000
+
+PACKAGE LiCeTheme
+# Banner for this theme
+^SET BANNER |%|
+# DCC's made phaster...
+^SET DCC_SLIDING_WINDOW 500
+
+#correction for modes
+ON ^MODE "% #% %bb *" {XECHO -W $1 $fmt.banner_mode() $fmt.mode_bans($*)}
+ON ^MODE "% #% %oo *" {XECHO -W $1 $fmt.banner_mode() $fmt.mode_bans($*)}
+ON ^MODE "% #% %vv *" {XECHO -W $1 $fmt.banner_mode() $fmt.mode_bans($*)}
+ON ^MODE "*.* #% *" {XECHO -W $1 $fmt.banner_mode() $fmt.mode_server($*)}
+
+# Status sets
+SET CLOCK ON
+SET CLOCK_24HOUR OFF
+SET NOTIFY_USERHOST_AUTOMATIC ON
+SET STATUS_AWAY 9|A|
+SET STATUS_CHANNEL 10%C
+SET STATUS_CHANOP 4@
+SET STATUS_CLOCK 4@12$uni.time
+SET STATUS_CPU_SAVER =%L=
+SET STATUS_DOES_EXPANDOS ON
+SET STATUS_FORMAT 12[%T] %*%N12%# %@%=%C12%+ %W %A12 %H%B %F %Q%M %>12[Lag: %2] [%1:%0]
+SET STATUS_FORMAT1 12[%T] %@%=%C%+12 %Q%L%H%B%I%O %>$left($index(: %D) %D)$rest($rindex(: %D) %D) 12[%3]
+SET STATUS_FORMAT2 12[Win-%R: %*${%1!=[0]?[\(%1\)]:[]}%N11@10$after(-2 . $S)12]%A12 %>%M12[Lag: %2]
+SET -INPUT_PROMPT
+SET STATUS_HOLD MORE
+SET STATUS_HOLD_LINES : %B
+SET STATUS_MAIL [Mail: %M]
+SET STATUS_MODE (+%+)
+SET STATUS_NICKNAME 10%N
+SET STATUS_NOTIFY (%F)
+SET STATUS_NO_REPEAT OFF
+SET STATUS_OPER 7*
+SET -STATUS_INSERT
+SET STATUS_OVERWRITE [O]
+SET STATUS_QUERY [Query: %Q]
+SET STATUS_SERVER (on %S)
+SET STATUS_TRUNCATE_RHS ON
+SET STATUS_UMODE (+%#)
+SET STATUS_VOICE 8+
+SET STATUS_WINDOW +++
+^WINDOW DOUBLE ON
+# sanity timestamping
+ALIAS ts.time RETURN 10@ $sar(/AM/am/$sar(/PM/pm/$0))
+
+# Event formats
+ALIAS fmt.action 	RETURN * ${ischanop($0 $1)?[9@$0${iscurchan($1)?[]:[\:10$tolower($1)]}]:[$0${iscurchan($1)?[]:[\:10$tolower($1)]}]} $2-
+ALIAS fmt.action_me 	RETURN > \(16$N\) * $0 $2-
+ALIAS fmt.auto_reply 	RETURN 2\(${ischanop($0 $1)?[9@8$0]:[8$0]}2\> $2-
+ALIAS fmt.auto_reply_other 	RETURN 2\(${ischanop($0 $1)?[9@8$0\:10$1]:[8$0\:10$1]}2\> $2-
+ALIAS fmt.cant_join 	RETURN 10[ JOIN ] Can't join $0 \($1-\)
+ALIAS fmt.channel_nick 	RETURN 10[ NICK ] $1 is now known as $2 in $0
+ALIAS fmt.channel_signoff 	RETURN 10[ QUIT ] $1 signed off $0 \($2-\) $ts.time($Z)
+ALIAS fmt.ctcp_channel 	RETURN CTCP $toupper($2) from $0 \($userhost()\) to $1
+ALIAS fmt.ctcp_me 	RETURN CTCP $toupper($2) from $0 \($userhost()\) to You
+ALIAS fmt.ctcp_server 	RETURN CTCP $toupper($2) from $0 \($userhost()\) to $1
+ALIAS fmt.dcc_chat 	RETURN 12=6$012= $1-
+ALIAS fmt.invite 	RETURN 10[ INVITE ] $0 \($2\) invites you to $1
+ALIAS fmt.join 		RETURN 10[ JOIN ] $0 ${ismset(V)?[\($2\) entered $tolower($1) $ts.time($Z)]:[entered $tolower($1) $ts.time($Z)]}
+ALIAS fmt.kick 		RETURN 10[ KICK ] $1 kicked $0 from $tolower($2) \($3-\) $ts.time($Z)
+ALIAS fmt.kick_me 	RETURN [ KICK ] $1 kicked YOU from $tolower($2) \($3-\) $ts.time($Z)
+ALIAS fmt.leave 	RETURN 10[ PART ] $0 ${ismset(V) ? [\($2\) left $tolower($1) \($3-\) $ts.time($Z)]:[left $tolower($1) $ts.time($Z)]}
+#${[$strlen($3)] ? [\($3-\) $ts.time($Z)] : [$ts.time($Z)]} :
+# [${[strlen($3)]!=[] ? [left $tolower($1) \($3-\) $ts.time($Z)] :
+# [left $tolower($1) $ts.time($Z)]}]}
+ALIAS fmt.mode 		RETURN 10[ MODE ] $0 sets \"$2-\" in $tolower($1)
+ALIAS fmt.mode_bans 	RETURN 10[ MODE ] $0 stacks \($2\) ${ismset(V)?[$3- in $tolower($1)]:[in $tolower($1)]}
+ALIAS fmt.mode_me 	RETURN 12[ USER ] $N sets \"$2-\" on $S
+ALIAS fmt.mode_server 	RETURN 12[ SERVER ] 10$0 sets mode\: \"$2-\" on $1
+ALIAS fmt.msg 		RETURN 12\( 11$uh($0)\ 12\> $1-
+ALIAS fmt.msg_group 	RETURN 12\( 11$uh($0)\ 12\> [$1] $2-
+ALIAS fmt.notice 	RETURN ${(rmatch($strip( $1) *wall*))?[12\[7$strip( $1)12\]9 $uh($0)\:]:[12\(- 9$uh($0)\ 12-\> $1]} $2-
+ALIAS fmt.notice_group 	RETURN 12\(- 9$uh($0)\ 12-\> [$1] $2-
+ALIAS fmt.notify_signoff 	RETURN Signoff detected: $0 $ts.time($Z)
+ALIAS fmt.notify_signon 	RETURN Signon detected: $0 $ts.time($Z)
+ALIAS fmt.notify_signon_uh 	RETURN Signon detected: $0 \($1\) $ts.time($Z)
+ALIAS fmt.public 	RETURN 12\(${match(** $igtype($rigmask($0!$userhost($0))))?[${ischanop($0 $1)?[9@$0]:[$0]}]:[${ischanop($0 $1)?[9@$0]:[$0]}]}12\> $2-
+ALIAS fmt.public_msg 	RETURN 12\(${match(** $igtype($rigmask($0!$userhost($0))))?[$0\:11$tolower($1)]:[$0\:11$tolower($1)]}12\> $2-
+ALIAS fmt.public_other 	RETURN 12\(${match(** $igtype($rigmask($0!$userhost($0))))?[${ischanop($0 $1)?[9@$0\:10$tolower($1)]:[$0\:10$tolower($1)]}]:[${ischanop($0 $1)?[9@$0\:10$tolower($1)]:[$0\:10$tolower($1)]}]}12\> $2-
+ALIAS fmt.public_notice RETURN 12\(- 9$0:10$tolower($ch($1))\ 12-\> $2-
+ALIAS fmt.sc_max 	RETURN 7
+ALIAS fmt.sc_top	RETURN $center($word(0 $geom()) Channel: $0)
+ALIAS fmt.sc_mid (list) {
+  FE ($list) xx {
+    @ :mod = pass(@+ $xx)
+    @ :spc = mod ? mod : [ ]
+    @ :nic = strip(@+ $xx)
+    @ :ret #= [%c=] ## [%B] ## spc ## [%n] ## [$[9]nic]
+  }
+  RETURN $cparse(%n$ret%c=)
+}
+ALIAS fmt.sc_bot	RETURN $center($word(0 $geom()) [ops: $1] [voices: $2] [total: $4] [bans: $numitems(B$winserv()\-$hash_32bit($0))])
+ALIAS fmt.send_action 	RETURN 10* ${ischanop($N $0)?[9@$N${iscurchan($0)?[]:[\:10$tolower($0)]}]:[$N${iscurchan($0)?[]:[\:10$tolower($0)]}]} $1-
+ALIAS fmt.send_action_me 	RETURN 14>> \(16$0\> 10* $N $1-
+ALIAS fmt.send_dcc_chat RETURN 14>> 12=6$012= $1-
+ALIAS fmt.send_msg 	RETURN 14>> 12\( 11$0 12\> $1-
+ALIAS fmt.send_notice 	RETURN 14>> 12\(- 9$0 12-\> $1-
+ALIAS fmt.send_public 	RETURN 10\(${ischanop($N $0)?[9@$N${iscurchan($0)?[]:[\:10$tolower($0)]}]:[$N${iscurchan($0)?[]:[\:10$tolower($0)]}]}\10\> $1-
+ALIAS fmt.server_notice RETURN \(\<12$0\>\) $2-
+ALIAS fmt.talk_reply 	RETURN \($0\>
+ALIAS fmt.titlebar 	RETURN 12[$0 : $1-]
+ALIAS fmt.topic 	RETURN 10[ TOPIC ] $0 sets \"$2-\" in $tolower($1)
+ALIAS fmt.topic_set 	RETURN 10[ TOPIC ] $1-
+ALIAS fmt.usercmd 	RETURN Friend !$1 request\: $uh($0)
+ALIAS fmt.wallop 	RETURN $banner 7[ WallOp ] 12\( $0@$after(-2 . $S) 12\) $2-
+ALIAS fmt.wallop_me 	RETURN 14>> 12[ 7WallOp 12] $0\\($1\) $2-
+ALIAS fmt.wallop_server RETURN $banner 7[ WallOp ] \(\<12$0\>\) $2-
+ALIAS fmt.whois_bot 	RETURN 1,2[$[${word(0 $geom()) - 3}]center(${word(0 $geom()) - 1} --- End of $0 info ---)]
+ALIAS fmt.whois_mid 	RETURN 1,10| 12,10$[-9]0 1,10:1,10 ${strlen($1-) < word(0 $geom()) - 15 ? [$[${word(0 $geom()) - 15}]stripcrap(ALL $1-)] : [$stripcrap(ALL $1-)]}
+ALIAS fmt.whois_top 	RETURN 1,2[ 11,2${[$right(2 $0)]==[is]?[$0 for]:[ $0  ]} 1,2: $[${word(0 $geom())}]center(${word(0 $geom()) - 2} 8,2$1 1,2\(9,2$2@$31,2\))]
+
+# Event banner colors
+ALIAS fmt.banner_info 		RETURN 4$G
+ALIAS fmt.banner_party 		RETURN 3[PARTY]
+ALIAS fmt.banner_join 		RETURN 12$G
+ALIAS fmt.banner_leave 		RETURN 2$G
+ALIAS fmt.banner_signon 	RETURN 12$G
+ALIAS fmt.banner_signoff 	RETURN 2$G
+ALIAS fmt.banner_invite 	RETURN 12$G
+ALIAS fmt.banner_mode 		RETURN 10$G
+ALIAS fmt.banner_kick 		RETURN 11$G
+ALIAS fmt.banner_nick 		RETURN 7$G
+ALIAS fmt.banner_ctcp 		RETURN 13$G
+ALIAS fmt.banner_dcc 		RETURN 6$G
+ALIAS fmt.banner_alert 		RETURN 8$G
+ALIAS fmt.banner_userlist 	RETURN 9$G
+ALIAS fmt.banner_server 	RETURN 5$G
+ALIAS fmt.banner_chan 		RETURN 5$G
+ALIAS fmt.banner_usage 		RETURN 16$G
+ALIAS fmt.banner_tip 		RETURN 16+++
+
+@ mytheme = [merenta]
+ON ^CTCP "% % THEME *" {
+  IF (ischannel($1)) {
+    XECHO -W $1 $fmt.banner_ctcp() $fmt.ctcp_channel($*)
+  }{
+    ECHO $fmt.banner_ctcp() ${([$1] == servernick($servernum())) ? fmt.ctcp_me($*) : fmt.ctcp_server($*)}
+  }
+  UNLESS (isset(Q)) {
+  n $0 Current theme is $mytheme for LiCev$id.v
+  }
+}
+XECHO -b MeReNTa, LiCe theme by HSOC <hsoc@irc.gr>
+
+#HS/00

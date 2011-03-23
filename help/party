@@ -1,0 +1,54 @@
+ The module 'PARTY' is a small-level implementation of a 'partyline'.
+For those people that dont know what a partyline is: it's a bunch
+of users gathered, via some abstract medium, discussing random topics.
+Think of it as a little irc of your own.
+The mediums used in our partyline are DCC CHAT and DCC RAW. Users
+connect to you (the hub) via DCC CHAT and the chat is shared with any
+other users currently on the partyline. More 'hubs' can be linked to
+you and each others, making your partyline larger.
+The partyline is most effective when the server routing is bad (lotta lag)
+and you want to talk to a group of people, just make them join your
+partyline via DCC CHAT or link their own hubs to yours.
+Users on DCC CHAT jump to your partyline by typing '.CHAT' from the chat.
+To load the partyline module, just type '/PARTY'.
+
+Commands valid on the partyline to you:
+	. <text>       - Talk on the partyline
+	.ME <action>   - Do an action.
+	.NAMES         - List of nicks connected to you.
+	.WHO           - Extended list of all nicks connected,
+                            on all hubs.
+	.INVITE <nick> - Invite an outside nick to the partyline.
+	.LINK <host> <port> <password>
+                           - Link to a remote hub. Password might not be
+                             necessary unless the remote hub requires it.
+	.UNLINK <hub>
+	.UNLINK *        - Unlink a hub by name, or '*' to unlink all.
+	.LISTEN        - Allow remote hub connections to you.
+	.CLOSE         - Close remote hub connection access.
+	.BOOT <nick>   - Boot (kick equiv.) a nick from the partyline.
+                             Will be booted off any other hubs that allow
+                             remote boots.
+	.JUPE <hub> <link> -
+			     Disconnect a linked hub on <hub> remotely.
+	.TOPIC [topic] - Change or view the hub's current topic.
+                             Topics are local, not shared remotely.
+	.SETUP         - Change internal settings to the partyline.
+                             It's recommended you do this at least once.
+	.STATUS        - View partyline's information.
+	.WALL <text>   - Send a message to only the people connected to you.
+	.WALLOP <text> - Send a message to only other hubs.
+
+WARNING * * * * * * * * * * * * * * * * * * * * * * * * * * *
+WARNING * Notice of possible hack attempts:                 *
+WARNING *  When allowing remote hub connections, you leave  *
+WARNING *  a port of your system 'open' to listen for       *
+WARNING *  incoming connections. Some people might attempt  *
+WARNING *  to hack into your system via this. Consider this *
+WARNING *  notice your fair warning. Although it's unlikely *
+WARNING *  kiddie-haxorz will check all the hosts for this, *
+WARNING *  it's important to have knowledge about this. As  *
+WARNING *  precaution, close all remote connections access  *
+WARNING *  ports when not in use.                           *
+WARNING * * * * * * * * * * * * * * * * * * * * * * * * * * *
+

@@ -1,0 +1,47 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# general help on userlist commands
+ALIAS _proc.ulw_help (nick,uh,serv,text) {
+  @ :hand = find_in_list(User $nick!$uh);
+  UNLESS (hand) {RETURN};
+  UNLESS (strlen($text)) {
+    ^CD $LiCePath/userhelp;
+    @ :help_lst = glob(*);
+    ^CD ~;
+    _proc.quote_add $serv NOTICE $nick :MSG commands for $servernick($serv)\:;
+    _proc.quote_add $serv NOTICE $nick :$help_lst;
+    _proc.quote_add $serv NOTICE $nick :For help on a command, /MSG $servernick($serv) !HELP <command>;
+  }{
+    @ :cmd = toupper($text);
+    IF (fexist($LiCePath/userhelp/$cmd) == -1) {
+      _proc.quote_add $serv NOTICE $nick :No help available on '$cmd';
+      RETURN;
+    };
+    @ :help_fd = open($LiCePath/userhelp/$cmd R);
+    UNLESS (help_fd) {
+      _proc.quote_add $serv NOTICE $nick :Failed to open help for '$cmd';
+      RETURN;
+    };
+    UNTIL (eof($help_fd)) {
+      @ :help_txt = read($help_fd);
+      IF (strlen($help_txt)) {_proc.quote_add $serv NOTICE $nick :$help_txt};
+    };
+    @ close($help_fd);
+  };
+  _proc.quote_flush $serv;
+};
+#tjh/09

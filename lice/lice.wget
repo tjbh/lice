@@ -1,0 +1,100 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# The following functions attempt to retrieve a textual document from a
+# website. CAUTION: I use hook numeric 668, don't steal it!
+# The WGET_STATUS hook is produced here.
+
+# This is the hook routine when there's a failure. Do not change it.
+ALIAS _proc.wget_error (sock,status) {
+  ^ON #^DCC_RAW 668 -;
+  //DCC CLOSE RAW $sock;
+  @ unlink($wget.file);
+  HOOK WGET_STATUS $wget.file ERROR $status;
+  purge wget;
+};
+
+# This is the hook routine when the fetch operation is completed (successful?).
+ALIAS _proc.wget_close (sock) {
+  ^ON #^DCC_RAW 668 -;
+  //DCC CLOSE RAW $sock;
+  HOOK WGET_STATUS $wget.file DONE $wget.size;
+  purge wget;
+};
+
+# This is the workhorse routine. Just feed it a nice URL and a path
+# to save the remove file locally. Redirects arent supported.
+
+ALIAS _proc.wget_main (url,file) {
+  IF (!strlen($file) || !match(http://% $url) || match(http://%:%@% $url)) {
+    XECHO -B Method not supported.;
+    RETURN;
+  };
+  @ :temp = rest(7 $url);
+  @ :host = mid(0 $index(/ $temp) $temp);
+  @ :temp = rest(${strlen($host)+7} $url);
+  @ :path = strlen($temp) ? temp : [/];
+  @ :temp = split(: $host);
+  IF (numwords($temp) == 2) {
+    @ :host = word(0 $temp);
+    @ :port = word(1 $temp);
+  }{
+    @ :port = 80;
+  };
+  @ :temp = rindex(/ $path) + 1;
+  
+  @ :sock = connect($host $port);
+
+  WAIT =$sock;
+
+  UNLESS (sock) {
+    HOOK WGET_STATUS $wget.file ERROR $host\:$port Connection Failed;
+    RETURN;
+  };
+
+  ^ASSIGN wget.fd -2;
+  ^ASSIGN wget.file $file;
+  ^ASSIGN wget.size 0;
+
+  ^ON #^DCC_RAW 668 "$sock % D HTTP/%.% *" {
+    UNLESS ([$4]==[200]) {_proc.wget_error $0 $chop(1 $4-)};
+  };
+  ^ON #^DCC_RAW 668 "$sock % D Content-Type: *" {
+    UNLESS (rmatch($4 text/%)) {_proc.wget_error $0 Unsupported Mime-type: $chop(1 $4)};
+  };
+  ^ON #^DCC_RAW 668 "$sock % D $chr(13)" {
+    IF (wget.fd == -2) {
+      @ wget.fd = open($wget.file W);
+      IF (wget.fd == -1) {_proc.wget_error $0 open() Call Failed};
+    };
+  };
+
+  ^ON #^DCC_RAW 668 "$sock % D *" {
+    IF (wget.fd < 0) {RETURN};
+    @ wget.size += write($wget.fd $3-);
+    HOOK WGET_STATUS $wget.file READ $wget.size;
+  };
+  ^ON #^DCC_RAW 668 "$sock % C" {_proc.wget_close $0};
+  //DCC RAW $sock $host GET $path HTTP/1.0;
+  //DCC RAW $sock $host Host: ${host}:${port};
+  //DCC RAW $sock $host Accept: text/*;
+  //DCC RAW $sock $host Accept-Language: en;
+  //DCC RAW $sock $host User-Agent: LiCe/$id.v wget;
+  //DCC RAW $sock $host Pragma: no-cache;
+  //DCC RAW $sock $host Cache-Control: no-cache$chr(10 10);
+  HOOK WGET_STATUS $wget.file READ 0;
+};
+#tjh/09

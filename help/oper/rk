@@ -1,0 +1,14 @@
+Usage: RK <-flags> [reason of kick] 
+   Randomly kicks nicks from your current channel.
+Flags:
+	a	KICKs anyone, ops and non-ops.
+	o	KICKs channel operators randomly (if any)
+	l	KICKs non-channel operators randomly (if any)
+   If the reason of the KICK is not specified, the default message will be 
+   used.
+ie. /RK -o Ops are LAIM!!!
+    /RK -l LAIM is LAYME!!
+    /RK -a EyE YaM NuTZ!!!
+
+See also: [KICK] [BOOT] [user USERLIST]
+

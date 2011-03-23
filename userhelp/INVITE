@@ -1,0 +1,4 @@
+!INVITE <password> <channel>
+   This will make me invite you to a channel (if I'm on
+   that channel and it's possible for me to invite you).
+   You must have INVITE access to this channel, of course.

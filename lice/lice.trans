@@ -1,0 +1,118 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# Original suggestion by whitefang, based on a script by Dethnite.
+# ---------------------------------------------------------------------------
+# a BITCH to fix -by HSOC'01
+# a BITCHX3 to fix -by HSOC'03
+# It's broken again tjh/09 - TODO try to fix oneday.
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# Hooks for grabbing text
+ON #-DCC_RAW 400 "% w3.systranlinks.com D ?textarea *translation? *" {
+  ^ASSIGN temp.trans_work 1;
+  ^LOCAL text $3-;
+  @ temp.trans_text = rest(${index(> $text) + 1} $text);
+};
+
+ON #-DCC_RAW 400 "% w3.systranlinks.com D *" {
+   IF (temp.trans_work) {PUSH temp.trans_text $3-};
+   IF (MATCH(*</textarea><br>* $temp.trans_text)) {^ASSIGN temp.trans_work 0};
+};
+
+#ON #-DCC_RAW 400 "% w3.systranlinks.com D </textarea><br>" {^ASSIGN temp.trans_work 0}
+#ON #-DCC_RAW 400 "% w3.systranlinks.com D </textarea><br>" {^ASSIGN temp.trans_work 0}
+# XXX - target translations should be fixed to break lines when they are larger than the buffer.
+ON #-DCC_RAW 400 "% w3.systranlinks.com C" {
+  IF (strlen($temp.trans_text)) {
+    UNLESS (strlen($temp.trans_send)) {
+      iecho Translating text from $temp.trans_desc ...;
+      iecho $word(0 $temp.trans_desc)\: $temp.trans_orig;
+      iecho $word(2 $temp.trans_desc)\: $before(< $temp.trans_text);
+    }{
+      XEVAL -S $servernum($S) $temp.trans_send $temp.trans_target $before(< $temp.trans_text);
+      mecho $fmt.send_msg($temp.trans_target $before(< $temp.trans_text));
+      ^ASSIGN -temp.trans_send;
+      ^ASSIGN -temp.trans_target;
+    };
+    ^ASSIGN -temp.trans_text;
+  }{
+    iecho Translation failed.;
+  };
+  ^ASSIGN -temp.trans_orig;
+  ^ASSIGN -temp.trans_desc;
+  ^ASSIGN -temp.trans_work;
+};
+
+^ASSIGN trans.102 en_fr English to French;
+^ASSIGN trans.103 en_de English to German;
+^ASSIGN trans.112 en_pt English to Portuguese;
+^ASSIGN trans.115 en_es English to Spanish;
+^ASSIGN trans.105 en_it English to Italian;
+^ASSIGN trans.70 fr_en French to English;
+^ASSIGN trans.71 de_en German to English;
+^ASSIGN trans.80 pt_en Portuguese to English;
+^ASSIGN trans.83 es_en Spanish to English;
+^ASSIGN trans.73 it_en Italian to English;
+^ASSIGN trans.114 en_ru English to Russian;
+^ASSIGN trans.82 ru_en Russian to English;
+^ASSIGN trans.100 en_nl English to Dutch;
+^ASSIGN trans.68 nl_en Dutch to English;
+^ASSIGN trans.106 en_ja English to Japanese;
+^ASSIGN trans.74 ja_en Japanese to English;
+^ASSIGN trans.99 en_zh English to Simplified Chinese;
+^ASSIGN trans.67 zh_en Simplified Chinese to English;
+
+# And here's the actual command.
+ALIAS trans {
+  @ flag = strlen($flag) ? flag : 115;
+  @ :opts = [];
+  WHILE (opts = getopt(optopt optarg "FGIPSRCDJrcdjfgim:n:ops" $*)) {
+    SWITCH ($opts) {
+      (f) (g) (p) (s) (i) (c) (d) (j) (r) (R) (C) (D) (J)(F) (G) (P) (S) (I) {@ flag = ascii($optopt)};
+      (m) {
+        ^ASSIGN temp.trans_send MSG;
+        @ temp.trans_target = optarg;
+      };
+      (n) {
+        ^ASSIGN temp.trans_send NOTICE;
+        @ temp.trans_target = optarg;
+      };
+      (o) {^ASSIGN temp.trans_send SEND};
+      (-) {uecho Missing argument for "-$optopt";RETURN};
+    };
+  };
+  UNLESS (strlen($optarg)) {
+    uecho Usage: /TRANS [[-cCdDfFgGiIjJpPrRsS][-o][-m <target>][-n <target>]] <text>;
+    uecho Usage: Default translation is $restw(1 $trans[$flag]);
+    RETURN;
+  };
+  @ temp.trans_desc = restw(1 $trans[$flag]);
+  ^ASSIGN temp.trans_orig $optarg;
+  ^ASSIGN temp.trans_work 0;
+  @ :orig = fnexist(urlencode) ? urlencode($temp.trans_orig) : msar(g/'/%27/`/%60/ /%20/$temp.trans_orig);
+  @ :lang = word(0 $trans[$flag]);
+  @ :sock = connect(w3.systranlinks.com 80);
+  WAIT =$sock;
+  //^DCC RAW $sock w3.systranlinks.com GET /systran/cgi\?translated_text=\&urltext=$orig\&lp=$lang\&partner=demo-SystranSoft-en;
+  //^DCC RAW $sock w3.systranlinks.com User-Agent: Mozilla/7.02 [en] (X11; I; Linux 2.4.25 i686; Nav);
+  //^DCC RAW $sock w3.systranlinks.com Referer: http://www.systransoft.com/Homepage.html;
+  //^DCC RAW $sock w3.systranlinks.com Host: www.systranlinks.com:80;
+  //^DCC RAW $sock w3.systranlinks.com Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*;
+  //^DCC RAW $sock w3.systranlinks.com Accept-Languange: en;
+  //^DCC RAW $sock w3.systranlinks.com Accept-Charset: iso-8859-1;
+  //^DCC RAW $sock w3.systranlinks.com $chr(10);
+};
+
+##HS/03
+#tjh/09

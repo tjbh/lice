@@ -1,0 +1,29 @@
+Usage: PLAY [option] 
+   Plays any recorded messages when AWAY, if any. Also allows saving of
+   specific messages. This is command is interactive; it takes arguments
+   while executed.
+
+# - Goes to the message # specified.
+
+A - Read all messages at once.
+
+D - Erase all messages and exit.
+
+E - Erase current message.
+
+S - Save current message to AWAY file.
+
+Q - Do nothing and quit.
+
+V - View all message headings.
+
+W - Save all messages and quit (erases from memory)
+
+? - Brings this help.
+    Pressing <ENTER> key will expand the following message, if any. 
+    Also, when there are no messages in memory, you are able to view 
+    any messages saved in the AWAY file. The second form of the command 
+    allows viewing of a specific message by providing it's id number.
+
+See also: [USERLIST] [ERASE] [GONE] [BACK]
+

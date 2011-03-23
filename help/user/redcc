@@ -1,0 +1,15 @@
+Usage: REDCC [-q | <nick>]
+   Redirect all incoming DCC GET's to <nick> via DCC CHAT.
+   Repetitive assigns of <nick> will overwrite the previous setting.
+   No leading '=' is needed for the assignment of <nick>.
+   Use the "-q" option to stop redirecting DCC GET's.
+
+Note: You and <nick> must be on active DCC CHAT for this command
+      to work, and both must be using LiCe 4.
+
+ie.
+     /REDCC SrfRoG   - Redirects all DCC GET's to SrfRoG via DCC CHAT.
+     /REDCC -q       - Stops all redirection of DCC GET's.
+
+See also: [WLN] [TLN] [RELM]
+

@@ -1,0 +1,12 @@
+Usage: SE [-f] [channel] 
+   Display the exceptions for a channel. If no channel is given, the 
+   exception in your current channel are shown.
+
+   The "-f" flags forces the use of server output instead of the internal
+   cache.
+
+   Note: this command is only available on networks with +e channel
+         mode support.
+
+See also: [SV] [SC] [SI] [SB]
+

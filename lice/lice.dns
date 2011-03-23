@@ -1,0 +1,45 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# Description: converts from IP -> hostname and viceversa
+alias _proc.dns_result (adr) {
+  @ :res = convert($adr);
+  IF (temp.whois_away > 0) {
+    ECHO $fmt.whois_mid(Nslookup ${res?res:[Unknown]});
+  }{
+    iecho $adr is ${res?res:[Unknown]};
+  };
+};
+
+alias dns {
+  UNLESS (@) {
+    uecho Usage: /DNS < nick | [host | ip address] >;
+    RETURN;
+  };
+  ^LOCAL who $0;
+  IF (match(*.* $who)) {
+    _proc.dns_result $who;
+  }{
+    USERHOST $who -CMD IF ([$4]!=[<UNKNOWN>]) {
+      _proc.dns_result $4;
+    }{
+      XECHO -B $who\: nick not online.;
+    };
+  };
+};
+ALIAS findip {dns $*};
+ALIAS nsl {dns $*};
+#tjh/09

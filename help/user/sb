@@ -1,0 +1,9 @@
+Usage: SB [-f] [channel] 
+   Display the bans for a channel. If no channel is given, the bans in
+   your current channel are shown.
+
+   The "-f" flags forces the use of server output instead of the internal
+   cache.
+
+See also: [SV] [SC] [SE] [SI]
+

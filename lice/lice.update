@@ -1,0 +1,120 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+# Still broken though, I can't wait until I (?) fix this. It's the best feature!
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+^ASSIGN update.site http://lice.muppetz.com/sites/lice.muppetz.com/files/LiCe/updates/$id.v;
+^ASSIGN update.list $lice.save_path/.lice_updates.txt;
+
+# this routine checks that the path to the local file exists, and creates new
+# directories as necessary.
+ALIAS _proc.update_checkpath (rpath) {
+  @ :path = urldecode($rpath);
+  @ :path = mid(2 256 $mid(0 $rindex(/ $path) $path));
+  @ temp.update_mess = split(/ $urldecode($path));
+  @ :step = $lice.save_path;
+  @ :segm = [];
+  DO {
+    @ :step #= segm ## [/];
+    IF (fexist($step) == -1 && !mkdir($step)) {XECHO -C $fmt.banner_info() Created dir: $step};
+  } WHILE (:segm = shift(temp.update_mess))
+};
+
+# this routine copies the local file to its new location in the load path
+ALIAS _proc.update_copyfile (t_file) {
+  _proc.update_checkpath $t_file;
+  @ :l_file = lice.save_path ## mid(2 256 $urldecode($t_file));
+  @ :rv = rename($l_file $l_file\.old);
+  @ :rv = rename($t_file $l_file);
+  RETURN $rv;
+};
+
+# this routine recursively downloads files from the remote server.
+# some lame statistics are displayed at the end.
+# XXX - WHY DO WE NEED TIMER THERE?@!??@!
+ALIAS _proc.update_s3 {
+  IF (strlen($update_requests)) {
+    @ :r_file = shift(update_requests);
+    @ :l_file = [~/] ## urlencode($r_file);
+    ^ON ^HOOK "WGET_STATUS $l_file DONE %" {
+      @ :rv = _proc.update_copyfile($1);
+      UNLESS (rv) {
+        @ temp.update_files += 1;
+        @ temp.update_bytes += [$3];
+      };
+      _proc.update_s3;
+      ^ON ^HOOK -"WGET_STATUS $1 ERROR *";
+      ^ON ^HOOK -"WGET_STATUS $1 DONE %";
+    };
+    ^ON ^HOOK "WGET_STATUS $l_file ERROR *" {
+      _proc.update_s3;
+      ^ON ^HOOK -"WGET_STATUS $1 DONE %";
+      ^ON ^HOOK -"WGET_STATUS $1 ERROR *";
+    };
+    TIMER 0 _proc.wget_main $update.site/$r_file $l_file;
+    XECHO -C $fmt.banner_info() Requesting file $r_file;
+  }{
+    IF (temp.update_files) {XECHO -C $fmt.banner_info() Update complete: $temp.update_files file$plural($temp.update_files)\, $temp.update_bytes byte$plural($temp.update_bytes)};
+    ^ASSIGN -temp.update_files;
+    ^ASSIGN -temp.update_bytes;
+    ^ASSIGN -temp.update_mess;
+  };
+};
+
+# this routine will check the local files with those in the list we fetches
+# and those files with different size will be insert to a list for download.
+# XXX - downloads should sort by size
+# XXXX - I WISH WE HAD MD5 CHECKSUMS !!
+ALIAS _proc.update_s2 {
+  @ :fd = open($update.list R);
+  UNTIL (eof($fd)) {
+    @ :line = read($fd);
+    IF (left(1 $line) == [#]) {CONTINUE};
+    IF (left(1 $line) == [!]) {
+      XECHO -C $fmt.banner_info() $rest(1 $line);
+      CONTINUE;
+    };
+    IF (left(1 $line) == [^])  {
+      @ :majorv = 1;
+      CONTINUE;
+    };
+    @ :r_file = word(0 $line);
+    @ :r_size = word(1 $line);
+    IF (!strlen($r_file) || !isnumber($r_size)) {CONTINUE};
+    @ :l_size = fsize(lice.save_path/$r_file);
+    IF (r_size != l_size) {PUSH update_requests $r_file};
+  };
+  @close($fd);
+  IF (strlen($update_requests)) {
+    ^ASSIGN temp.update_files 0;
+    ^ASSIGN temp.update_bytes 0;
+    _proc.update_s3;
+  }{
+    UNLESS (majorv) {
+      XECHO -C $fmt.banner_info() No LiCe updates necessary.;
+    };
+  };
+};
+
+# this routines fetches the remote update list that we'll use to check
+# local files. we silence errors.
+ALIAS _proc.update_s1 {
+  @unlink($update.list);
+  ^ON ^HOOK "WGET_STATUS $update.list DONE %" {_proc.update_s2};
+  _proc.wget_main $update.site/lice_updates.txt $update.list;
+};
+
+ALIAS update {_proc.update_s1 $*};
+ALIAS upgrade {update $*};

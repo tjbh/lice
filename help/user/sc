@@ -1,0 +1,9 @@
+Usage: SC [-f] [channel] 
+   Display the nicks inside a channel. If no channel is given, the nicks
+   inside your current channel are shown.
+
+   The "-f" flags forces the use of server output instead of the internal
+   cache.
+
+See also: [SV] [SB]
+

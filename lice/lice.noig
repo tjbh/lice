@@ -1,0 +1,53 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS my.rdots {@FUNCTION_RETURN = right($0 $repeat($0 .)$1-)};
+
+ALIAS noig {
+  @ :list = igmask(*);
+  UNLESS (strlen($list)) {
+    //IGNORE;
+    RETURN;
+  };
+  echo ---- Ignore Pattern $repeat(${word(0 $geom()) - 32} -) Types ----;
+  @ :cnt = 1;
+  FE ($list) patt {
+    UNLESS (5 + strlen($igtype($patt)) + strlen($patt) > word(0 $geom())) {
+       ECHO [$[2]cnt] 12$patt$my.rdots(${word(0 $geom()) - (2 + strlen($igtype($$patt)) + strlen($patt))} 10$igtype($patt));
+       IF (ismset(V)) {
+           ECHO      10Length: ${word(0 $ignorectl(GET $ignorectl(REFNUM $patt) EXPIRATION)) > 0 ? [11${word(0 $ignorectl(GET $ignorectl(REFNUM $patt) EXPIRATION)) - time()}] ## [secs] : [11PERM]} ${strlen($ignorectl(GET $ignorectl(REFNUM $patt) REASON)) ? [10REASON\:11 11$ignorectl(GET $ignorectl(REFNUM $patt) REASON)]:[]};
+       };
+    }{
+    ECHO [$[2]cnt] 12$patt;
+    ECHO      $repeat(${word(0 $geom()) - (strlen($igtype($patt)) + 7)} .) 10$igtype($patt);
+       IF (ismset(V)) {
+           ECHO      10Length: ${word(0 $ignorectl(GET $ignorectl(REFNUM $patt) EXPIRATION)) > 0 ? [11${word(0 $ignorectl(GET $ignorectl(REFNUM $patt) EXPIRATION)) - time()}] ## [secs] : [11PERM]} ${strlen($ignorectl(GET $ignorectl(REFNUM $patt) REASON)) ? [10REASON\:11 11$ignorectl(GET $ignorectl(REFNUM $patt) REASON)]:[]};
+       };
+    };
+    @cnt++;
+  };
+  INPUT "Select # to unignore, * for all (ENTER cancels): " IF (@) {
+    @ :list = igmask(*);
+    IF (isnumber($0) || [$[1]0]==[#]) {
+      @ :cnt = pass(0123456789 $0) - 1;
+      @lice.del(|$hash_32bit($word($cnt $list)));
+      //IGNORE $word($cnt $list) NONE;
+    };
+    IF ([$0]==[*]) { FE ($list) patt { //IGNORE $patt NONE ; @lice.del(|$hash_32bit($patt));} };
+  };
+};
+#HS/03
+#tjh/09

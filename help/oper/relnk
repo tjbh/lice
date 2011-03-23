@@ -1,0 +1,6 @@
+Usage: RELNK [nick] 
+   Uses last recieved notice as the kick reason to "nick"
+   If no nick is given, it acts like "/RELN".
+
+See also: [RELM] [RELN] [RELMK] [user TLN]
+

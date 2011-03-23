@@ -1,0 +1,15 @@
+Usage: MEMO [memo text] 
+   The first form of the command, will save any text included to a file,
+   which can be retrived using the second form of the command (no
+   arguments specified)
+
+   The memo file will be saved in the help directory for access with
+   the internal viewer.
+
+ie.
+    /MEMO this is a test.
+    Then the memo's can be viewed with
+    /MEMO
+
+See also: [DUMP]
+

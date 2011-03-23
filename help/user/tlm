@@ -1,0 +1,6 @@
+Usage: TLM [channel]
+   Makes a topic of the last MSG sent to you.
+   The channel is optional, defaults to your current channel.
+
+See also: [WLW] [TLN] [RELM] [oper]
+

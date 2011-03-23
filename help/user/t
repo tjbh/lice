@@ -1,0 +1,6 @@
+Usage: T <channel> [new topic] 
+   To view or change the topic in your current channel, or any other
+   channel you specify.
+
+See also: [ET] [oper]
+

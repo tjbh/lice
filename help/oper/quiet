@@ -1,0 +1,6 @@
+Usage: QUIET <nick1 nick2 ... nicks> 
+   Removes channel voice status (-v) from the specified nick(s) Voice
+   status is required to speak in moderated (+m) channels.
+
+See also: [OP] [DOP] [VOICE] [MASS]
+

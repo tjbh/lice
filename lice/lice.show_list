@@ -1,0 +1,50 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS _proc.show_list {
+  IF ([$2]==[-f]) {
+    MODE ${ischannel($3)?[$3]:C} +$1;
+    RETURN;
+  };
+  @ :chan = ischannel($2) ? [$2] : C;
+  UNLESS (onchannel($N $chan)) {
+    MODE $chan +$1;
+    RETURN;
+  };
+  @ :list = left(1 $0) ## winserv() ## [-] ## hash_32bit($chan);
+  IF (numitems($list) <= 0) {
+     XECHO -B No $0s found on $chan\.;
+     RETURN;
+  };
+  IF ([$0] == [Ban]) {
+     cecho ---------- Channel $ch($chan) $0list ----------;
+     FOR (@ :cnt=0, numitems($list) > cnt, @cnt++) {
+         @ :str = getitem($list $cnt);
+         IF (!ismset(V) && pass(! $word(2 $str))) {@ :str = sar(/$word(2 $str)/$before(! $word(2 $str))/$str)};
+         cecho [$[2]{cnt + 1}] $str;
+     };
+  }{
+   cecho ---------- Channel $ch($chan) $0list ----------;
+   FOR (@ :cnt=0, numitems($list) > cnt, @cnt++) {
+     @ :str = getitem($list $cnt);
+     cecho [$[2]{cnt + 1}] $str;
+   };
+  };
+};
+ALIAS sb {_proc.show_list Ban b $*};
+ALIAS se {_proc.show_list Exc e $*};
+ALIAS si {_proc.show_list Inv I $*};
+#tjh/09

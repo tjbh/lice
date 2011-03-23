@@ -1,0 +1,228 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# XXX - "attachments" could be a nice feature...
+# XXX - added uuencoded attachments by HS
+
+# here we try to find the location of sendmail...
+IF (fexist(/usr/sbin/sendmail) == 1) {
+  @ main.mail_prog = [/usr/sbin/sendmail];
+};
+IF (!main.mail_prog && (fexist(/usr/lib/sendmail) == 1)) {
+  @ main.mail_prog = [/usr/lib/sendmail];
+};
+# if everything else fails...
+UNLESS (main.mail_prog) {@ main.mail_prog = [sendmail]};
+
+# --------------------------------------------------------------------------- #
+
+ALIAS book {
+  SWITCH ($0) {
+   (-a) {IF (strlen($2)) {
+            UNLESS (matchitem(ADDR $toupper($1) *) > -1) {
+              @ setitem(ADDR $numitems(ADDR) $toupper($1) $2);
+              iecho Nick "$toupper($1)" added to your addressbook \($2\);
+              _proc.save_address;
+            }{iecho Nick "$toupper($1)" already exists in addressbook.};
+         };};
+   (-d) {IF (strlen($1) && [$1]!=[*]) {
+            IF (matchitem(ADDR $toupper($1) *) > -1) {
+               @ delitem(ADDR $matchitem(ADDR $toupper($1) *));
+               iecho Nick "$toupper($1)" deleted from your addressbook;
+               _proc.save_address;
+            }{iecho Nick "$1" not found in addressbook.};
+        };};
+   (-l) {
+         UNLESS (numitems(ADDR)) {
+            uecho You address book is currently empty.;
+            RETURN;
+         };
+         iecho ---- Nick $repeat(6 -) e-mail ----;
+         FOR (@:cnt = 0, numitems(ADDR) > cnt, @:cnt++) {
+            @ :show = getitem(ADDR $cnt);
+            IF (strlen($1) && [$1]!=[*] && match(*$toupper($1)* $word(0 $show))) {
+               iecho [$[2]{cnt+1}] $[11]word(0 $show) $word(1 $show);
+            } ELSIF (!strlen($1)) {
+                iecho [$[2]{cnt+1}] $[11]word(0 $show) $word(1 $show);
+              };
+         };};
+   () (*) {uecho Usage: /BOOK -[a|d|l] <nick email>};
+};};
+
+# --------------------------------------------------------------------------- #
+
+ALIAS _proc.imail_quick {
+  ^ASSIGN im.list $*;
+  FE ($im.list) im.1 {
+    SWITCH ($im.1) {
+      () {#};
+      (*@*) {@ im.to #= [$im.1 ]};
+      (*) {
+        @ im.to = (matchitem(ADDR $toupper($im.1) *) > -1) ? word(1 $getitem(ADDR $matchitem(ADDR $toupper($im.1) *))) : strip(~ $get_uh($im.1));
+        UNLESS (strlen($im.to)) {
+          XECHO -B $0: No such nick.;
+          RETURN;
+        };
+        @ im.to #= [ ];
+      };
+    };
+  };
+  UNLESS (im.to) {@ im.st = [No To address specified]};
+};
+ALIAS imail {
+  @ im.st = [];
+  IF (@) {_proc.imail_quick $*}{INPUT "Send email to (nick, email address or ircnick): " {_proc.imail_quick $*}};
+  INPUT "Send email from (your email address): " {^ASSIGN im.from $*};
+  INPUT "Reply-to address (Press ENTER to skip): " {^ASSIGN im.reply $*};
+  INPUT "Courtesy copy address (Press ENTER to skip): " {^ASSIGN im.cc $*};
+  INPUT "Blackmail copy address (Press ENTER to skip): " {^ASSIGN im.bcc $*};
+  INPUT "Attachment (full path) (Press ENTER to skip): " {^ASSIGN im.atch $*};
+  INPUT "Subject of message (Press ENTER to skip): " {
+    @ im.subj = @ ? [$*] : [LiCe - You Got Mail!];
+    UNLESS (im.st) {
+      @ im.line = 1;
+      XECHO -B Composing new email message ...;
+      IF (im.from) {XECHO -B    From: $im.from};
+      XECHO -B      To: $im.to;
+      XECHO -B Subject: $im.subj;
+      _proc.imail_compose;
+    }{
+      XECHO -B Error: $im.st;
+    };
+  };
+};
+ALIAS _proc.imail_view {
+  XECHO -B Viewing message composition ...;
+  IF (im.reply) {ECHO Reply-To: $im.reply};
+  ECHO To      : $im.to;
+  IF (im.cc) {ECHO Cc      : $im.cc};
+  IF (im.bcc) {ECHO Bcc     : $im.bcc};
+  IF (im.from) {ECHO From    : $im.from};
+  ECHO Subject : $im.subj;
+  ECHO +----------------------[Message body]-----------------------+;
+  for (@ :imv.v = 1, strlen($im.body[$imv.v]), @imv.v++) {
+    ECHO [$[-3]imv.v] $im.body[$imv.v];
+    @ :imv.t = im.body[$imv.v];
+  };
+  ECHO +-----------------------------------------------------------+;
+  _proc.imail_compose;
+};
+ALIAS _proc.imail_compose {
+  IF (im.line > 0) {
+    INPUT "Line #$im.line (!A=Abort, !H=Help): " {
+      SWITCH ($0) {
+        () {_proc.imail_compose};
+        (!S) {_proc.imail_send};
+        (!A) {
+           purge im;
+           XECHO -B Email aborted.;
+        };
+        (!H) {_proc.imail_help};
+        (!V) {_proc.imail_view};
+        (/*) {$0-;_proc.imail_compose};
+        (*) {
+           @ im.body[$im.line] = stripansi($*);
+           @im.line++;
+           _proc.imail_compose;
+        };
+      };
+    };
+  };
+};
+ALIAS _proc.imail_send {
+  INPUT_CHAR "Continue send? (y/n) " IF ([$0]==[Y]) {
+    @ im.file = [/tmp/imail.] ## pid();
+    @ im.fd = open($im.file W);
+    IF (im.fd) {
+      IF (im.reply) {@ write($im.fd Reply-To: $im.reply)};
+      @ write($im.fd To: $im.to);
+      IF (im.cc) {@ write($im.fd Cc: $im.cc)};
+      IF (im.bcc) {@ write($im.fd Bcc: $im.bcc)};
+      IF (im.from) {@ write($im.fd From: $im.from)};
+      @ write($im.fd Subject: $im.subj);
+      @ write($im.fd Date: $strftime(%a, %d %b %Y %X \(%Z\)));
+      @ write($im.fd X-Mailer: LiCe-Mail v$id.v);
+      @ write($im.fd MIME-Version: 1.0);
+      @ write($im.fd $chr(32));
+      FOR (@im.cnt=1, im.line > im.cnt, @im.cnt++) {
+        UNLESS (write($im.fd $im.body[$im.cnt]) > 0) {
+          ECHO +++ error writing line #$im.cnt;
+        };
+      };
+      IF (fexist(~/.signature) == 1) {
+        @ write($im.fd $chr(32));
+        @ im.sig = open(~/.signature R);
+        IF (im.sig) {
+          UNTIL (eof($im.sig)) {
+            @ im.str = read($im.sig);
+            IF (im.str) {@ write($im.fd $im.str);@ write($im.fd  )};
+          };
+          @ close($im.sig);
+        }{
+          XECHO -B Error: Could not append signature file.;
+        };
+      }{
+        # so shoot me :)
+        @ write($im.fd $chr(32));
+        @ write($im.fd ---);
+        @ write($im.fd LiCe v$id.v | http://lice.codehack.com);
+        @ write($im.fd  );
+      };
+      @ close($im.fd);
+      IF (im.atch && fexist($im.atch) == 1) {
+          EXEC -name iatch uuencode $im.atch ${pass(/ $im.atch) ? after(-1 / $im.atch) : im.atch} >> $im.file;
+          XECHO -B Attaching: $im.atch;
+          WAIT %iatch;
+      };
+      XECHO -B Sending email ...;
+      EXEC -name imail $main.mail_prog -t < $im.file;
+      WAIT %imail;
+      @ unlink($im.file);
+      XECHO -B Done.;
+    }{
+      XECHO -B Error: Could not create temporary file.;
+    };
+    purge im;
+  }{
+    purge im;
+    XECHO -B Email aborted.;
+  };
+};
+ALIAS _proc.imail_help {
+  uecho IMAIL prompt commands:;
+  uecho  +------------------------------------------+;
+  uecho  | !A - To abort message composition        |;
+  uecho  | !H - View this help display              |;
+  uecho  | !S - Finish message, save and send email |;
+  uecho  | !V - View current message                |;
+  uecho  | You can still do normal irc commands ... |;
+  uecho  | Use "/SAY <text>" to talk to the channel |;
+  uecho  +------------------------------------------+;
+  _proc.imail_compose;
+};
+
+ALIAS _proc.save_address {
+  @ unlink($lice.save_path/lice.address);
+  @ :asave_fd = open($lice.save_path/lice.address W);
+  UNLESS (numitems(ADDR)) {RETURN};
+  FOR (@:cnt = 0, numitems(ADDR) > cnt, @cnt++) {
+      @ :show = getitem(ADDR $cnt);
+      @ write($asave_fd @ SETITEM\(ADDR $cnt $show\));
+  };
+  @ close($asave_fd);
+};
+
+#tjh/11

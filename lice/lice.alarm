@@ -1,0 +1,74 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# Alarm routines
+ALIAS alarm {
+  SWITCH ($0) {
+    (KILL) {
+      UNLESS (delarray(ALARM)) {
+        XECHO -B All scheduled events have been purged.;
+      };
+    };
+    (POP) {
+      IF (strlen($1)) {
+        @ :eid = pass(0123456789 $1) - 1;
+        UNLESS (delitem(ALARM $eid)) {
+          XECHO -B Removed event id '$1\'.;
+        }{
+          XECHO -B No such event id '$1\'.;
+        };
+      }{
+        uecho Usage: /ALARM [LIST|KILL|POP <id>|PUSH <minutes> <command>];
+      };
+    };
+    (PUSH) {
+      IF (isnumber($1) && strlen($2)) {
+        @ :when = ([$1] > 60 || [$1] == 0) ? 60 : [$1];
+        queue.add ALARM 9 $when $2-;
+        XECHO -B Added new event for every $tdiff(${when * 60});
+      }{
+        uecho Usage: /ALARM [LIST|KILL|POP <id>|PUSH <minutes> <command>];
+      };
+    };
+    () (LIST) {_proc.alarm_view};
+    (*) {uecho Usage: /ALARM [LIST|KILL|POP <id>|PUSH <minutes> <command>]};
+  };
+};
+ALIAS _proc.alarm_view {
+  IF (numitems(ALARM) <= 0) {
+    XECHO -B No events scheduled.;
+    RETURN;
+  };
+  ECHO Id   T  Event;
+  @ :at.m = numitems(ALARM) - 1;
+  @ :at.n = jot(0 $at.m);
+  FE ($at.n) at.c {
+    @ :at.s = getitem(ALARM $at.c);
+    ECHO [$[2]{at.c + 1}] $[2]word(0 $at.s) $restw(1 $at.s);
+  };
+};
+ALIAS _proc.alarm_check {
+  @ :at.n = numitems(ALARM);
+  @ :at.p = (at.p == [00]) ? 60 : [$0];
+  FOR (@ :at.c=0, at.n > at.c, @at.c++) {
+    @ :at.s = getitem(ALARM $at.c);
+    @ :at.t = word(0 $at.s);
+    UNLESS (at.p % at.t) {
+      UNLESS (strlen($L)) {SENDLINE $restw(1 $at.s)};
+    };
+  };
+};
+#tjh/09

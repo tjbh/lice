@@ -1,0 +1,498 @@
+#
+#   LICE.ADCC v3.6.0 ircii script module for use with LiCe v4.x
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ----------------------------------------------------------------------
+# Filename   : LICE.ADCC
+# Description: "Automated DCC" for use with ircii-EPIC5
+#              Handles all DCC SENDs in a queue for maximum byte rate
+#              performance and reliability.
+# Author     : SrfRoG (cag@codehack.com)
+# Notes      : This code was written from scratch by me, keeping in mind
+#              compatibility with the current XDCC/ircii-DCC standards.
+#              It took a lot of time and testing to obtain the current
+#              product. GIVE PROPER CREDIT IF YOU COPY.
+#              * OR YOU WILL BURN IN HELL FOREVER! * }:>
+# ----------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+### Global variables used by ADCC.
+
+# Total bytes grabbed
+@ temp.dcc_leech_count = 0;
+
+# Transfer records.
+@ temp.dcc_speed_record = 0;
+
+# This command-list string allows third-party scripts to add more
+# functionality to ADCC, without having to break anything.
+@ temp.dcc_cmd_list = [EDIT HELP LIST NOTICE OFFER PLIST QUEUE REMOVE SAVE SEND SETUP STATUS];
+
+### ONs used by aDCC (by SrfRoG)
+# These two handle our ADCC pack requests
+ON ^MSG "% ?D?C *" {_proc.adcc_msg_parse $0 $userhost() $2-};
+ON -CTCP "% % ?D?C *" {_proc.adcc_msg_parse $0 $userhost() $3-};
+ON #-DCC_LOST 13 "% SEND % % TRANSFER COMPLETE" {
+  IF ([$3] > temp.dcc_speed_record) {
+    ^LOCAL nick $0;
+    ^ASSIGN temp.dcc_speed_record $3;
+     UNLESS (isdset(Q)) {
+       #_proc.adcc_notice ;
+      ^NOTICE $nick You just set a new speed record! A blazing $temp.dcc_speed_record KB/sec!;
+     };
+  };
+};
+
+#
+ALIAS dcc {adcc $*};
+ALIAS adcc {
+  UNLESS (findw($0 $temp.dcc_cmd_list) == -1) {
+    _proc.adcc_cmd_$0 $1-;
+  }{//DCC $*};
+};
+
+# sends notices if the quiet mode is off
+ALIAS _proc.adcc_notice (nick,text) {
+  @ :serv = servernum();
+  UNLESS (isdset(Q)) {
+    _proc.quote_add $serv NOTICE $nick :$text;
+    #NOTICE $text
+  };
+  _proc.quote_flush $serv;
+};
+
+# checks passwords on protected packs.
+ALIAS _proc.adcc_proc_pass (pak,pass) {
+  IF (isdset(S)) {
+    @ :tmp = getitem(PAKS $pak);
+    UNLESS (word(2 $tmp) == [<none>]) {
+# The following function doesn't appear to work, even in LiCe4 for older EPIC. Need to debug this. TODO
+#    @FUNCTION_RETURN = isset(P) ? setitem(PAKS $pak ${word(0 $tmp) + 1} $restw(1 $tmp)) : (word(2 $tmp) == pass) ? setitem(PAKS $pak ${word(0 $tmp) + 1} $restw(1 $tmp)) : -1;
+    }{
+      @FUNCTION_RETURN = setitem(PAKS $pak ${word(0 $tmp) + 1} $restw(1 $tmp));
+    };
+  }{
+    @FUNCTION_RETURN = -1;
+  };
+};
+
+# byte count
+ALIAS bytecount (bytes) {
+  IF (bytes >= 1024) {
+    ^STACK PUSH SET FLOATING_POINT_MATH;
+    ^SET FLOATING_POINT_MATH ON;
+    @ :xx = bytes / 1024.0;
+#   @FUNCTION_RETURN = (xx >= 1024.0) ? (xx >= 1048576.0) ? trunc(3 ${xx / 1048576.0}) ## [GB] : trunc(3 ${xx / 1024.0}) ## [MB] : trunc(3 $xx) ## [KB];
+#   I think this is right! TODO - Check.
+    @FUNCTION_RETURN = (xx >= 1024.0) ? ((xx >= 1048576.0) ? (trunc(3 ${xx / 1048576.0}) ## [GB]) : trunc(3 ${xx / 1024.0}) ## [MB]) : trunc(3 $xx) ## [KB]);
+    ^STACK POP SET FLOATING_POINT_MATH;
+  }{
+    @FUNCTION_RETURN = bytes ## [B];
+  };
+};
+
+# display pack list
+ALIAS _proc.adcc_cmd_list {
+  iecho ------- aDCC Offer Pack Information -----------------------------------;
+  iecho Num.  Description;
+  FOR (@ :xx = 0, numitems(PAKS) > xx, @ :xx++) {
+    @ :pak = getitem(PAKS $xx);
+    @ :tot = numitems(PAK$xx);
+    @ :get = word(0 $pak);
+    iecho [$[-2]{xx + 1}]  \"$restw(3 $pak)\";
+    iecho       $tot file$plural($tot)\, $bytecount($word(1 $pak)), $get get$plural($get)\, password=\"$word(2 $pak)\";
+  };
+};
+
+# HELP!
+ALIAS _proc.adcc_cmd_help {HELP adcc};
+
+# DCC SEND files (wildcards and spaces allowed)
+ALIAS _proc.adcc_cmd_send {
+  UNLESS (strlen($1)) {
+    //DCC SEND;
+    XECHO -B Wildcarded filenames are valid. Filenames with spaces must be "enclosed in quotes".;
+    RETURN;
+  };
+  ^LOCAL nick $0;
+  @ :list = glob($1-);
+  IF (strlen($list)) {
+    FE ($list) xx {
+      @ :file = urlencode($xx);
+      @ :test = finditem(DQSEND $nick $file);
+      IF (test >= 0) {@ delitem(DQSEND $test)};
+      queue.add DQSEND $main.dcc_send_queue $nick $file;
+    };
+    @ :test = numwords($list);
+    ECHO $fmt.banner_dcc() Auto: DCC QSEND $test file$plural($test) to $nick;
+    UNLESS (isdset(Q)) {
+      ###^NOTICE
+      _proc.adcc_notice $nick You have $test file$plural($test) queued for DCC AutoSEND...;
+      _proc.adcc_notice $nick To view your queue: /MSG $N aDCC QUEUE, to cancel files: /MSG $N aDCC CANCEL;
+    };
+    _proc.dcc_queue_check;
+  }{
+    XECHO -B No matching files where found.;
+  };
+};
+
+# creates file offer packs.
+ALIAS _proc.adcc_cmd_offer {
+  INPUT "Offer path/files (ENTER cancels): " IF (@) {
+    # @ :list = uniq($glob($*));
+    @ :list = glob($*);
+    UNLESS (strlen($list)) {
+      XECHO -B No matching files found.;
+      RETURN;
+    };
+    INPUT "Pack description (ENTER cancels): " IF (@) {
+      @ :desc = [$*];
+      @ :size = 0;
+      @ :paks = numitems(PAKS);
+      FE ($list) xx {
+        @ :yy = fsize(\"$xx\");
+        IF (setitem(PAK$paks $numitems(PAK$paks) $urlencode($xx) $yy) >= 0) {
+          @ :size += yy;
+        };
+      };
+      @ :file = numitems(PAK$paks);
+      INPUT "Password for pack #${paks + 1} (ENTER skips): " {
+        @ :pass = @ ? left(8 $0) : [<none>];
+        IF (setitem(PAKS $paks 0 $size $pass $desc) >= 0) {
+          iecho ------- Details of aDCC Pack #$[2]{paks + 1} --------------------------------------;
+          iecho Description : $desc;
+          iecho Files       : $bytecount($size) in $file file$plural($file);
+          iecho Password    : \"$pass\";
+        }{
+          @delarray(PAK$paks);
+          XECHO -B An error occurred while creating the pack. Aborted.;
+        };
+      };
+    }{
+      XECHO -B No pack description given, pack creation aborted.;
+    };
+  };
+};
+
+# edit the fields of any offer pack.
+ALIAS _proc.adcc_cmd_edit {
+  UNLESS (numitems(PAKS)) {
+    XECHO -B There are no packs offered.;
+    _proc.adcc_cmd_offer;
+    RETURN;
+  };
+  _proc.adcc_cmd_list;
+  INPUT "Pack # to edit (ENTER to cancel): " IF (isnumber($0) && [$0] <= numitems(PAKS)) {
+    @ :tmp1 = pass(0123456789 $0) - 1;
+    @ :tmp2 = getitem(PAKS $tmp1);
+    @ :gets = word(0 $tmp2);
+    @ :size = word(1 $tmp2);
+    @ :pass = word(2 $tmp2);
+    @ :desc = restw(3 $tmp2);
+    INPUT "New description for pack (ENTER to skip): " IF (@) {@ :desc = [$*]};
+    INPUT "New offer path/files (ENTER to skip): " IF (@) {
+      # @ :list = uniq($glob($*))
+      @ :list = glob($*);
+      IF (strlen($list)) {
+        @ :size = 0;
+        FE ($list) xx {
+          @ :yy = fsize(\"$xx\");
+          IF (setitem(TMP$tmp1 $numitems(TMP$tmp1) $urlencode($xx) $yy) >= 0) {
+            @ :size += yy;
+          };
+        };
+        @ :gets = 0;
+      }{
+        XECHO -B No matching files found. Old list unchanged.;
+      };
+    };
+    INPUT_CHAR "Reset get counter? (y/n): " IF ([$0]==[Y]) {@ :gets = 0};
+    INPUT "New password for pack (ENTER to skip, * to delete): " {
+      IF (@) {@ :pass = ([$0]==[*]) ? [<none>] : left(8 $0)};
+      IF (setitem(PAKS $tmp1 $gets $size $pass $desc) >= 0) {
+        IF (numitems(TMP$tmp1) > 0) {
+          @ delarray(PAK$tmp1);
+          FE ($jot(0 ${numitems(TMP$tmp1) - 1})) xx {
+            @ setitem(PAK$tmp1 $xx $getitem(TMP$tmp1 $xx));
+          };
+          @ :file = numitems(PAK$tmp1);
+        };
+        iecho ------- Details of aDCC Pack #$[2]{tmp1 + 1} --------------------------------------;
+        iecho Description : $desc;
+        iecho Files       : $bytecount($size) in $file file$plural($file);
+        iecho Password    : \"$pass\";
+      }{
+        XECHO -B An error occurred while editing the pack. Aborted.;
+      };
+      @ delarray(TMP$tmp1);
+    };
+  }{
+    XECHO -B That pack does not exists;
+  };
+};
+
+# removes any pack created previously
+ALIAS _proc.adcc_cmd_remove {
+  UNLESS (numitems(PAKS)) {
+    XECHO -B There are no packs offered.;
+    RETURN;
+  };
+  _proc.adcc_cmd_list;
+  INPUT "Pack # to remove, * for all (ENTER to cancel): " IF (@) {
+    IF (isnumber($0)) {
+      IF ([$0] <= numitems(PAKS)) {
+        @ :tmp1 = pass(0123456789 $0) - 1;
+        XECHO -B Removing aDCC offer pack #${tmp1 + 1}\...;
+        @ delarray(PAK$tmp1);
+        @ delitem(PAKS $tmp1);
+      }{
+        XECHO -B Invalid pack number, range is 1 - $numitems(PAKS);
+      }
+    }{
+      INPUT_CHAR "Confirm to purge all offer packs? (y/n) " IF ([$0]==[Y]) {
+        @ :tot = numitems(PAKS);
+        FE ($jot(0 ${tot - 1})) xx {@ delarray(PAK$xx)};
+        @ delarray(PAKS);
+        XECHO -B A total of $tot pack$plural($tot) removed.;
+      }{
+        XECHO -B No packs removed.;
+      };
+    };
+  };
+};
+
+# saves offer pack list for later use.
+ALIAS _proc.adcc_cmd_save {
+  UNLESS (numitems(PAKS)) {
+    XECHO -B There are no packs created.;
+    RETURN;
+  };
+  INPUT "Path/file to save offerlist (ENTER cancels): " IF (@) {
+    @ :path = pass(/ $0) ? [$0] : twiddle(~/$0);
+    XECHO -B Saving pack list: $path;
+    ^EXEC -close %save_paks;
+    ^EXEC -name save_paks cat > $path;
+    ^EXEC -in %save_paks XECHO -B Recreating file packs...;
+    ^EXEC -in %save_paks # Offerfile created on: $stime($time());
+    ^EXEC -in %save_paks DO FE \(\$jot\(0 \${numitems(PAKS) - 1}\)\) xx \{@ delarray\(PAK\$xx\)\};
+    ^EXEC -in %save_paks @ delarray(PAKS);
+    @ :tmp1 = numitems(PAKS) - 1;
+    FE ($jot(0 $tmp1)) xx {
+      @ :tmp2 = numitems(PAK$xx) - 1;
+      FE ($jot(0 $tmp2)) yy {
+        ^EXEC -in %save_paks @ setitem\(PAK$xx $yy $getitem(PAK$xx $yy)\);
+      };
+      ^EXEC -in %save_paks @ setitem\(PAKS $xx $getitem(PAKS $xx)\);
+    };
+    ^EXEC -in %save_paks XECHO -B Done. $numitems(PAKS) pak$plural($numitems(PAKS)) recreated.;
+    ^EXEC -in %save_paks ^ASSIGN temp.dcc_leech_count $temp.dcc_leech_count;
+    ^EXEC -in %save_paks ^ASSIGN temp.dcc_speed_record $temp.dcc_speed_record;
+    ^EXEC -close %save_paks;
+    XECHO -B Save done. To use this save file, type: "/LOAD $path\";
+  };
+};
+
+# sends a notice to your current channel(s) that you have files offered.
+ALIAS _proc.adcc_cmd_plist {
+  UNLESS (numitems(PAKS)) {
+    XECHO -B There are no packs created.;
+    RETURN;
+  };
+# @ :cmd = @ ? ([$0]==[*]) ? [MSAY] : [^MSG $0] : [SAY];
+## Messy, but it works! TODO
+  if (@) {
+    if ([$0] == "*") 
+      {@:cmd = [MSAY]}{@:cmd=[MSG $0]};
+        }{
+      @:cmd = [MSAY];
+    }; 
+### TODO learn to format the above!
+  @ :slots = main.dcc_active_limit - temp.dcc_active;
+  IF (slots < 0) {@ :slots = 0};
+  @ :queue = main.dcc_send_queue - numitems(DQSEND);
+  IF (queue < 0) {@ :queue = 0};
+  @ :tot = numitems(PAKS);
+  IF (temp.dcc_active < main.dcc_active_limit) {
+    $cmd ## $tot pack$plural($tot) offered: /msg $N adcc send n for pack [n];
+    $cmd ## slots ${slots}/$main.dcc_active_limit : queue ${queue}/$main.dcc_send_queue : leeched $bytecount($temp.dcc_leech_count)\ : record $temp.dcc_speed_record\KB/s;
+    @ tot--;
+    FE ($jot(0 $tot)) xx {
+      @ :tmp = getitem(PAKS $xx);
+      $cmd # [${xx + 1}] $numitems(PAK$xx)\f/$bytecount($word(1 $tmp))/$word(0 $tmp)\x $restw(3 $tmp);
+    };
+  }{
+    $cmd ## $tot pack$plural($tot) offered: /msg $N adcc list for list;
+    $cmd ## slots ${slots}/$main.dcc_active_limit : queue ${queue}/$main.dcc_send_queue : leeched $bytecount($temp.dcc_leech_count)\ : record $temp.dcc_speed_record\KB/s;
+  };
+};
+ALIAS _proc.adcc_cmd_notice {
+  @ :old_dcc_active = temp.dcc_active;
+  @ temp.dcc_active = 99999;
+  _proc.adcc_cmd_plist $*;
+  @ temp.dcc_active = old_dcc_active;
+};
+
+# lists contents of the ADCC QUEUE and allows removal of items
+ALIAS _proc.adcc_cmd_queue {
+  UNLESS (numitems(DQSEND)) {
+    XECHO -B No items set for DCC SEND in queue.;
+    RETURN;
+  };
+  IF (left(2 $0) == [-r]) {
+    @ :pat = strlen($1) ? [$1-] : [*];
+    @ :cnt  = 0;
+    WHILE (:item = getitem(DQSEND $cnt)) {
+      IF (match($pat $item)) {@delitem(DQSEND $cnt)}{@:cnt++};
+    };
+    iecho Removed all items matching \"$pat\" from DCC AutoSEND queue.;
+  }{
+    iecho ------- aDCC AutoSEND Queue Status ------------------------------------;
+    iecho Num. Whom      What;
+    iecho ----+---------+-----------------------------------;
+    @ :cnt = numitems(DQSEND);
+    FE ($jot(0 ${cnt - 1})) cq1 {
+      @ :tmp = getitem(DQSEND $cq1);
+      @ :fn  = urldecode($word(1 $tmp));
+      iecho [$[-2]{cq1 + 1}] $[9]word(0 $tmp) $fn $bytecount($fsize(\"$fn\"));
+    };
+  };
+};
+
+# shows your current configuration.
+ALIAS _proc.adcc_cmd_status {
+  UNLESS (@) {
+    if (numitems(PAKS)) {_proc.adcc_cmd_list};
+  };
+  iecho ------- Current aDCC Configuration ------------------------------------;
+  iecho [ 1] AutoSEND timeout    : $tdiff($DCC_TIMEOUT);
+  iecho [ 2] Active DCC limit    : $main.dcc_active_limit transfer$plural($main.dcc_active_limit);
+  iecho [ 3] AutoSEND queue limit: $main.dcc_send_queue file$plural($main.dcc_send_queue);
+  iecho [ 4] AutoGET queue limit : $main.dcc_get_queue file$plural($main.dcc_get_queue);
+  iecho [ 5] Download path       : $twiddle($dcc_store_path);
+};
+
+# change the ADCC configuration.
+ALIAS _proc.adcc_cmd_setup {
+  INPUT "[ 1] AutoSEND/GET timeout (in minutes): " IF (isnumber($0) && [$0] > 0) {^SET DCC_TIMEOUT ${[$0] * 60}};
+  INPUT "[ 2] Active DCC limit: " IF (isnumber($0) && [$0] > 0) {^ASSIGN main.dcc_active_limit $0};
+  INPUT "[ 3] AutoSEND queue limit: " IF (isnumber($0)) {^ASSIGN main.dcc_send_queue $0};
+  INPUT "[ 4] AutoGET queue limit: " IF (isnumber($0)) {^ASSIGN main.dcc_get_queue $0};
+  INPUT "[ 5] DCC GET download path: " IF (@) {^SET DCC_STORE_PATH $*};
+  _proc.adcc_cmd_status NO;
+};
+
+# All ADCC MSG commands for FileServer (Orig. SrfRoG)
+# main command parser
+ALIAS _proc.adcc_msg_parse {
+  IF (!numitems(PAKS) && !numitems(DQSEND)) {RETURN};
+  UNLESS (findw($2 CANCEL LIST QUEUE SEND) == -1) {_proc.adcc_msg_$2 $0 $1 $3 $4}{
+    IF (!isdset(Q) && !ischannel($0)) {
+      @ :serv = servernum();
+      @ :nick = servernick($serv);
+      _proc.quote_add $serv NOTICE $0 :/MSG $nick aDCC LIST     - list you my offered packs;
+      IF (temp.dcc_active > main.dcc_active_limit) {
+        _proc.quote_add $serv NOTICE $0 :/MSG $nick aDCC SEND <n> - to send you offer pack <n>;
+      };
+      IF (numitems(DQSEND) > 0) {
+        _proc.quote_add $serv NOTICE $0 :/MSG $nick aDCC CANCEL   - cancel all queued AutoSEND requests;
+        _proc.quote_add $serv NOTICE $0 :/MSG $nick aDCC QUEUE    - lists any files you have queued;
+      };
+      _proc.quote_flush $serv;
+      ECHO $fmt.banner_dcc() aDCC HELP requested from $0 \($1\);
+    };
+  };
+};
+
+# allows users to close pending DCC SENDs that were queued.
+ALIAS _proc.adcc_msg_cancel (nick,uh,pak,pass) {
+  UNLESS (numitems(DQSEND)) {
+    _proc.adcc_notice $nick No files queued for DCC SEND for you.;
+    RETURN;
+  };
+  @ :num = 0;
+  @ :cnt = 0;
+  WHILE (:item = getitem(DQSEND $cnt)) {
+    IF (nick == word(0 $item)) {@delitem(DQSEND $cnt);@:num++}{@:cnt++};
+  };
+  IF (num > 0) {
+    _proc.adcc_notice $nick A total of $num queued file$plural($num) canceled.;
+    ECHO $fmt.banner_dcc() aDCC CANCEL request \($num file$plural($num)\) from $nick \($uh\);
+  }{
+    _proc.adcc_notice $nick No files queued for DCC SEND for you.;
+  };
+};
+
+# lists your file offer packs to someone.
+ALIAS _proc.adcc_msg_list (nick,uh,pak,pass) {
+  IF (isdset(Q)) {
+    ECHO $fmt.banner_dcc() aDCC LIST pack request from $nick denied by QUIET MODE.;
+  }{
+    _proc.adcc_cmd_plist $nick;
+    ECHO $fmt.banner_dcc() aDCC LIST pack request from $nick \($uh\);
+  };
+};
+
+# shows a user's position in queue
+ALIAS _proc.adcc_msg_queue (nick,uh,pak,pass) {
+  IF (isdset(Q)) {
+    ECHO $fmt.banner_dcc() aDCC QUEUE list request from $nick denied by QUIET MODE.;
+    RETURN;
+  };
+  @ :serv = servernum();
+  @ :tot = numitems(DQSEND);
+  @ :fm = getmatches(DQSEND $nick *);
+  FE ($midw(0 5 $fm)) xx {
+    @ :fn = urldecode($word(1 $getitem(DQSEND $xx)));
+    @ :fp = chr(2) ## mid(${rindex(/ $fn) + 1} 256 $fn) ## chr(2);
+    _proc.quote_add $serv NOTICE $nick :Slot ${xx+1}/$tot \"$fp\" \($bytecount($fsize(\"$fn\"))\);
+  };
+  IF (numwords($fm) == 0) {
+    _proc.quote_add $serv NOTICE $nick :No queued AutoSENDs for you.;
+  } ELSIF (numwords($fm) > 5) {
+    _proc.quote_add $serv NOTICE $nick :You queue has 5+ items \($numwords($fm)\) - list truncated;
+  };
+  _proc.quote_flush $serv;
+  ECHO $fmt.banner_dcc() aDCC QUEUE list request from $nick \($uh\);
+};
+
+# sends pack(s) to someone
+ALIAS _proc.adcc_msg_send (nick,uh,pak,pass) {
+  IF (ischannel($nick)) {RETURN};
+  @ :qsend = numwords($getmatches(DQSEND $nick *));
+  @ :idx = pass(0123456789 $pak) - 1;
+  IF (!qsend && numitems(PAKS) > idx) {
+    IF (_proc.adcc_proc_pass($idx $pass) >= 0) {
+      @ :tot = numitems(PAK$idx) - 1;
+      ECHO $fmt.banner_dcc() aDCC SEND #${idx + 1} request from $nick \($uh\);
+      FE ($jot(0 $tot)) xx {
+        @ :file = word(0 $getitem(PAK$idx $xx));
+        @ :test = finditem(DQSEND $nick $file);
+        IF (test >= 0) {@ delitem(DQSEND $test)};
+        queue.add DQSEND $main.dcc_send_queue $nick $file;
+        @ :test = urldecode($file);
+        @ temp.dcc_leech_count += fsize(\"$test\");
+        @ :qsend++;
+      };
+      _proc.dcc_queue_check;
+      ECHO $fmt.banner_dcc() Auto: DCC QSEND $qsend file$plural($qsend) to $nick;
+    }{
+      IF (isdset(S)) {_proc.adcc_notice $nick You are not authorized to get pak #${idx + 1}};
+    };
+  };
+  IF (qsend > 0 && !isdset(Q)) {
+    ###^NOTICE 
+    _proc.adcc_notice $nick You have $qsend file$plural($qsend) queued for DCC AutoSEND...;
+    _proc.adcc_notice $nick To view your queue: /MSG $servernick() aDCC QUEUE, to cancel send: /MSG $servernick() aDCC CANCEL;
+  };
+};
+
+# we need the queue routines
+LOAD -pf $LiCePath/lice/lice.dcclist;
+

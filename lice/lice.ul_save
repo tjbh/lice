@@ -1,0 +1,41 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# Save for userlist
+ALIAS _proc.ul_save {
+  @ unlink($lice.save_path/lice.users);
+  @ :usave_fd = open($lice.save_path/lice.users W);
+  FE (User Shit) indx {
+    @ :mlist = indx ## [list];
+    UNLESS (numitems($mlist)) {CONTINUE};
+    FOR (@ :x1=0, numitems($mlist) > x1, @ :x1++) {
+      @ :hand = getitem($mlist $x1);
+      @ :hash = hash_32bit($hand);
+      @ write($usave_fd # $indx Handle: $hand);
+      @ write($usave_fd @ SETITEM\($mlist $x1 $hand\));
+      @ :list = indx ## hash;
+      FOR (@ :x2=0, numitems($list) > x2, @ :x2++) {
+        @ write($usave_fd @ SETITEM\($list $x2 $getitem($list $x2)\));
+      };
+      @ :list = [Chan] ## indx ## hash;
+      FOR (@ :x2=0, numitems($list) > x2, @ :x2++) {
+        @ write($usave_fd @ SETITEM\($list $x2 $getitem($list $x2)\));
+      };
+    };
+  };
+  @ close($usave_fd);
+};
+#tjh/11

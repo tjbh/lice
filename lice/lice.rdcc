@@ -1,0 +1,39 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS rdcc {
+  UNLESS (@) {
+    uecho Usage: /RDCC <-a|-c|-g|-s> [nick];
+    RETURN;
+  };
+  @ rd.n = strlen($1) ? [$1] : [*];
+  SWITCH ($0) {
+    (-a) {UNLESS (rd.n == [*]) {
+             ^ON ^DCC_LIST * {
+                  IF (match(*$rd.n* $2)) {//DCC CLOSE $0 $2};
+             };
+             //DCC LIST;
+             ^ON ^DCC_LIST -;
+          }{//DCC CLOSEALL};
+         };
+    (-c) {//DCC CLOSE CHAT $rd.n};
+    (-g) {//DCC CLOSE GET $rd.n};
+    (-s) {//DCC CLOSE SEND $rd.n};
+    (*) {/rdcc -a $0};
+  };
+  ^ASSIGN -rd.n;
+};
+#tjh/09

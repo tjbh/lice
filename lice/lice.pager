@@ -1,0 +1,42 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Currently broken. HELP doesn't work in EPIC5 the same way...
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# Written by tjh.
+ALIAS pager (file) {
+  @ :lines = (word(1 $geom()) - 5);
+  IF (lines < 1) {@ :lines = 1;};
+  IF (!eof($file)) {
+    WHILE ((lines > 0) && !eof($file)) {
+      ECHO $read($file);
+      @ --lines;
+    };
+    @ fd = file;
+    IF (!eof($file)) {
+      INPUT_CHAR "[Press any key, q to quit]" {
+        IF ([$0] != [q]) {
+          pager $fd;
+        }{
+          @ close($fd);
+        };
+      };
+    };
+  }{
+    @ close($fd);
+  };
+};
+
+#tjh/11

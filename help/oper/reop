@@ -1,0 +1,8 @@
+Usage: REOP [nick1 nick2 ... nicks]
+
+   Gives channel operator status (+o) to the current channel ops.
+   Along with any other nicks you specify.
+   Useful for re-synchs.
+   
+See also: [OP] [DOP] [QUIET] [VOICE] [MASS]
+

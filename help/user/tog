@@ -1,0 +1,74 @@
+Usage: TOG [toggle letter(s)] 
+   Options that control the overall behavior of the program and enable or
+   disable major function in it.
+
+B
+   Shit actions: Auto DEOP, Auto KICK, Auto IGNORE, Auto BAN. This option
+   emables all SHIT actions, by disabling it SHIT users are not treated.
+   (*)
+
+C
+   Channel protection: Auto KICK channel flooders (*)
+
+F
+   Flood protection. Enables all personal flood protection. If disabled,
+   makes you vulnerable to floods.
+
+G
+   aDCC AutoGET all GET requets.
+
+H
+   Automatic IP lookups. When enabled, IP addresses will be translated
+   (if possible) to their associated hostnames, this is for WHOIS and
+   the WHOWAS commands.
+
+I
+   Auto JOIN on INVITE to channels. If disabled, the program will check
+   channels you are being invite to, and determine their status: Empty =
+   no nicks are inside the channel (server bug) Fake = channel name
+   contrains control characters. Modes = if channel is valid and exists,
+   its modes are provided.
+
+J
+   Auto clone bot detection. Will notify if multiple nicks are from
+   a same hostname, at join time.
+
+K
+   Enable/disable Auto DCC CLOSE of DCC SENDs that expire.
+
+N
+   NetHack protection: Auto DEOP nethackers. Only FRIEND users with OP flag 
+   are excempt from this option, which deops users that abuse
+   server-gained operator status (hacked ops). (*)
+
+P
+   Friend CTCP commands, Protection, Auto OP and Auto GREET. Enables all
+   FRIEND auto actions: Auto OP, Protection, Defense, CTCP commands. (*)
+
+Q
+   QUIET MODE. Outsiders wont know you are using a script. LiCe will be
+   transparent to outsiders, making you look "scriptless".
+
+T
+   Automatic Top-level Domain definitions. When enabled, the
+   definition of top-level domains in WHOIS/WHOWAS will be
+   looked. i.e., '.net' = 'Network'
+   
+U
+   Automatically check for LiCe updates and news.
+
+U
+   User Personal Log.
+   Record some special events that are useful to keep track of. This
+   records can be viewed with the /PLAY command.
+
+X
+   Anti-Ping Timeout / Never allow session to ping-timeout. For users that
+   leave sessions idle for a long time (using screen) this option makes
+   the program to stay on the server without ping timeouts. Also, it
+   disables AutoAWAY.
+
+   (*) Changes all channel toggles globally ON/OFF.
+
+See also: [SENSORS] [SBAR] [CTOG] [MTOG] [DTOG] [UPDATE]
+

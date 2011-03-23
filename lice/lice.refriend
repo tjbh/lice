@@ -1,0 +1,31 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by HSOC, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh. This code is written by HSOC.
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS reuser {refriend $*};
+ALIAS refriend {
+  @ :fr_chan = @ ? [$0] : [$C];
+  IF (!ischanop($servernick() $fr_chan)) {RETURN};
+  @ :fr_hash = hash_32bit($fr_chan);
+  @ fr_list = [];
+  FE ($channel($fr_chan)) fr_1 {
+     @ :fr_nick = rest(2 $fr_1);
+     @ :fr_mode = get_cookie(User $fr_chan $fr_nick $fr_hash);
+     IF ((fr_mode & 32) && (left(1 $fr_1) != [@])) {PUSH fr_list $fr_nick};
+  };
+  _proc.loop_mode $winserv() + o $fr_chan fr_list;
+  purge fr;
+};
+#tjh/09

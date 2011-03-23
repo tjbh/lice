@@ -1,0 +1,30 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS gone {
+  @ quiet.test = ismset(Q);
+  @ :gone.msg = randread($main.reason_gone);
+  UNLESS (strlen($gone.msg)) {@ :gone.msg = [http://lice.codehack.com]};
+  SWITCH ($0) {
+    () {AWAY $gone.msg};
+    (-q) {
+      @ quiet.test = 1;
+      AWAY ${strlen($1)?[$1-]:gone.msg};
+    };
+    (*) {AWAY $*};
+  };
+};
+#tjh/09

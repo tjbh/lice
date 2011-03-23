@@ -1,0 +1,150 @@
+#
+# Description: echoes color theme.
+# Author: whitefang (thall@magenet.com)
+# Credits: trey's echoes theme for rain
+#
+
+PACKAGE LiCeTheme
+XECHO -RAW (U 
+
+# statbar
+SET CLOCK_24HOUR ON
+SET STATUS_AWAY 15away14[16$STATUS_USER114] 
+SET STATUS_CHANNEL %C
+SET STATUS_CHANOP @
+SET STATUS_CLOCK %T
+SET STATUS_FORMAT1 15Ú16Â15Ä14[ 10%@15%N14/16%#10: 15%514[16+%214] %>%Q%F15win14/16%R 14]15Ä16¿
+SET STATUS_FORMAT2 16³15À14[ %C14/16%+10: %4 %>%H%M%A15time14/16%T 14]15Ù
+SET STATUS_HOLD 14(more14) 
+SET -STATUS_HOLD_LINES
+SET STATUS_MAIL 15mail14[16%M14] 
+SET STATUS_MODE +%+
+SET STATUS_NICKNAME %N
+SET STATUS_NOTIFY 15act14/16%F 
+SET STATUS_OPER *
+SET -STATUS_OVERWRITE
+SET STATUS_QUERY 14(15query14/16%Q14) 
+SET -STATUS_SCROLLBACK
+SET STATUS_SERVER %S
+SET STATUS_UMODE +%#
+SET STATUS_DOES_EXPANDOS ON
+SET STATUS_USER4 ${C?[15o14/16$#chops() 15n14/16$#nochops() 15t14/16$numonchannel()]:[]}
+SET STATUS_USER5 $servername($winserv())
+SET STATUS_VOICE +
+SET INPUT_PROMPT 16À15Ä14Ä15> 
+
+# bah!
+^WINDOW DOUBLE ON
+
+# formats
+ALIAS fmt.action 		RETURN 14> 15$0${iscurchan($1)?[]:[14/15$1]} $2-
+ALIAS fmt.action_me 		RETURN 14> 15$014/15$1 16$2-
+ALIAS fmt.auto_reply 		RETURN 14<11$014> $2-
+ALIAS fmt.auto_reply_other	RETURN 14<11$014/11$114> $2-
+ALIAS fmt.cant_join		RETURN $0 :Cannot join channel \($1-\)
+ALIAS fmt.channel_nick		RETURN nick14/16$010: 16$1 is now known as 16$2
+# 16you 14[$114] are now known as 16$3
+ALIAS fmt.channel_signoff	RETURN quit14/16$010: 16$114[$2-14]
+ALIAS fmt.ctcp_channel		RETURN ctcp14/16$tolower($2)10: to 16$1 from 16$014[$sar(/@/10@/$userhost())14]
+ALIAS fmt.ctcp_me		RETURN ctcp14/16$tolower($2)10: to 16$1 from 16$014[$sar(/@/10@/$userhost())14]
+ALIAS fmt.ctcp_server		RETURN ctcp14/16$tolower($2)10: to 16$1 from 16$014[$sar(/@/10@/$userhost())14]
+ALIAS fmt.dcc_chat		RETURN $G chat14/16$010: $1- 14[16$tolower($Z)14]
+ALIAS fmt.invite		RETURN invite14/16$010: $1-
+ALIAS fmt.join			RETURN join14/16$110: 16$014[$sar(/@/10@/$2)14]
+ALIAS fmt.kick			RETURN kick14/16$210: 16$1 kicked 16$014[$3-14]
+ALIAS fmt.kick_me		RETURN kick14/16$210: 16$1 kicked 16$014[$3-14]
+ALIAS fmt.leave			RETURN part14/16$110: 16$014[$sar(/@/10@/$2)14]
+ALIAS fmt.mode			RETURN mode14/16$110: 16$014[$2-14]
+ALIAS fmt.mode_bans		RETURN mode14/16$110: 16$014[stacked $214]
+ALIAS fmt.mode_me		RETURN mode14/16$N10: 16$S14[$2-14]
+ALIAS fmt.mode_server		RETURN mode14/16$110: 16$014[$2-14]
+ALIAS fmt.msg 			RETURN 14\(16$014[$sar(/@/10@/$userhost())14]\) $1-
+ALIAS fmt.msg_group 		RETURN 14\(16$014[$114]\) $2-
+ALIAS fmt.notice 		RETURN 14-16$014[$sar(/@/10@/$userhost())14]- $1-
+ALIAS fmt.notify_signoff	RETURN notify14/16off10: 16$015 at 14[$tolower($Z)14]
+ALIAS fmt.notify_signon		RETURN notify14/16on10: 16$0 at 14[$tolower($Z)14]
+ALIAS fmt.notify_signon_uh	RETURN notify14/16on10: 16$014[$sar(/@/10@/$1)14] at 14[$tolower($Z)14]
+ALIAS fmt.public		RETURN 14<$014> $2-
+ALIAS fmt.public_msg		RETURN 14($014/$114) $2-
+ALIAS fmt.public_other		RETURN 14<$014/$114> $2-
+ALIAS fmt.public_notice 	RETURN 14-16$014[$114]- $2-
+ALIAS fmt.sc_top		RETURN 16Ú15Ä14Ä15ÄÄ16ÄÄ15ÄÄ14Ä[users14/16$014]15Ä16ÄÄ15Ä14Ä15ÄÄ16Ä15- 14Ä15-14Ä Ä15-16Ä15Ä -14Ä-15ÄÄ16-Ä15Ä- 16- 15-  14-15    -
+ALIAS fmt.sc_max		RETURN 5
+ALIAS fmt.sc_mid (list) {
+  FE ($list) xx {
+    @ :mod = pass(@+ $xx)
+    @ :spc = mod ? mod : [ ]
+    @ :nic = strip(@+ $xx)
+    @ :ret #= [14\[] ## [10] ## spc ## [] ## [$[10]nic] ## [14\]] ## [ ]
+  }
+				RETURN 16³ $ret
+}
+ALIAS fmt.sc_bot 		RETURN 16À15Ä14Ä15> 15+o14[16$114] 15-o14[16$314] 15+v14[16$214] 15total14[16$414]
+ALIAS fmt.send_action		RETURN 14> 16$N${iscurchan($0)?[]:[14/16$0]} $1-
+ALIAS fmt.send_action_me 	RETURN 14> 16$N14/16$0 $1-
+ALIAS fmt.send_dcc_chat 	RETURN 14-> 15chat14[16$014]10: $1-
+ALIAS fmt.send_msg		RETURN 14-> 15msg14[16$014]10: $1-
+ALIAS fmt.send_notice		RETURN 14-> 15not14[16$014]10: $1-
+ALIAS fmt.send_public 		RETURN 14<16$N${iscurchan($0)?[]:[14/16$0]}14> $1-
+ALIAS fmt.server_notice 	RETURN 14!$msar(g/./10./$0)14! $2-
+ALIAS fmt.talk_reply		RETURN $0:
+ALIAS fmt.titlebar		RETURN 14[16$014] $1-
+ALIAS fmt.topic			RETURN topic14/16$110: ${strlen($2)?[16$014\[$2-14\]]:[15unset 14\[$014\]]}
+ALIAS fmt.topic_set {
+  IF ([$1-]==[<No Topic Set>]) {
+				RETURN $0 : No topic is set.
+  }
+  IF ([$1]==[Set]&&[$2]==[by]&&[$4]==[on]) {
+				RETURN topic14/16$310:15 created 14[16$tolower($5-)14]
+  } {				RETURN topic14/16$010: $1-
+  }
+}
+ALIAS fmt.usercmd		RETURN friend14/16$tolower($1)10: from 16$014[$sar(/@/10@/$userhost())14]
+ALIAS fmt.wallop		RETURN 14!$0:$114! $2-
+ALIAS fmt.wallop_me		RETURN 14[15wall14/16$N14\(15$014\)]10: $2- 
+ALIAS fmt.wallop_server		RETURN 14!$014! $2-
+ALIAS fmt.whois_bot		RETURN 16ÀÄ-15Ä -14Ä Ä15-Ä- 16Ä- Ä15-ÄÄ14- Ä15-Ä16-15-14>1 $1
+ALIAS fmt.whois_top {
+  ^ASSIGN temp.whois_nick $1;^ASSIGN temp.whois_user $2;^ASSIGN temp.whois_host $3
+				RETURN 16ÚÄ15ÄÄ14Ä-15Ä- 16Ä-15ÄÄ14ÄÄ15ÄÄ-Ä16Ä- Ä15 -Ä 14Ä 15Ä- 16ÄÄÄ15Ä-14Ä - 15ÄÄ16-Ä15- 16-  - 15Ä 16Ä1 $1
+}
+ALIAS fmt.whois_mid {
+  IF (temp.whois_nick) {
+    ECHO 16³ 14[16$[-9]temp.whois_nick14] ³ [$temp.whois_user10@$temp.whois_host14]
+    ^ASSIGN -temp.whois_user;^ASSIGN -temp.whois_host;^ASSIGN -temp.whois_nick
+  }
+  SWITCH ($0) {
+    (Ircname) 	{RETURN 15³14Ú[  16i15rcname14]15ÄÙ $1-}
+    (Domain) 	{RETURN 14³15³14[   16d15omain14]   $tolower($1-)}
+    (Shitlist) 	{RETURN 14³15³14[     16s15hit14]   $1-}
+    (Userlist) 	{RETURN 14³15³14[   16f15riend14]   $1-}
+    (Channels) 	{RETURN 14³15³14[ 16c15hannels14]   $sar(g/@/10@/${sar(g/+/10+/$1-)})}
+    (Server) 	{RETURN 15³15À14[   16s15erver14]15Ä¿ $1 14[$2-14]}
+    (Away) 	{RETURN 14³ [     16a15way14] ³ $1-}
+    (Signon) 	{RETURN 14³ [   16s15ignon14] 15³ $1-}
+    (Idle) 	{RETURN 15³ 14[     16i15dle14] 15³ $1-}
+    (Operator) 	{RETURN 14³ [ 16o15perator14] ³ $1 $tolower($2-)}
+  }
+}
+
+# banners
+SET BANNER 14Ä15Ä16-
+ALIAS fmt.banner_info			RETURN $G
+ALIAS fmt.banner_party			RETURN $G
+ALIAS fmt.banner_join			RETURN $G
+ALIAS fmt.banner_leave			RETURN $G
+ALIAS fmt.banner_signon			RETURN $G
+ALIAS fmt.banner_signoff		RETURN $G
+ALIAS fmt.banner_invite			RETURN $G
+ALIAS fmt.banner_mode			RETURN $G
+ALIAS fmt.banner_kick			RETURN $G
+ALIAS fmt.banner_nick			RETURN $G
+ALIAS fmt.banner_ctcp			RETURN $G
+ALIAS fmt.banner_chan			RETURN $G
+ALIAS fmt.banner_dcc			RETURN $G
+ALIAS fmt.banner_alert			RETURN $G
+ALIAS fmt.banner_userlist		RETURN $G
+ALIAS -fmt.banner_server
+ALIAS fmt.banner_usage			RETURN $G
+
+# tjbh/99

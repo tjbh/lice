@@ -1,0 +1,26 @@
+Usage: UMODE [<-/+>user modes] 
+   Changes your user modes, valid for the server you are currently using.
+
+i = INVISIBLE
+   Users can see the channels you are in if they try to do WHOIS on you
+   (unless they share one or more channels with you)
+
+o = OPERATOR
+   Reserved for IRC operators.
+
+w = WALLS
+   You will receive any server walls. These walls are broadcasts of
+   special server actions done by IRC operators (eg. SQUIT CONNECT JUPE)
+
+s = NOTICES
+   When set, all server notification will be sent to you, these notices
+   currespond to actions done to users by the server or IRC operators (eg. 
+   KILL LINK)
+   Note: These are the "standard" user modes available in all ircii
+   servers, additional modes may exist for modified servers.
+ie. /UMODE +i-ws	removes modes "ws" and places you as invisible.
+    /UMODE		displays your current user modes.
+    /UMODE -s		removes server notices from your modes.
+
+See also: [oper]
+

@@ -1,0 +1,138 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 whitefang (thall@magenet.com) - Broken email.
+#
+# ---------------------------------------------------------------------------
+# All code by whitefang, unless specified. Visit http://wolf.magenet.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+# This was originally part of the wolf addon for LiCe4.x by whitefang
+# I have now merged into LiCe5.  I hope you don't mind fang! tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+@ mkdir($lice.save_path/logs);
+
+ALIAS chanlog {
+  UNLESS (@) {
+    uecho Usage: /CHANLOG -a <channel>;
+    uecho Usage: /CHANLOG -d <channel>;
+    uecho Usage: /CHANLOG -l <channel>;
+    RETURN;
+  };
+  @ :opts = [];
+  WHILE (opts = getopt(optopt optarg "a:d:l::" $*)) {
+    @ :chan = optarg;
+    @ :file = [$lice.save_path/logs/$tolower($chan)\.log];
+    @ :hash = hash_32bit($chan);
+    SWITCH ($opts) {
+      (a) {
+        _proc.open_log $chan;
+        _proc.log_p $chan;
+        _proc.log_k $chan;
+        _proc.log_j $chan;
+        @lice.set(![$hash][C] $chan);
+        ^ASSIGN chanlog[$hash][C] $chan;
+        iecho Chanlog: logging $chan to $file;
+        CONTINUE;
+      };
+      (d) {
+        IF (temp[chanlog][$hash][fd]) {
+          @ close($temp[chanlog][$hash][fd]);
+          ^ASSIGN -temp[chanlog][$hash][fd];
+        };
+        _proc.nolog_p $chan;
+        _proc.nolog_k $chan;
+        _proc.nolog_j $chan;
+        @lice.del(![$hash][C]);
+        ^ASSIGN -chanlog[$hash][C];
+        iecho Chanlog: no longer logging $chan;
+      };
+      (l) {
+        IF (chan) {
+          UNLESS (chanlog[$hash][C])
+          {
+            iecho Chanlog: channel log information not found.;
+          } {
+            iecho ------- Channel Log Information ------------;
+            iecho Channel: $chan \($file\);
+            iecho +--- Last Mofified -------+-- Size ---------;
+            iecho  $stime($ftime($lice.save_path/logs/$tolower($chan)\.log)) | $fsize($lice.save_path/logs/$tolower($chan)\.log) bytes;
+          };
+        } {
+          FOREACH chanlog hash {
+            UNLESS (cnt) {iecho ----- Channel -------- File -----------------};
+            @ :cnt++;
+            @ :chn = chanlog[$hash][C];
+            iecho [$[3]cnt] $chn        $lice.save_path/logs/$tolower($chn)\.log;
+          };
+          UNLESS (cnt) {iecho Chanlog: no logged channels found.};
+        };
+      };
+    };
+  };
+};
+
+ALIAS _proc.open_log (chan) {
+  @ :file = [$lice.save_path/logs/$tolower($chan)\.log];
+  @ :hash = hash_32bit($chan);
+  IF (temp[chanlog][$hash][fd]) {@ close($temp[chanlog][$hash][fd])};
+  @ temp[chanlog][$hash][fd] = open($file W);
+};
+
+ALIAS _proc.putlog {@ write($temp[chanlog][$hash_32bit($0)][fd] $strftime(%b %d %X) $0 $1-)};
+
+ALIAS _proc.log_p (chan) {
+  ^ON #-PUBLIC 420 "% $chan *" {_proc.putlog $1 <$0> $2-};
+  ^ON #-PUBLIC_MSG 420 "% $chan *" {_proc.putlog $1 <$0> $2-};
+  ^ON #-PUBLIC_OTHER 420 "% $chan *" {_proc.putlog $1 <$0> $2-};
+  ^ON #-SEND_PUBLIC 420 "$chan *" {_proc.putlog $0 <$N> $1-};
+  ^ON #-PUBLIC_NOTICE 420 "% $chan *" {_proc.putlog $1 +$0+ $2-};
+  ^ON #-SEND_NOTICE 420 "$chan *" {_proc.putlog $0 +$N+ $1-};
+  ^ON #-ACTION 420 "% $chan *" {_proc.putlog $1 * $0 $2-};
+  ^ON #-SEND_ACTION 420 "$chan *" {_proc.putlog $0 * $N $1-};
+  ^ON #-CTCP 420 "% $chan % *" {_proc.putlog $1 *** $0 sent a CTCP $2${[$3]?[: $3-]:[]}};
+};
+ALIAS _proc.nolog_p (chan) {
+  ^ON #-PUBLIC 420 -"% $chan *";
+  ^ON #-PUBLIC_MSG 420 -"% $chan *";
+  ^ON #-PUBLIC_OTHER 420 -"% $chan *";
+  ^ON #-SEND_PUBLIC 420 -"$chan *";
+  ^ON #-PUBLIC_NOTICE 420 -"% $chan *";
+  ^ON #-SEND_NOTICE 420 -"$chan *";
+  ^ON #-ACTION 420 -"% $chan *";
+  ^ON #-SEND_ACTION 420 -"$chan *";
+  ^ON #-CTCP 420 -"% $chan % *";
+};
+
+ALIAS _proc.log_k (chan) {
+  ^ON #-KICK 420 "% % $chan *" {_proc.putlog $2 *** $0 has been kicked by $1 \($3-\)};
+  ^ON #-MODE 420 "% $chan *" {_proc.putlog $1 *** Mode change by $0: $2-};
+  ^ON #-TOPIC 420 "% $chan *" {_proc.putlog $1 *** Topic change by $0: $2-};
+};
+ALIAS _proc.nolog_k (chan) {
+  ^ON #-KICK 420 -"% % $chan *";
+  ^ON #-MODE 420 -"% $chan *";
+  ^ON #-TOPIC 420 -"% $chan *";
+};
+
+ALIAS _proc.log_j (chan) {
+  ^ON #-JOIN 420 "% $chan *" {_proc.putlog $1 *** $0 \($2\) has joined};
+  ^ON #-PART 420 "% $chan *" {_proc.putlog $1 *** $0 \($userhost()\) has left};
+  ^ON #-CHANNEL_NICK 420 "$chan % %" {_proc.putlog $0 *** $1 changed their nick to $2};
+  ^ON #-CHANNEL_SIGNOFF 420 "$chan % *" {_proc.putlog $0 *** Signoff by $1 \($2-\)};
+};
+ALIAS _proc.nolog_j (chan) {
+  ^ON #-JOIN 420 -"% $chan % *";
+  ^ON #-PART 420 -"% $chan % *";
+  ^ON #-CHANNEL_NICK 420 -"$chan % %";
+  ^ON #-CHANNEL_SIGNOFF 420 -"$chan % *";
+};
+
+#tjbh/2000
+#tjh/11

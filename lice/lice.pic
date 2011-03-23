@@ -1,0 +1,55 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# Description : ASCII pics for LiCe
+# Sources     : kendi/mozy, CKeeper, alt.ascii.cow, DeadelviS.
+# Code        : SrfRoG (cag@codehack.com)
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS PIC {
+  IF (@) {
+    @ :pic.trg = strlen($1) ? [$1] : C;
+    @ :pic.file = which(pics/$0);
+    UNLESS (strlen($pic.file)) {RETURN};
+    @ :pic.fd = open($pic.file R);
+    UNLESS (pic.fd) {
+      XECHO -B Could not open "$0\";
+      RETURN;
+    };
+    UNTIL (eof($pic.fd)) {
+      @ :pic.str = read($pic.fd);
+      IF (pic.str) {MSG $pic.trg $pic.str};
+    };
+    @ close($pic.fd);
+    IF (strlen($2)) {MSG $pic.trg ** $2-}
+  }{
+    IF (fexist(~/LiCe5/pics) == 1) {
+      CD ~/LiCe5/pics;
+      @ :pic.list = glob(*);
+      ^CD ~;
+      UNLESS (strlen($pic.list)) {
+        XECHO -B No pictures found;
+        RETURN;
+      };
+      iecho Your picture collection:;
+      echo.recursive $pic.list;
+      uecho Usage: /PIC <picture> [target] [message];
+    }{
+      XECHO -B Path not found: $twiddle(~/LiCe5/pics);
+      IF (mkdir(~/LiCe5/pics)) {
+        XECHO -B Failed to create: $twiddle(~/LiCe5/pics);
+      };
+    };
+  };
+};
+#tjh/09

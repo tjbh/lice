@@ -1,0 +1,12 @@
+Usage: SI [-f] [channel] 
+   Display the invites for a channel. If no channel is given, the invites in
+   your current channel are shown.
+
+   The "-f" flags forces the use of server output instead of the internal
+   cache.
+
+   Note: this command is only available on networks with +I channel
+         mode support.
+
+See also: [SV] [SC] [SB] [SE]
+

@@ -1,0 +1,24 @@
+ECHO Your EPIC5 client is now infested with...
+ECHO 
+ECHO      ...ooo.                         ..od""""bo..                ...od.
+ECHO   @8"""  $P:$.       l$xxo...     .oP"~         "Zo.   ...oodd""""  @$ G.
+ECHO . Z$     $$ 8$$     :XP    """G@o. "              "$P ""            $$ $$o ..
+ECHO : l$:    l$::$$:    l$:      l$:`P.      .ooo.     l$:     ___....ool3 P$G :.
+ECHO %  ZP     $O $$$    ""       $$ 3$$g   .$l" "$l     $P   l$: ...ooo ..z."$  %
+ECHO  o Z$     $$ 8$":  .oo.      $$ 3$$$   $P o$ :$oo$$"""    $P""  l$: $$$$$$ o
+ECHO l$ l3:    l$:..oo$""$$ l.   l$::$$$$  :lZ . $ xxoo"""$K       ...$Z $"  ___$l
+ECHO $$. ZP     $A""     l$::$$  $$ l$$l:   "$.    lK     l$   od"""" - ..$B. "$$$
+ECHO l$$ Z8               $$ $$: $$ 7$$$:    `$bo.o"      :3   l$Rooo"""  $$ 8. "l
+ECHO  "$ l$:            ..$$ $$$ "l:$$$G                 .O"              l$::$b
+ECHO %_  :8P     __..oo$$"""."$$ : ZZ$l: Ro.          .oA"ol        ...oooo$Z S$ %
+ECHO ::.: 78ooo$$P"""".oodd$$$.$  lZ$$P oo.""3$8ooo$Z"".o$Z'  oo$$"""" oooooo$.$ .
+ECHO .. . :3""""..ddd$$$$$888$P" :8$$l   "88$$oo. ..oo$$P"......ooomicrosoFT$UCK$
+ECHO soi!rmrsdd$$$8888$$3"""       "D"      ""88$$$8P"     "ZZ$$$$$""""""
+SET DISPLAY_ANSI ON
+ECHO               ,------------------------------------------------------------.
+ECHO    3  11@3..11@     |    Welcome to LiCe designed for the ircii-EPIC5 client!    |
+ECHO    3 (\--/)    | Send all comments to:        10tim@muppetz.com               |
+ECHO    3(.>__<.)   | Online help: Type 16/HELP, or visit 16http://lice.muppetz.com   |
+ECHO    3^^^  ^^^   `------------------------------------------------------------'
+SET DISPLAY OFF
+^SET -CONTINUED_LINE

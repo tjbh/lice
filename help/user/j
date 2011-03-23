@@ -1,0 +1,11 @@
+Usage: J <channel> [key] 
+Usage: J <channel1,channel2,...,channels> 
+   Makes you JOIN the specified channel(s). In the first form, the leading 
+   '#' can be omitted. If the channel you want to JOIN has a key, this has 
+   to be provided in order for you to join. ie. /J LiCe makes you JOIN
+   "#LiCe" /J #singles,#chatzone makes you JOIN "#singles" and "#chatzone" 
+   simultaneously. /J #lamers doofus makes you JOIN "#lamers" and assumes
+   the key "doofus" is used.
+
+See also: [L] [CHG] [CYCLE]
+

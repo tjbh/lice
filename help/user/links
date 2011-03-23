@@ -1,0 +1,9 @@
+Usage: LINKS [server pattern [arguments]] 
+   Displays the connetions to a server, and/or the connection hub of the
+   server to the IRC network.
+ie. /LINKS *.edu	shows connections of all *.edu servers
+			and hubs
+    /LINKS irc.ilstu.edu	shows hub for server.
+
+See also: [UMODE]
+

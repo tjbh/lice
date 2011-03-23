@@ -1,0 +1,140 @@
+#
+# Description: syntax color theme.
+# Author: whitefang (thall@ecad.org)
+#
+# TODO:
+# - fix mode_me
+# - do "shade" function
+
+PACKAGE LiCeTheme
+
+eval xecho -r $chr(27)\(U
+^set notify_userhost_automatic on
+^set status_does_expandos on
+ALIAS syn.time RETURN 11@14\($sar(/:/14:10/$sar(/AM/14am/$sar(/PM/14pm/10$0)))14\)
+
+# Event formats
+ALIAS fmt.action    RETURN ù 14\[16$014:15$114\] $2-
+ALIAS fmt.action_me RETURN ù 14\[16$014\] $2-
+ALIAS fmt.auto_reply    RETURN 14\<8$014\> $2-
+ALIAS fmt.auto_reply_other RETURN 14\[11$014:15$114\) $2-
+ALIAS fmt.channel_nick  RETURN 14\(16nick14!15change14\) \(10$1 14Ä15Ä16> 11$214\) $syn.time($Z)
+ALIAS fmt.channel_signoff  RETURN 14\(16signoff14!15$014\) \(11$1 14ð 10$sar(/@/14@10/$userhost())14\) \($2-14\) $syn.time($Z)
+ALIAS fmt.ctcp_channel  RETURN \(16$0\($userhost()\)\(16$1\) $toupper($2)\)
+ALIAS fmt.ctcp_me   RETURN \(16$015\($userhost()\) $toupper($2)\)
+ALIAS fmt.ctcp_server   RETURN \(16$015\($userhost()\) $toupper($2)\)
+ALIAS fmt.dcc_chat  RETURN 14\[16<11Ä10Ä 16dcc14\($014\)\] $1-
+ALIAS fmt.invite    RETURN 14[15[16Invite15]14] $0 invites you to join 16$1
+ALIAS fmt.join      RETURN 14\(16join14!15$114\) \(11$0 14ð 10$sar(/@/14@10/$2)14\) $syn.time($Z)
+ALIAS fmt.kick      RETURN 14\(16kick14!15$214\) by14\(11$1 14ð 10$sar(/@/14@10/$userhost())14\) kicked 14\(11$0 14ð $3-14\) $syn.time($Z)
+ALIAS fmt.kick_me       RETURN 14\(16kick14!15$214\) by14\(11$1 14ð 10$sar(/@/14@10/$userhost())14\) kicked 14\(11YOU 14ð $3-14\) $syn.time($Z) 
+ALIAS fmt.leave     RETURN $14\(16part14!$114\) \(11$0 14ð 10$sar(/@/14@10/$userhost())14\) $syn.time($Z)
+ALIAS fmt.mode      RETURN 14\(16mode14!$114\) \(11$0 14ð $2-14\) $syn.time($Z)
+ALIAS fmt.mode_bans RETURN 14\(16stack14!$114\) \(11$0 14ð $214\) $syn.time($Z)
+ALIAS fmt.mode_me   RETURN 14[15[16UserMode15]14] Your usermode is now: 16+$usermode()$2
+ALIAS fmt.mode_server   RETURN 14\(16servermode14!$114\) \(11$0 14ð $2-14\) $syn.time($Z)
+ALIAS fmt.msg           RETURN 14\[13$014\(13$sar(/@/15@13/$userhost())14\)\] $1-
+ALIAS fmt.msg_group           RETURN 14\[16<11Ä10Ä 16msg14\($0 14ð $sar(/@/14@15/$userhost())14\)\] $2-
+#ALIAS fmt.msg_group     RETURN 14-13$014:6$114- $2-
+ALIAS fmt.notice        RETURN -16$0\($userhost()\)- $1-
+ALIAS fmt.notify_signoff   RETURN 14\[15\[16Signoff15\]14\] $syn.time($Z) 10$0 has left IRC...
+ALIAS fmt.notify_signon RETURN 14\[15\[16Signon15\]14\] $syn.time($Z) 11$014\(10$sar(/@/14@10/$1)14\) is on IRC...
+ALIAS fmt.notify_signon_uh RETURN 14\[15\[16Signon15\]14\] $syn.time($Z) 11$014\(10$sar(/@/14@10/$1)14\) is on IRC...
+ALIAS fmt.public    RETURN 14\<15$014\> $2-
+ALIAS fmt.public_msg    RETURN 14\[16010\) $2-
+ALIAS fmt.public_other  RETURN 14\[16$014:15$114\) $2-
+ALIAS fmt.public_notice RETURN -16$0\($userhost()\):16$1- $2-
+ALIAS -fmt.sc_max
+ALIAS fmt.send_action   RETURN ù 14[16$N14] $1-
+ALIAS fmt.send_action_me   RETURN 14\[10Ä11Ä16> 16action14\(15$014\)\] $1-
+ALIAS fmt.send_dcc_chat RETURN 14\[10Ä11Ä16> 16dcc14\(15$014\)\] $1-
+ALIAS fmt.send_msg  RETURN 15-> 14\[4msg/15$014\] $1-
+ALIAS fmt.send_notice   RETURN 14\[10Ä11Ä16> 16notice14\(15$014\)\] $1-
+ALIAS fmt.send_public   RETURN 14\(10$N14\) $1-
+ALIAS fmt.server_notice RETURN \(16$0\) $2-
+ALIAS fmt.titlebar	RETURN 15\(10$010\) :: $1-
+ALIAS fmt.topic     RETURN 14\(16topic14!15$114\) \(11$0 14ð 15$2-14\) $syn.time($Z)
+ALIAS fmt.topic_set {
+    if ([$1-] == [<No Topic Set>]) {RETURN 14\(16topic 14ú 15$014\) None}
+    if ([$1]==[<Set]&&[$2]==[by]&&[$4]==[on]) {RETURN 14\(16topic 14ú 15$014\) set by 16$3 on $strip(> $5-)}
+    {RETURN 14\(16topic 14ú 15$014\) $1-}
+}
+ALIAS fmt.usercmd   RETURN 14\[15\[16Friend15\]14\] 11$1 request from 16$0 $syn.time($Z)
+ALIAS fmt.wallop    RETURN 16!3$016! $2-
+ALIAS fmt.wallop_me RETURN $G \(16wallop\($0\) $2-
+ALIAS fmt.whois_bot RETURN $()14ÀÄÄ15Ä16-15Ä14ÄÄÄÄÄÄÄ15Ä16Ä-15ÄÄ15Ä14ÄÄÄ--ÄÄÄ-Ä15ÄÄ-16ÄÄ-Ä 14Ä-Ä15Ä16-ÄÄ- 15-16Ä
+ALIAS fmt.whois_mid {
+  if (temp.syn.whois_uh) {
+    echo 14³ 16address   14ð15 $sar(/@/14@15/$temp.syn.whois_uh)
+    ^assign -temp.syn.whois_uh
+  }
+  switch ($0) {
+    (Ircname)   {RETURN 14³ 16quote     14ð $1-}
+    (Domain)    {RETURN 14³ 16domain    14ð $1-}
+    (Shitlist)  {RETURN 14³ 16shitinfo  14ð $1-}
+    (Userlist)  {RETURN 14³ 16userinfo  14ð $1-}   
+    (Channels)  {RETURN 14³ 16channels  14ð $1-}
+    (Server)    {RETURN 14³ 16server    14ð $1-}
+    (Away)      {RETURN 14³ 16away      14ð $1-}
+    (Operator)  {RETURN 14³ 16operator  14ð ..16!@#$15}
+    (Signon)    {RETURN 14³ 16signon    14ð $1-}
+    (Idle)      {RETURN 14³ 16idle      14ð $1-}
+  }
+}
+ALIAS fmt.whois_top { 
+  ^assign temp.syn.whois_uh $2@$3
+  RETURN 14ÚÄÄ15Ä16-15Ä14ÄÄ\(\( $tolower($0) information: 16$114 \)\)ÄÄ-Ä-Ä15Ä16-15Ä15Ä14Ä--ÄÄ-Ä15Ä-16Ä-Ä 14-Ä15Ä16-Ä- 15-16Ä
+}
+# Banner for this theme
+^SET BANNER 14ú15ú16ú15
+
+# Event banner colors
+ALIAS fmt.banner_info   RETURN $G
+ALIAS fmt.banner_party  RETURN $G
+ALIAS fmt.banner_join   RETURN $G
+ALIAS fmt.banner_leave  RETURN $G
+ALIAS fmt.banner_signon RETURN $G
+ALIAS fmt.banner_signoff    RETURN $G
+ALIAS fmt.banner_invite RETURN $G
+ALIAS fmt.banner_mode   RETURN $G
+ALIAS fmt.banner_kick   RETURN $G
+ALIAS fmt.banner_nick   RETURN $G
+ALIAS -fmt.banner_ctcp
+ALIAS fmt.banner_dcc    RETURN $G
+ALIAS fmt.banner_alert  RETURN $G
+ALIAS fmt.banner_userlist   RETURN $G
+ALIAS -fmt.banner_server
+ALIAS fmt.banner_usage  RETURN $G
+
+^set status_no_repeat off
+^set status_away 14]ÄÄ[1615away14:16$sar(/://$status_user1)
+^set status_channel  15ù 10%C
+^set status_chanop 11@
+#^set status_clock 10À0Ä10[1615clock13:16%T
+^set status_clock Ä10[1615%T16
+^set status_format 14ð 16%R10:%*%@%N%#%B%C%+%A14Ä%>%!110:16%2 14ð
+^set status_format1 11Ú0Ä10[16%R14:%*%@10%N%#%B%C%+%A10]0Ä%>10ÄÄÄÄ[1615lag13:%2160]ÄÄ10ÄÄ11Ä¿
+#^set status_format1 11Ú0Ä10[16%R14:%*%@10%N%#%B%C%+%A10]0Ä%>10¿ 11Ú10Ä0ÄÄÄ[1615lag13:%2160]ÄÄ10ÄÄ11Ä¿
+#^set status_format2 10ÀÄ14[1615tog14:16%014]ÄÄ[1615server14:16$S14%F%M14]Ä%>10Ù %T0]ÄÙ
+#^set status_format2 10À0ÄÄ14[15tog:%01615server13:16$S14%F%M10]0Ä%>10Ù %T10]11ÄÙ
+#^set status_format2 10À0ÄÄ14[15tog13:0%0 13\(0$S13\)15%F%M10]0Ä%>10Ù %T10]11ÄÙ
+^set status_format2 10À0ÄÄ14[15tog13:0%0 13\(0$S13\)15%F%M10]0Ä%>10ÄÄ%T10]11ÄÙ
+^set status_hold_lines 10, %B
+^set status_mail 10]0ÄÄ10[16mail13(15%M13)
+^set status_mode 14(11+%+14)
+^set status_nick %N
+^set status_notify 14]0ÄÄ10[11a14:10%F
+^set status_oper 11*
+#^set status_server  10[15Server: 16%S10]
+^set status_umode 14(11+%#14)
+^set status_voice +
+^set status_window ^^^^^
+
+xecho -b axur color theme for LiCe by     : Neoteric
+xecho -b Direct any comments to           : timball@sheergenius.com
+xecho -b Changed from the orig "syntax" theme by whitefang (thall@ecad.org)
+xecho -b Butchered into shape by          : SrfRoG
+xecho -b Based on axur script for epic by rogue (www.axur05.org)
+
+# changed from the original syntax theme by whitefang (thall@ecad.org)
+# Thu Aug  5 14:48:10 EDT 1999

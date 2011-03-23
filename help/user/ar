@@ -1,0 +1,15 @@
+Usage: AR [auto reply word(s) ...] 
+   Set or display the words that will trigger 'auto reply'.
+
+   Q:What is auto reply?
+   A:a set of 1 or more words that LiCe will match against
+     all public messages. If any of these words are matched,
+     the nick of the person that said it (them) will be high-
+     lighted, and added to your TAB list. Then, you can just
+     press 'TAB' key to reply to that person via MSG.
+
+   By default, LiCe will make your current nick the auto-reply
+   word.
+
+See also: [SAVE] [TOG] [CTOG] [MTOG] [SENSORS]
+

@@ -1,0 +1,6 @@
+Usage: VOICE <nick1 nick2 ... nicks> 
+   Gives channel voice status (+v) to the specified nick(s) Voice status
+   is required to speak in moderated (+m) channels.
+
+See also: [OP] [DOP] [QUIET] [MASS]
+

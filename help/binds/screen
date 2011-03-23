@@ -1,0 +1,25 @@
+                       LiCe Pseudo-Screen key bindings
+                    Command key:  ctrl-w (^w)   Literal: ^w-a
+ 
+      clear       f            logging     H          + create      c
+      exec (sh)   :            version     v            name        y
+      monitor     M            suspend     z          + query       q
+      other       a            next        n            time        t
+      switch      '            next        <space>      last        ^X
+      help        ?            prev        p            list        w
+      info        i            quit irc    \            refresh     l
+      kill        k            readbuf     <            writebuf    >
+      lastmsg     m            uptime      u          + server      s
+      hide        h          + channel     j            license     ,
+    * grow        g          * shrink      r            balance     b
+    * kill win    K          * next win    N          * prev win    P
+      beep        ^G           opervision  o            jump win    0-9
+      double bar  d            partyline   L            
+    ^ double bar  D 
+ 
+      * - only for shared windows on same screen.
+      + - creates a new window.
+      ^ - all windows
+
+  See also: [basic]
+

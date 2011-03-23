@@ -1,0 +1,27 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS msay {
+  UNLESS (@) {
+    uecho Usage: /MSAY <public text>;
+    RETURN
+  };
+  @ msay_list = mychannels();
+  ^ASSIGN msay_send $*;
+  _proc.loop_send $winserv() PRIVMSG msay_list msay_send;
+  ECHO $fmt.send_public(#* $*)
+};
+#tjh/09

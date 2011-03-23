@@ -1,0 +1,45 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# !IDENT command
+ALIAS _proc.ulw_ident (nick,uh,serv,pass,handle) {
+  @ :myhand = find_in_list(User $nick!$uh);
+  IF (myhand) {
+    FE ($myhand) hand {
+    IF (pass == lice.get(main_PL$hand)) {
+      XQUOTE -S $serv NOTICE $nick :I recognize you there.;
+    };
+    };
+    RETURN;
+  };
+  @ :test = strlen($handle) ? handle : nick;
+  IF (finditem(Userlist $test) < 0) {RETURN};
+  @ :hand = hash_32bit($test);
+  IF (pass != lice.get(main_PL$hand)) {RETURN};
+  @ :host = mask(0 $uh);
+  @ :test = finditem(User$hand $host);
+  IF (test >= 0) {
+    XQUOTE -S $serv NOTICE $nick :I recognize you there too.;
+    RETURN;
+  };
+  IF (setitem(User$hand $numitems(User$hand) $host) >= 0) {
+    _proc.ul_save;
+    XQUOTE -S $serv NOTICE $nick :Added hostmask: $host;
+  }{
+    XQUOTE -S $serv NOTICE $nick :Failed to add hostmask.;
+  };
+};
+#tjh/09

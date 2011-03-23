@@ -1,0 +1,104 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# Word banning/kicking (Orig. YaZoO, rewritten by SrfRoG)
+# improved for LiCe4 by HS (now matches strings too)
+ALIAS bword {
+  IF (left(1 $0) == [-]) {
+     @ :chans = ischannel($1) ? [$1] : C;
+     SWITCH ($0) {
+       (-r) {
+             @ :hash = hash_32bit($chans);
+             ^ON #-raw_irc 26 -"% PRIVMSG $chans :*\\[$bw[$hash]\\]*";
+             ^ON #-raw_irc 30 -"% PRIVMSG $chans :*$bs[$hash]*";
+             ^ASSIGN -bw[$hash];
+             ^ASSIGN -bs[$hash];
+             XECHO -B No longer banning words/strings in $chans;
+            };
+       (-a) {
+             ^ON #-raw_irc 26 -;
+             ^ON #-raw_irc 30 -;
+             purge bw;
+             purge bs;
+             XECHO -B No longer banning words/strings on any channel.;
+            };
+       (-l) {
+             @ :hash = hash_32bit($chans);
+             UNLESS (strlen($bw[$hash]) || strlen($bs[$hash])) {
+               uecho No words are banned in $chans;
+               RETURN;
+             };
+             XECHO -B Banning ${strlen($bw[$hash]) ? numwords($bw[$hash]) ## [ words] : [string]} in $toupper($chans)\: $bw[$hash]${[$bs[$hash]]!=[] ? [ \"$bs[$hash]\"] : []};
+            };
+       (-f) {
+             UNLESS (strlen($1)) {
+              uecho Usage: /BWORD [-f] <#channel> <list of words>;
+              RETURN;
+             };
+             @ :hash = hash_32bit($chans);
+             IF (bw[$hash]) {
+               ^ON #-raw_irc 26 -"% PRIVMSG $chans :*\\[$bw[$hash]\\]*";
+             };
+             #^ASSIGN bw[$hash] $2-;
+             @ bw[$hash] = ischannel($1) ? [$2-] : [$1-];
+             ^ON #-raw_irc 26 "% PRIVMSG $chans :*\\[$bw[$hash]\\]*" {
+                @ :bw.nick = before(! $0);
+                UNLESS (ischanop($bw.nick $2) || !ischanop($servernick() $2)) {
+                 @ :serv = servernum();
+                 @ :chan.hash = hash_32bit($2);
+                 @ :bw.word = common($bw[$hash_32bit($2)] / $rest(1 $3-));
+                 @ :bw.mask = iscset(1 $chan.hash) ? mask(2 $0) : mask(0 $0);
+                 XECHO -W $2 $fmt.banner_kick() Banword kick $ch($2)\: $bw.nick ${bw.word ? [\($bw.word\)] : []};
+                 _proc.quote_add $serv KICK $2 $bw.nick :[WORDBAN]${bw.word ? [ \"$bw.word\"] : []};
+                 IF (iscset(B $chan.hash)) {
+                   _proc.ban $2 $serv $bw.mask $bw.nick $chan.hash;
+                 }{_proc.quote_flush $serv};
+             };};
+             XECHO -B Now banning \"$bw[$hash]\" on $chans;
+            };
+       (-s) {
+             UNLESS (strlen($2)) {
+                uecho Usage: /BWORD [-s] <#channel> <string>;
+                RETURN;
+             };
+             @ :hash = hash_32bit($chans);
+             IF (bs[$hash]) {
+               ^ON #-raw_irc 30 -"% PRIVMSG $chans :*$bs[$hash]*";
+             };
+             #^ASSIGN bs[$hash] $2-;
+             @ bs[$hash] = ischannel($1) ? [$2-] : [$1-];
+             ^ON #-raw_irc 30 "% PRIVMSG $chans :*$bs[$hash]*" {
+                @ :bw.nick = before(! $0);
+                UNLESS (ischanop($bw.nick $2) || !ischanop($servernick() $2)) {
+                 @ :serv = servernum();
+                 @ :chan.hash = hash_32bit($2);
+                 @ :bw.mask = iscset(1 $chan.hash) ? mask(2 $0) : mask(0 $0);
+                 XECHO -W $2 $fmt.banner_kick() Banned-string kick $ch($2)\: $bw.nick \($bs[$chan.hash]\);
+                 _proc.quote_add $serv KICK $2 $bw.nick :[WORDBAN]: \"$bs[$chan.hash]\";
+                 IF (iscset(B $chan.hash)) {
+                   _proc.ban $2 $serv $bw.mask $bw.nick $chan.hash;
+                 }{_proc.quote_flush $serv};
+             };};
+             XECHO -B Now banning string \"$2-\" on $1;
+            };
+       (*) {uecho Usage: /BWORD [-fslra] <#channel> [list of words]};
+     }; 
+  } ELSIF (ischannel($0) && strlen($1)) {
+          ${K}bword -f $0 $1-;
+  } ELSE {
+       uecho Usage: /BWORD [-fslra] <#channel> [list of words];
+  };
+};

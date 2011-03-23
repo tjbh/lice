@@ -1,0 +1,9 @@
+Usage: SENSORS
+  To change numeric sensors used by different protection routines.
+ 
+Note: if bogus sensor values are selected, the program's
+      performance/protection will suffer. If you dont have much IRC
+      knowledge, stick with the default values provided.
+
+See also: [CTOG] [MTOG] [TOG] [SAVE] [AR]
+

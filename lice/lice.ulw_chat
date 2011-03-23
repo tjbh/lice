@@ -1,0 +1,36 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# !CHAT command
+ALIAS _proc.ulw_chat (nick,uh,serv,pass,text) {
+  @ :myhand = find_in_list(User $nick!$uh);
+  UNLESS (myhand) {RETURN};
+  FE ($myhand) hand {
+  UNLESS ($lice.get(main_PL$hand)) {
+    XQUOTE -S $serv NOTICE $nick :You don't have a password set. Type: /MSG $servernick($serv) !HELP PASS;
+    RETURN;
+  };
+  IF (pass != lice.get(main_PL$hand)) {
+    XQUOTE -S $serv NOTICE $nick :Invalid password. $randread($main.reason_error);
+    RETURN;
+  };
+  XEVAL -S $serv {
+    TIMER -REF $hand $rand(9) //^DCC CHAT $nick;
+    QUOTE NOTICE $nick :DCC CHAT request sent. Type: /DCC CHAT $N;
+  };
+  };
+};
+#tjh/09

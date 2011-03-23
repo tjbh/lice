@@ -1,0 +1,35 @@
+Usage: /BAN [-a|-c|-h|-i|-f|-g|-p|-n|-u|-t <secs>] <nick1 nick2 ...>
+Usage: /BAN <ban1 ban2 ...>
+   Channel mode (+b) that makes impossible for the specified nick
+   to JOIN your current channel.
+
+Flags:
+	a	BANs the IP address, eg. *!*user@37.54.65.*
+	c	BANs the country or top-level domain, eg. *!*@*.edu
+	h	BANs the nick's host, eg. *!*@ppp-80.aol.com
+	i	BANs the entire C-class IP, eg. *!*@37.54.65.*
+	p	BANs the nick's host with a pattern *!*@*aol.com
+	n	Simple *!*user@ppp*.host ban mask (default)
+	g	Generic *!*user@*.host ban mask
+	f	Fuck-off ban, eg. *!*@u*-*-*.dialup.planetinternet.be
+	u	BANs only the username used by a nick, eg. *!*rowan@*
+	t	Temporary BAN. The ban is removed after X seconds.
+
+Bantypes: c=country e=eleet n=normal s=site f=fuck-off u=username
+
+ie. /BAN Vassago Lamer1
+    /BAN -af Vassago Lamer1
+    /BAN root@* rowan@* anon*@*
+    /BAN rowan@*.lame.net *@*.aol.com
+    /BAN Vassago!*@*.edu Lamer1
+    /BAN -t 60 Vassago
+
+Note: IP addresses and hacked usernames are appropiately masked and
+      banned. Only one flag can be specified for a given nick. When
+      pattern(s) are used, flags are ignored.
+
+Our ban procedure is smart enough to remove any conflicting bans before
+doing the actual banning.
+
+See also: [user] [KICK] [BWORD] [BOOT] [BEXC] [BINV]
+

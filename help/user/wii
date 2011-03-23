@@ -1,0 +1,8 @@
+Usage: WII [nick1 nick2 ... nicks] 
+   Requests the server WHOIS IDLE information for a nick.
+Note: if the server you are current using, or the server of the
+      nick you are inquiring is lagged, the WHOIS information
+      will be delayed or may not even be given to you.
+
+See also: [W] [WI] [WW]
+

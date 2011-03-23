@@ -1,0 +1,5 @@
+Usage: WW [nick1 nick2 ... nicks] 
+   Requests the server WHOWAS information for nicknames.
+
+See also: [W] [WI] [WII]
+

@@ -1,0 +1,6 @@
+Usage: NSL <ip address | hostname>
+  Attempts to translate the specified IP address to a hostname
+  and viceversa.
+
+See also: [WI] [TOG] [CTOG]
+

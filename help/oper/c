@@ -1,0 +1,13 @@
+Usage: C [<-flag> | <-/+>modes [arguments]] 
+   Changes the channel modes for your current channel. If no modes or
+   arguments are specified, the current channel modes are displayed.
+
+   Flags:
+      -c   Clears all modes from channel.
+      -k   Removes any channel key
+      -1   Changes channel modes to "+inst" only.
+      -2   Changes channel modes to "+nst" only.
+      -3   Changes channel modes to "+nt" only.
+
+See also: [T]
+

@@ -1,0 +1,35 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS signoff {
+  IF (@) {
+    ECHO $fmt.banner_signoff() Signoff: $servernick() \($*\);
+    //QUIT $*;
+  }{
+    @ :signoff.msg = isset(Q) ? [Leaving] : randread($main.reason_quit);
+    IF (strlen($signoff.msg)) {
+      ECHO $fmt.banner_signoff() Signoff: $servernick() \($signoff.msg\);
+      //QUIT $signoff.msg;
+    }{
+      //QUIT Time wasted on IRC: $tdiff(${time() - F})\;
+    };
+  };
+};
+ALIAS exit {signoff $*};
+ALIAS quit {signoff $*};
+ALIAS bye {signoff  $*};
+
+#tjh/09

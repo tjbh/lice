@@ -1,0 +1,6 @@
+Usage: L [channel | -a] 
+   Makes you PART your current channel, or another channel if specified.
+   If "-a", PART from all your channels.
+
+See also: [J] [CHG] [CYCLE]
+

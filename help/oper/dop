@@ -1,0 +1,5 @@
+Usage: DOP <nick1 nick2 ... nicks> 
+   Removes channel operator status (-o) from the specified nick(s)
+
+See also: [OP] [QUIET] [VOICE] [MASS]
+

@@ -1,0 +1,27 @@
+Usage: BEXC <nick [flag] | pattern1 pattern2 ... patterns> 
+   Channel mode (+e) that makes possible for the specified nick
+   to JOIN your current channel even if banned.
+Flags:
+	a	exempts the IP address, eg. *!*@207.240.167.*
+	c	exempts the country or inet organization, eg. *!*@*.net
+	h	exempts the nick's host, eg. *!*@ppp-80.mistik.net
+	f	exempts the nick's host with a pattern *!*@*mistik.net
+	n	Simple *!*user@*host exc mask (default)
+	u	exempts only the username used by a nick, eg. *!*srfrog@*
+
+Exception types: c=country e=eleet n=normal s=site f=freebie u=username
+
+ie. /BEXC SrfRoG			if SrfRoG is online. 
+    /BEXC cag@* srfrog@* lice@*		multiple exempts on usernames.
+    /BEXC srfrog@*.mistik.net *@*.com	exempts on specific hosts
+    /BEXC SrfRoG!*@*.edu		exempts SrfRoG's under *.edu.
+
+Note: IP addresses and hacked usernames are appropiately masked and
+      marked. Only one flag can be specified for a given nick. When
+      pattern(s) are used, flags are ignored.
+
+Our BEXC procedure is smart enough to remove any conflicting exempts before
+doing the actual marking.
+
+See also: [user] [KICK] [BWORD] [BOOT] [BAN] [BINV]
+

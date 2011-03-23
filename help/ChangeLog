@@ -1,0 +1,378 @@
+*** Changes in version 5.2.0
+	- MAJOR changes have been made to LiCe!  Please read these
+	  notes carefully.
+	- /SAVE is no longer required. All settings are written to
+	  a database now in realtime.  By default this is ~/.lice but
+	  you can override this with the IRCSAVE environment variable.
+	- LiCe can be installed anywhere now. No longer is .irc used,
+	  this means that old settings _will not_ be migrated. Sorry!
+	  This also supports system-wide installs, please see GLOBAL
+	  in the help directory for more information.
+	- Added QUITS and removed CTCPs from /CTOG Q
+	- Fixed the friend !UNBAN command.  A side-effect is that /sb
+	  no longer shows "extra" info. Use the -f flag to see details.
+	- Fixed /TOG X when used on multiple servers.
+	- Fixed /PPL to accept a channel arguement as detailed in the
+	  help file.
+	- Servers are now saved correctly (and automatically)
+	- Other small fixes for reported issues.
+
+	- This release will probably have bugs! Please report them!
+
+*** Changes in version 5.1.2
+	- Fixed stupid bug if you enabled/disabled /MTOG E
+
+*** Changes in version 5.1.1
+	- If /MTOG E is enabled, messages are written to disk in encoded
+	  format. This IS NOT encypted and is *simple* to decode. It
+	  only stops casual glances or text searches.
+	- Heavily optimised MTOG E disk writes and initial messages load.
+	  This changes the save format. If you see oddness just /ERASE
+	- Couple of small changes that HSOC noted. Thanks, HSOC.
+	- Fixed mistakes in armitage theme. Reported by cripy_
+	- Added getting started help guide. /HELP QuickStart
+
+*** Changes in version 5.1.0
+	- Dropped the m from the version. No one else is developing LiCe,
+	  this is as official as it gets.
+	- Update fixed! /UPDATE downloads files and gives you any important
+	  messages. This was all SrfRoG's work. I've just enhanced it a bit.
+	- Fixed operview/messageview windows not showing reverse status
+	  lines.
+	- Removed sping.gz from help/user, updated symlink & alias for
+	  the /RLAG command.
+	- Added input prompt to bitchx theme.
+	- Improved the wget routine to ensure that a fresh copy is always
+	  requested. This means if you're behind a cache you won't get stale
+	  news when you /UPDATE
+	- Fixed problem where you got two messages logged in away log on
+	  public flood.
+	- Fixed mask used on public flood. No longer as insane.
+	- Implemented /MTOG E. When on, anything in your away log is also
+	  written to disk. This protects you against client crash/kill.
+	  As soon as you disable it the log file is deleted.  When you
+	  enable it, any messages in the away log are saved to it.
+
+*** Changes in version 5.0.4m (modified)
+	- Ugh. Embarassing mistake in /WTOG T function. Fixed.
+	- We now unload the old theme before we load the new theme.
+	  This removes any custom on's etc the old theme may have set.
+	  Gives themers greater flexibility to changes things, without
+	  disrupting LiCe itself.
+	- Properly fixed tab completion afer harassment from whitefang.
+	- Small UI enhancements to the /TOG and /SENSORS systems. 
+	- Some other updates I'd missed to ensure things work with epic5.
+	  Upside is that oper-vision and ^wj will now complete correctly.
+
+*** Changes in version 5.0.3m (modified)
+	- Added /et to quickly edit the current topic. Thanks whitefang
+	  for enhancement ideas.
+	- Made /help accept two words, i.e. /help oper boot. This mirrors
+	  how help used to work in LiCe4. Requested by whitefang.
+	- Updated all the theme's topicbar's. I'm no designer, feedback/changes
+	  are welcome!
+	- Added two new binds, esc-l -> /PPL & esc-c -> /CLEAR [from Skuld]
+	- Fixed /memo playback
+
+*** Changes in version 5.0.2m (modified)
+	- Reimplemented help.  It's an ugly bit of code but I'm
+          still learning.  It works well though.
+	- Fixed topicbar not updating on theme change.
+	- More optimizing /wtog t routine.
+	- Autonick fixes and user notification clarity.
+	- Fixed environment variable IRCNICK not settings /ar or /sens n
+	  on first time load.
+	- If fmt.whois_bot or fmt.sc_bot is empty, a blank line will no
+	  longer be printed. Requested by whitefang for theme flexability.
+	- Added new theme Erik3.2 by Erik (erik@z2e.org)
+	- whitefang updated the BitchX theme.
+	- Fixed a bunch of themes to support topicbar (/wtog t)
+	- Fixed problem with chanlog -l (reported by whitefang!)
+
+*** Changes in version 5.0.1m (modified)
+	- Unreleased test version with some internal changes and PF loader
+	  fixes.  Bugfixes only! 
+
+*** Changes in version 5.0.0m-beta (modified)
+	- Welcome to the first beta of LiCe5!
+	- Removed left overdebugging codes, cleaned up a few files.
+	- epic5 1.1.2 is the minimum recommended version
+
+*** Changes in version 5.0.0m-rXX (modified)
+	- Changed channel cache formatting, now uses fmt.topic_set. Keeps
+	  consitancy and looks better.
+	- Fixed last few bugs in topline migration. Works as expected now!
+
+*** Changes in version 5.0.0m-r50 (modified)  made by tjh [tim@muppetz.com] 6/06/09
+	- New version by tjh (tim@muppetz.com) working with epic5-1.0.
+	- Converted all LiCe files to PF loader format.
+	- New LiCe website! How long will this one last?	
+	- A lot of fixes for epic5. mask 11, LEAVE->PART, syntax issues.
+	- Fixed tab completion.
+	- Fixed themes to work with removal of REVERSE_STATUS in epic5
+	- Integrated /chanlog from wolf.scr addon for LiCe4. 
+	- Updated /WTOG T to use epic5's toplines feature.
+	- Backed out some of HSOC's changes that seemed user specific.
+	- Reverted /CTOG Q = Deafness.
+	- Logging of invites while away.
+	- Made auto-whois on inital message a toggle (MTOG i)
+	- Added detection of server SILENCE support. A flood will now
+	  activate SILENCE for the isolate time, if server supports it.
+	
+*** Changes in version 5.0.0i (independent) made by HSOC 22/03/04
+	- We welcome EPIC5...
+	- various changes...
+	- /CTOG Q now results in total deafness if preceded by
+	  /CTOG D (now stands for deaf as well).
+	- integraded (copy) howl's help script from epic distribution.
+	- fix wget to parse pages (NONBLOCKING).
+	- fix /NEWS -r (again).
+	- first public release (we are THERE!) 06/05/04
+
+*** Changes in version 4.2.5i (independent) made by HSOC 10/28/03
+	- auto nick change on window queries (^w+q).
+	- new lice.binds to fit latest EPIC4 client.
+	- latest lice tab completion by srfrog.
+	- updated themes.
+	- fixed /TRANS and /NEWS (again!).
+	- support for temporary ignores. (/SENSORS 2)
+	- slightly more efficient flood protection.
+	- /WINDOW KILL (^W+k) will now part you from ^W+j #chans
+	- minor alias refurbishing and code refinement.
+	* NOTICE: it is impossible to follow EPIC4 progress closely so
+	  starting from now I provide minimal fixes to this script _but_
+	  I do not use EPIC4 to its full extend. New scripters are welcome.
+
+*** Changes in version 4.2.2i (independent) made by HSOC - 08/10/01
+	- /CTOG 2 JOIN/PART flood protection. (WILL BAN CYCLE FREAKS)
+	- /BAN can now stack multiple modes. (+bbb)
+	- /NEWS: -s works again, -t is gone.
+	- Fixed possible security risk in some themes occured
+	  while /WTOG T was on.
+	- Major /PARTY improvements + addons.
+	- /COLOR will now kick/ban color text. (depends on /ctog CF)
+	- Sockscanner now needs /CTOG J + /CTOG 2 ON to work.
+	- This includes _ANY_ known bugs so consider it final product.
+
+*** Changes in version 4.2.1i (independent) made by HSOC - 04/22/01
+	- First public release of the tarball
+          to celebrate the EPIC4.1.1 release.
+	- Fix in userlist (now will op existing masks in multiple  handles).
+          (RoboHak)
+	- Added /news -t International Headlines from the New York Times.
+	- Minor refining of the code.
+	- Added blackwind theme  and updated armitage by Voland.
+	- ARE WE THERE YET ???? (mail/suggestions?? hsoc@irc.gr)
+
+*** Changes in version 4.2.0i (independent) made by HSOC - 06/28/00
+       *LOTS* of help from the main man SrfRoG.  Last edit: 10/8/00
+
+	- Fixed word/nick completion for epic4-510+
+	- New improved /BWORD now bans + accepts strings.
+	- New improved flood protection will not ignore.
+	  people who are in the NO-IGNORE list (/IG nick ^msgs, ^all etc)
+	- Default and HS themes now honor EPIC's /IG nick +public switch
+	- New improved cache list now caches nick + time of the ban
+	  when possible.
+	- Savelist updated to accept the + switch infront of masks.
+	- /RBAN -l time removes bans older than "time". (in minutes)
+	- /RBAN -n removes all bans made by this nick.
+	- DEOP FLOOD protection (quite strict and not changeable)
+	- /TOG X works in multiple servers.
+	- New theme "merenta" (HS)
+	- New theme "clice" (whitefang)
+	- New theme "rage" by Chris O'Callaghan.
+	- Will not attempt to remove old bans if already removed.
+	- If you part a channel we keep your sets, dont save. (/CTOG)
+	- /sdcc shows graphic status of dcc transfers.
+	- Improved looks on /NOIG.
+	- Added friendly /SILENCE interface.
+	- Brought back Esc-e to reconnect to splitted servers.
+	- Elite netjoin routine will silence JOINS PARTS CRAP
+	  on netjoins. (we use the isolate client value)
+	- /RTAB [esc+r] now removes nicks from your tablist (thanks sot)
+	- If /MTOG V, LiCe will automatically change to the new nick
+	  in tablist IF the person is in one of your current channels.
+	- Fixed _proc.reply_action _annoying_ bug.
+          (important when you join the same #chans in 2 servers)
+	- /SBAR /MBAR /WBAR /DBAR added. (compact view of togs)
+	- /CTOG now will set your normal channel togs if you are not
+          in any channel.
+	- /RAR removes auto-reply buffer.
+	- /GDCC - skuld's gdcc by popular demand.
+	- /CTOG D,J and N now actually work.
+	- Will ban clones if tog J is on (according to $FLOOD_AFTER set)
+	- Shows if a mask bans more than one person (if mtog v is on)
+	- Added /ITIME Swatch's World Internet Time. 
+	- /TRANS fixed by SrfRoG.
+	- Probably lots of minor fixes not worth mentioning.
+	- Fixed friend command !PASS - reported by fahren
+	- LiCe will no longer try to ignore servers
+	- Heavy optimizations to userlist routines
+	- /REOP wont try to op yourself - reported by Q
+	- New "/WTOG T" for titlebar ... the text is setup from the themes.
+	- Major /ADCC revamp, it now supports "files with spaces". (srfrog)
+	- /DCC RESUME now resumes files regardless of $DCC_PATH
+	- New /TOG R will make LiCe scan your channels and cycle for ops
+	- /rdcc -a works as expected
+	- Added /trace, /refriend, /fwall based on skuld
+	- /SCAN scans your current channel for insecure SOCKS hosts.
+	  We use an indepedent c proggie for this purpose
+	  Also when /CTOG J is on and /TOG Q is off we scan hosts on join.
+          You probably need to reompile sscan.c
+	- /WTOG A allows to create seperate DCC/MSG windows.
+	- Added cummulative deop/kick protection (checks for slow attempts)
+	- Added adressbook (/BOOK) for /IMAIL (idea by Boldtrick)
+	- Added /protect [esc+`] manually isolates the client and v/versa
+        - /NEWS now checks for headlines from Reuters.
+        - LOTS of trivial fixes.
+
+*** Changes in version 4.1.8,9 - 01/04/00 (Emergency Release 2)
+
+	- Fixed more problems with themes UGH!
+	- New "/MTOG 2" will toggle weather or not to touch
+	  the TAB reply list from auto-reply (public).
+	- Fixed a problem detecting IRC Usermodes from env.
+
+*** Changes in version 4.1.7 - 01/04/00 (Emergency Release)
+
+	- Fixed lame bug in userlist that would render it useless - found by
+	  fahren
+	- /BAN wont remove/add the same ban (redundant) - found by fahren
+	- Fixed some problems with themes.
+
+*** Changes in version 4.1.6 - 01/03/00
+
+	- Fixed last possible TAB bug, bleh - reported by Q
+	- Fixed bug in /MTOG T - reported by Q
+	- Auto Unban (/SENSORS 1) is disabled by default, to
+	  preserve the old behavior. /BAN -t will override this
+	  when used, as it should.
+	- Fixed userlist cache for nick changes - reported by fahren
+	- Fixed auto-unban for bans with "\"'s - reported by Charvel
+	- Added a small delay to auto-nick to avoid self-nick collides,
+	  if this works ok, i'll add it to /SENSORS - suggested by Charvel
+	- Fixed /SET REALNAME not to override your IRCNAME environment
+	  variable - reported by Martin Lucina
+	- Changed the syntax for /TRANS, seems some people didnt like the
+	  old one.
+	- delayed op/voice on join will only happen if the user isnt op/voice
+	  yet.
+	- Fixed problem with patterns in the userlist - reported by fahren
+	- Fixed kick when setting any keys - reported by fahren
+	- The ban cache gets updated properly now - reported by fahren
+	- Fixed ignores being saved over and over.
+	- Keys f1-f12 point to the respective window, this might change
+	  in a future version (and it will).
+	- Added two new themes (ktheme, khaze) from invalid
+	- Added new theme (simplex) from Q
+	- Added new theme (revamped lice3) from whitefang
+	- Fixed /NEWS further, send me more comments on sites to add!!
+	- Using /SET OUTPUT_REWRITE for timestamps now.
+
+*** Changes in version 4.1.5 - 11/29/99
+
+	- Fixed crash bug when trying to reconnect a server.
+	- Added /IGNORE PARTS to "/CTOG Q"
+	- Using new /SENSORS from whytefang
+	- All bans are auto-remove by default, check /SENSORS
+	- User /IGNORE's are now saved! (Channels always have
+          saved under /CTOG)
+	- Auto AWAY will only happen on the server you are idle,
+	  and mark you away only in that server.
+	- Auto nick won't happen if a netsplit was detected recently,
+	  to avoid nick collisions.
+	- Fixed /TOG X + Auto AWAY mess - reported by HSOC
+	- Fixed nicks with slashes in TAB completion - reported by HSOC
+	- Fixed old obscure bug in TAB completion, hopefully we're
+	  really fixed now.
+	- Fixed BITCH MODE - reported by many people
+	- Fixed Nethack protection - reported by wito
+	- New command /NEWS added. ALPHA VERSION
+	- New themes from HSOC
+
+*** Changes in version 4.1.4 - 11/03/99 (Emergency Release)
+
+	- Fixed broken /BAN
+	- Fixed broken tab completion
+	- Fixed broken /SPING
+
+*** Changes in version 4.1.3 - 10/31/99
+
+	- New fmt hook "ftm.wallop_server" to break
+	  apart oper/server wallops. Also fixed fmt.wallop.
+	- AutoNick (TOG A) now works from /SENSORS and
+	  updates automatically.
+	- Added "/WTOG C" for dedicated DCC CHAT window.
+	- Added "/MTOG 1" for alarming you of auto-reply
+	  activity in a window that isnt your current one.
+	- New option "-t" for /BAN to specify temporary bans.
+	- Added "/CTOG 1" to toggle the effectiveness of
+	  flood bans.
+	- Syntax of /DEF was changed due to conflicts with
+	  phrase look ups.
+	- Syntax of /TRANS was changed to add relay options.
+	- /RLAG enhanced to handle SERVER PING responses. Also,
+	  aliases to /SPING for compatibility with the old skuld3
+	  command.
+	- Added new color pics for /PIC contributed by awol.
+	- Added command /NEWS to read headlines from some popular
+	  online news sites.
+	- Some changes in /SENSORS please check 'em out.
+	- New themes added, check /THEME.
+
+*** Changes in version 4.1.2 - 09/17/99
+
+	- Fixed bug in theme "lice3" found by whitefang
+	- Fixed bug in banlist found by aS2
+	- Fixed another bug in the userlist found by sage
+
+*** Changes in version 4.1.1 - 09/11/99
+
+	- Fixed more TAB bugs found.
+	- Fixed DCC RESUME/DCC AUTOGET logic bugs.
+	- Added new command /PPL, a port of skuld3's command.
+	- Fixed +AV/+AO bug, it was an EPIC4 logic bug.
+	- Changed the behavior of /BAN to allow multiple ban modes
+	  for the same user. See "/help oper ban"
+
+*** Changes in version 4.1.0 - 09/10/99
+
+	- Minor fixes to TAB completion, it works like the old one now.
+	- Added new command /TRANS contributed by whitefang. It uses
+	  babelfish (http://babelfish.altavista.com) to translate text
+	  from different languages. See "/HELP user trans"
+	- Changed "/CTOG O" (note reminders) to "/CTOG E".
+	- Added two new channel toggles: "/CTOG O" and "/CTOG V" to
+	  control wether or not to kick ops/voices when they flood
+	  the channel. "/CTOG O" is on by default - dont kick ops on flood.
+	- Server-oriented tab completion for /MSG (and friends).
+	- Moved "/TOG V" (extended msgs) to "/MTOG", makes more sense there.
+	- Moved "/TOG W" (msgs window) to "/WTOG", makes more sense there.
+	- Added support for new EPIC4 /SAVE command. Load saved server list.
+
+*** Changes in version 4.0.11 - 07/25/99
+
+	- Rewrote TAB completion, again.
+	- Fixes to WINDOW creation/switching mechanisms.
+	- Many partyline fixes.
+
+*** Changes in version 4.0.10 - 07/24/99
+
+	- ChangeLog added back by popular demand.
+	- New command /WTOG to control options for windows
+	- Support for IrcNet's +e/+I channel modes. New commands:
+	  /BEXC /BINV /SI /SE /REXC /RINV to manipulate the +e/+I
+	  lists exactly like bans.
+	- New BitchX theme contributed by whytefang.
+	- New syntax theme contributed by whytefang.
+	- Fixed several bugs in the partyline code.
+	- New toggle option "/MTOG H" to highlight the auto-reply
+	  word(s) in the text string. VERY CPU EXPENSIVE!
+	- New theme routines.
+	- Improved TAB completion. Faster and smaller, the completion
+	  works anywhere in the string!
+	- Improvements on existant code overall.
+
+*** Changes in version 4.0.9 - Unreleased
+

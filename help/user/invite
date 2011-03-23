@@ -1,0 +1,15 @@
+Usage: INVITE <nick> [channel] 
+Usage: INVITE <channel> <nick1 ... nickN> 
+Usage: INVITE <channel to> <channel from> 
+   The first form is to INVITE a nick to your current channel or any
+   channel you specify (that you are in). The second form is INVITE all
+   the nicks from a channel to the current channel you are in, you must be 
+   inside both channels for this to be successful.
+ie.
+    /INVITE asmodean #LiCe	: invites asmodean to #LiCe.
+    /INVITE #LiCe mikh ashee	: invites mikh and ashee to #LiCe.
+    /INVITE SrfRoG		: invites SrfRoG to your current channel.
+    /INVITE #LiCe #HTML		: invites #HTML users to #LiCe.
+
+See also: [N] [M] [oper]
+

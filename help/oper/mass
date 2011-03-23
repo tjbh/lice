@@ -1,0 +1,19 @@
+Usage: MASS <-flag> [pattern [reason of kick]]
+   Performs multiple commands in your current channel.
+Flags:
+	-o	MassOP (+o) non-op'd nicks.
+	-d	MassDEOP (-o) op'd nicks.
+	-v	MassVOICE (+v) non-op'd nicks.
+	-q	MassQUIET (-v) voice'd nicks.
+	-k	MassKICK all nicks.
+	-l	MassKICK non-op'd nicks (lamers)
+i.e
+	/MASS -o *@*usf.edu	MassOP all nicks from *@*usf.edu
+	/MASS -l *@*.com	MassKICK non-opped nicks at *@*.com
+	/MASS -v		MassVOICE all nicks that match *@*
+	/MASS -v *@*		Same as above.
+	/MASS -l *.edu school sux!!!
+	/MASS -k *.com paying for internet is lame!!!!
+
+See also: [OP] [DOP] [VOICE] [QUIET] [KICK]
+

@@ -1,0 +1,6 @@
+Usage: M <nick|channel> <message> 
+Usage: M <nick1,...,nicks,channel1,...,channels> <message> 
+   Sends a MSG to nick(s) or channel(s)
+
+See also: [N] [OOPS] [RELM]
+

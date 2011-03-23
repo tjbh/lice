@@ -1,0 +1,51 @@
+Usage: NOTE -dup <from> <to> 
+Usage: NOTE -get <nick1 [nick2 ... nicks]>
+Usage: NOTE -get <channel1 [channel2 ... channels]>
+Usage: NOTE -set <nick|channel> <notes...> 
+Usage: NOTE -rem <nick|channel [...] | *> 
+
+   This command handles note reminders for nicknames. The
+   notes will be stored in a file and remain until you remove
+   them.
+
+   Notes are activated either manually or automatically (See CTOG
+   and MTOG). When automatic, note retrival is activated by
+   WHOIS, WHOWAS and/or JOIN.
+
+   Options:
+	-get	Get a previously saved note.
+	-rem	Remove notes for the specified nickname/channel.
+	-set	Creates or appends to notes. If the note
+			doesn't exists it's created, else the
+			new note is appended to the old one.
+	-dup	Duplicates a note to another.
+
+  Notes:
+	When setting a note, the previous note(s) are not removed.
+	You must remove these first if you want to keep the list small.
+
+	Also, you can get and remove multiple notes by specifying
+	additional nicknames. Yes, you can set note for channels, which
+	will be visible to you when you join the channel.
+
+ie.
+    Set a new note:
+	/NOTE -set SrfRoG I owe him $20 dollars.
+
+    View a previous note:
+	/NOTE -get SrfRoG
+
+    Duplicate this note to 'ashee':
+        /NOTE -dup SrfRoG ashee
+
+    Discard all notes for 'SrfRoG':
+	/NOTE -rem SrfRoG
+
+    Discard _all_ stored notes:
+	/NOTE -rem *
+
+    Set a note for #LiCe:
+        /NOTE -set #lice The LiCe Website @ http://www.mistik.net/lice
+
+See also: [MEMO] [CTOG] [MTOG]
+

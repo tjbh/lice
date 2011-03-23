@@ -1,0 +1,9 @@
+Usage: OOPS <nick> 
+   If you send a MSG to someone for which you didnt intend to send the MSG 
+   originally, specify the "correct" nick and /OOPS will apologize and
+   send the message to the correct nick.
+
+   Edit the file "~/.epic/oops.reasons" to customize the message.
+
+See also: [M] [N] [RELM]
+

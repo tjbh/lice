@@ -1,0 +1,73 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+#
+# Modified by tjh 2010
+#
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS _proc.setup_wtog {
+  iecho +---- Current LiCe Window Toggle Settings -----------------------+;
+  iecho | Description                              | Tog | Set | Default |;
+  iecho +------------------------------------------+-----+-----+---------+;
+  iecho Allow seperate dedicated windows.(/WTOG CW)|  A  | $[3]isset.show($iswset(A)) | Off;
+  iecho Always allow beeps on hidden windows.      |  B  | $[3]isset.show($iswset(B)) | Off;
+  iecho Dedicated DCC CHAT window.                 |  C  | $[3]isset.show($iswset(C)) | Off;
+  iecho Use double status bars in new windows.     |  D  | $[3]isset.show($iswset(D)) | On;
+  iecho Dedicated DCC transfer Status window.      |  E  | $[3]isset.show($iswset(E)) | Off;
+  iecho Use the global status titlebar.            |  T  | $[3]isset.show($iswset(T)) | On;
+  iecho Dedicated MSG window. No-scroll MSG reading|  W  | $[3]isset.show($iswset(W)) | Off;
+  INPUT "Letters to change toggles (ENTER to skip): " IF (@) {wtog $*}
+};
+ALIAS wtog {
+  UNLESS (@) {
+    _proc.setup_wtog;
+    RETURN;
+  };
+  FEC ($toupper($0)) _t {
+    IF (iswset($_t)) {
+      @ lice.set(main.wset $strip($_t $lice.get(main.wset)));
+      if (_t == [C]) {//^WINDOW SHOW CW KILL;//^WINDOW LEVEL ALL};
+      if (_t == [T]) {
+                       FE ($windowctl(REFNUMS)) wn {WINDOW $wn TOPLINES 0};
+                     };
+      if (_t == [E]) {//^WINDOW SHOW SDCC KILL;//^WINDOW LEVEL ALL};
+      if (_t == [W]) {//^WINDOW SHOW MW KILL;//^WINDOW LEVEL ALL};
+    }{
+      @ lice.set(main.wset $pass(ABCDETW $lice.get(main.wset) $_t));
+      if (_t == [C]) {
+                      IF (iswset(A)) {
+                         win_new CW;
+                         //^WINDOW LEVEL NONE DOUBLE OFF NOSERV STATUS_FORMAT " [Win: %W%R%F] Chat Window %>-- Type /WTOG C to finish -- ";
+                      }{
+                      //^WINDOW NEW NAME CW LEVEL NONE DOUBLE OFF SIZE 8 NOSERV STATUS_FORMAT " Chatting Window %>-- Type /WTOG C to finish -- ";//^WINDOW LAST;//^WINDOW LEVEL ALL;
+                      };
+                     };
+       if (_t == [T]) {
+         $_proc.redraw_tl(1);
+       };
+      if (_t == [E]) {//^WINDOW NEW NAME SDCC LEVEL NONE DOUBLE OFF SIZE 8 NOSERV STATUS_FORMAT " DCC transfer Status Window %>-- Type /WTOG E to finish -- ";//^WINDOW LAST;//^WINDOW LEVEL ALL};
+      if (_t == [W]) {
+                      IF (iswset(A)) {
+                         win_new MW;
+                         //^WINDOW LEVEL NONE DOUBLE OFF NOSERV STATUS_FORMAT " [Win: %W%R%F] Message Window %>-- Type /WTOG W to finish -- ";
+                      }{
+                       //^WINDOW NEW NAME MW LEVEL NONE DOUBLE OFF SIZE 8 NOSERV STATUS_FORMAT " Message Window %>-- Type /WTOG W to finish -- ";//^WINDOW LAST;//^WINDOW LEVEL ALL;
+                      };
+                     };
+    };
+  };
+  UNLESS (lice.get(main.wset)) {@lice.del(main.wset)};
+  XECHO -B Window toggles now: $lice.get(main.wset);
+};
+#tjh/09

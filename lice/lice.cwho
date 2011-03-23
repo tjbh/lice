@@ -1,0 +1,77 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# Cache'd WHO - brief WHO info on-the-fly
+# flags idea by SpyDer-X
+ALIAS cwho {
+  ^LOCAL cw.mask *!*;
+  @ :cw.foo = getopt();
+  @ :cw.opts = [];
+  @ :cw.flag = 0;
+  @ :cw.cnt = 1;
+  WHILE (cw.opts = getopt(optopt optarg alov $*)) {
+    SWITCH ($cw.opts) {
+      (a) { @ :cw.flag = 1 };
+      (l) { @ :cw.flag ^= 2 };
+      (o) { @ :cw.flag ^= 4 };
+      (v) { @ :cw.flag ^= 8 };
+      (!) { XECHO -B Invalid option \"$optopt\" };
+    };
+  };
+  IF (optarg) {
+    @ :cw.mask = uhc($word(0 $optarg));
+    ^ASSIGN -optarg;
+  };
+  UNLESS (cw.flag) { @ :cw.flag = 1 };
+  @ :cw.hash = hash_32bit($C);
+  cecho ------ Nick ---- User@Host ---------------------------;
+  FE ($channel()) cw.1 {
+    @ :cw.nick = rest(2 $cw.1);
+    @ :cw.fmode = get_cookie(User $C $cw.nick $cw.hash);
+    @ :cw.smode = get_cookie(Shit $C $cw.nick $cw.hash);
+    @ :cw.type = [];
+    IF (cw.fmode > 0 || cw.smode > 0) {
+     @ :cw.type = [${ cw.fmode ? [\(User \+$_proc.ul_m2a(User $cw.fmode)\)] : [${ cw.smode ? [\(Shit \+$_proc.ul_m2a(Shit $cw.smode)\)] : [] }]}];
+    };
+    @ :cw.omode = left(1 $cw.1);
+    IF (cw.omode == [@] && (cw.flag & 1 || cw.flag & 4)) {
+        @ :cw.host = userhost($cw.nick);
+        IF (pattern($cw.mask ${cw.nick}!${cw.host})) {
+          cecho [$[-3]cw.cnt] @$[9]cw.nick $cw.host $cw.type;
+          @ cw.cnt++;
+        };
+        CONTINUE;
+    };
+    @ :cw.vmode = mid(1 1 $cw.1);
+    IF (cw.vmode == [+] && (cw.flag & 1 || cw.flag & 8)) {
+        @ :cw.host = userhost($cw.nick);
+        IF (pattern($cw.mask ${cw.nick}!${cw.host})) {
+          cecho [$[-3]cw.cnt] +$[9]cw.nick $cw.host $cw.type;
+          @ cw.cnt++;
+        };
+        CONTINUE;
+    };
+    IF (cw.omode == [.] && (cw.flag & 1 || cw.flag & 2)) {
+        @ :cw.host = userhost($cw.nick);
+        IF (pattern($cw.mask ${cw.nick}!${cw.host})) {
+          cecho [$[-3]cw.cnt]  $[9]cw.nick $cw.host $cw.type;
+          @ cw.cnt++;
+        };
+    };
+  };
+  UNLESS (cw.cnt > 1) {XECHO -B No matches for \"$cw.mask\"};
+};
+#tjh/09

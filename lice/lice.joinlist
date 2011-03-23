@@ -1,0 +1,135 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS _proc.join_clones (nick,host,chan,hash,serv) {
+  get_user_match $chan $mask(2 $^*^%host) clone_list;
+  IF (#clone_list > 1 && !match($mask(2 $host) *!$X)) {
+    @ :m.nick = servernick($servernum());
+    @ :c.host = after(@ $host);
+    XECHO -W $chanwin($chan) $fmt.banner_alert() ${#clone_list - 1} Clone$plural(${#clone_list - 1}) on $ch($chan)\: $c.host ${ismset(V) ? [\(] ## clone_list ## [\)] : []};
+    IF (iscset(B $hash) && #clone_list >= FLOOD_AFTER && ischanop($m.nick $chan)) {
+       _proc.ban $chan $serv $c.host $nick $hash;
+       IF (iscset(C $hash)) {
+          @ c.reason = [[Possible Clones] $c.host];
+          _proc.loop_kick $serv $chan clone_list c.reason;
+       }{_proc.quote_flush $serv};
+    };
+  };
+  ^ASSIGN -clone_list;
+};
+
+ALIAS _proc.join_shit (nick,uh,chan,hash,serv) {
+  @ :myhand = find_in_list(Shit $nick!$uh);
+  UNLESS (myhand) {RETURN};
+  FE ($myhand) hand {
+  @ :test = (word(0 $getitem(ChanShit$hand 0)) == [#*]) ? 0 : matchitem(ChanShit$hand $chan *);
+
+  IF (test < 0) {RETURN};
+  @ join.test = 1;
+  @ :item = getitem(ChanShit$hand $test);
+  @ :mode = word(1 $item);
+  IF ((mode & 16) && iscset(F $hash)) {
+    @ :lame = getitem(Shit$hand $rmatchitem(Shit$hand $nick!$uh));
+    @ :ban = pass(! $lame) ? lame : [*!] ## lame;
+    _proc.ban $chan $serv $ban $nick $hash;
+  }{
+    FEC (ANCFHU) flag {
+      @ :ind = index($flag $temp.mode_list.Shit);
+      @ :bit = 1 << ind;
+      IF (mode & bit) {
+        _proc.ban $chan $serv $makeban(B$flag $uh) $nick $hash;
+        BREAK;
+      };
+    };
+  };
+  IF ((mode & 128) && iscset(C $hash)) {
+    @ :msg = restw(2 $item);
+    @ :reason = msg ? msg : randread($main.reason_kick);
+    _proc.quote_add $serv KICK $chan $nick :Shit: $reason;
+  };
+  _proc.quote_flush $serv;
+  ^ASSIGN Cookie.Shit[$hash][$hash_32bit($nick)] $hand $mode;
+
+  };
+
+};
+ALIAS _proc.join_bans (nick,uh,chan,hash,serv) {
+  @ :jb.t = rmatchitem(B$serv\-$hash $nick!$uh);
+  IF (jb.t < 0) {RETURN};
+  @ join.test = 1;
+  _proc.quote_add $serv KICK $chan $nick :$getitem(B$serv\-$hash $jb.t) banned on $chan\;
+  _proc.quote_flush $serv;
+};
+
+ALIAS _proc.join_delayed_modes {
+  FOREACH delayed_modes serv {
+    WHILE (:tmp = shift(delayed_modes.$serv)) {
+      @ :line = split(: $tmp);
+      @ :chan = word(0 $line);
+      @ :mode = word(1 $line);
+      @ :nick = word(2 $line);
+      if (ischanop($nick $chan) || (mode == [+v] && ischanvoice($nick $chan))) {CONTINUE};
+      _proc.quote_add $serv MODE $line;
+    };
+    _proc.quote_flush $serv;
+  };
+};
+ALIAS _proc.join_usr1 (nick,uh,chan,hash,serv) {
+  @ :myhand = find_in_list(User $nick!$uh);
+  UNLESS (myhand) {RETURN};
+
+  FE ($myhand) hand {
+
+  @ :test = (word(0 $getitem(ChanUser$hand 0)) == [#*]) ? 0 : matchitem(ChanUser$hand $chan *);
+  IF (test < 0) {CONTINUE};
+  @ :item = getitem(ChanUser$hand $test);
+  @ :mode = word(1 $item);
+  IF ((mode & 33) == 33) {PUSH delayed_modes.$serv $chan:+o:$nick}{
+  IF ((mode & 513) == 513) {PUSH delayed_modes.$serv $chan:+v:$nick};};
+  IF (mode & 1) {^TIMER -REF DELAYMODE $lice.get(main.op) _proc.join_delayed_modes};
+  IF (mode & 8) {XQUOTE -S $serv PRIVMSG $chan :[$nick] $restw(2 $item)};
+  ^ASSIGN Cookie.User[$hash][$hash_32bit($nick)] $hand $mode;
+
+  };
+
+};
+ALIAS _proc.join_usr2 (nick,uh,chan,hash,serv) {
+  @ :myhand = find_in_list(User $nick!$uh);
+  UNLESS (myhand) {RETURN};
+
+  FE ($myhand) hand {
+
+  @ :test = (word(0 $getitem(ChanUser$hand 0)) == [#*]) ? 0 : matchitem(ChanUser$hand $chan *);
+  IF (test < 0) {CONTINUE};
+  @ :item = getitem(ChanUser$hand $test);
+  @ :mode = word(1 $item);
+  IF (mode & 8) {
+    _proc.quote_add $serv PRIVMSG $chan :[$nick] $restw(2 $item);
+    _proc.quote_flush $serv;
+  };
+  ^ASSIGN Cookie.User[$hash][$hash_32bit($nick)] $hand $mode;
+
+  };
+
+};
+ALIAS _proc.join_ip (nick,host,chan) {
+  @ :temp = after(@ $host);
+  IF (isdigit($right(1 $temp))) {
+    @ :h_name = iptoname($temp);
+    XECHO -W $chanwin($chan) $fmt.banner_join() $nick [$temp is ${h_name?h_name:[Unknown]}];
+  };
+};
+#tjh/09

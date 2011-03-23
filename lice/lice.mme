@@ -1,0 +1,27 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+alias mme {
+  UNLESS (@) {
+    uecho Usage: /MME <action>;
+    RETURN;
+  };
+  @ mme_list = mychannels();
+  @ mme_send = chr(1) ## [ACTION $*] ## chr(1);
+  _proc.loop_send $winserv() PRIVMSG mme_list mme_send;
+  ECHO $fmt.send_action(#* $*);
+};
+#tjh/09

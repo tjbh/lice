@@ -1,0 +1,9 @@
+Usage: NOTIFY <<+/->nick1 <+/->nick2 ... <+/->nicks> 
+   Add, removes or lists nicks from your notify list.
+ie. /NOTIFY +SrfRoG +LiCe -Vassago
+            adds SrfRoG and LiCe, removes Vassago.
+    /NOTIFY
+            lists the nicks present and absent.
+
+See also: [USERLIST] [SENSORS]
+

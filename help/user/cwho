@@ -1,0 +1,15 @@
+Usage: CWHO [[flag] [nick!user@host pattern]] 
+   Fast WHO list of your current channel, or the channel specified if
+   you're on more than one, using the LiCe cache.
+
+Flags:
+	-a	ALL. Display all users matching n!u@h (default)
+	-o	OPS. Displays channel ops for a given n!u@h pattern.
+	-l	NONOPS. Displays channel non-ops for a given n!u@h pattern.
+	-v	VOICES. Displays channel voices for a given n!u@h pattern.
+
+   The default n!u@h pattern is "*!*" to match all users. If the users
+   have Userlist/Shitlist status, their modes are displayed accordingly.
+
+  See also: [PPL] [SC] [SB] [FRIEND] [SHIT]
+

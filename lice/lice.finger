@@ -1,0 +1,35 @@
+# Finger script III by Daemon.  (4/05/93)
+# Updated                       (4/10/93)
+#       Updated for ircd2.8.3, ircII2.2.2
+# Updated                       (3/07/96)
+#       Updated for EPIC3 by hop
+# Modified for LiCe by SrfRoG   (11/04/97)
+
+PACKAGE LiCe
+
+ALIAS finger {
+  ^EXEC -close %finger
+  SWITCH ($0) {
+    () {
+      uecho Usage: /FINGER [[-h] <nickname>][[user]@hostname]
+    }
+    (-h) {
+      USERHOST $1 -CMD UNLESS ([$4]==[<UNKNOWN>]) {
+        EXEC -name finger finger @$4
+      }{
+        XECHO -B $1: no such nick.
+      }
+    }
+    (*@*) {
+      EXEC -name finger finger $0
+    }
+    (*) {
+      USERHOST $0 -CMD UNLESS ([$4]==[<UNKNOWN>]) {
+        EXEC -name finger finger $strip(!#^%&*~-=+<>()`'$$\\| $3)\@$4
+      }{
+        XECHO -B $0: no such nick.
+      }
+    }
+  }
+}
+#

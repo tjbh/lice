@@ -1,0 +1,5 @@
+!IDENT <password> [handle]
+   This lets me recognize you from a new address.  You must
+   use your password (the one you set with PASS) so I know
+   it's really you.  If you're using a different nickname
+   than your original handle, you must provide the handle too.

@@ -1,0 +1,256 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+^ASSIGN news_page.0 http://lice.muppetz.com/sites/lice.muppetz.com/files/updates.txt;
+#^ASSIGN news_page.1 http://slashdot.org/ultramode.txt;
+^ASSIGN news_page.1 http://slashdot.org/slashdot.xml;
+@ news_page.2 = [http://www.hri.org/news/greek/mpeb/] ## strftime(%Y) ## [/last.html];
+@ news_page.3 = [http://www.hri.org/news/greek/eraen/] ## strftime(%Y) ## [/last.html];
+^ASSIGN news_page.4 http://reuters.com/news.jhtml;
+#^ASSIGN news_page.5 http://www.nytimes.com/pages/world/index.html;
+#^ASSIGN news_page.5 http://www.nytimes.com/pages/world/text/index.html;
+#^ASSIGN news_page.5 http://www.nytimes.com/pages/aponline/world/index.html;
+#^ASSIGN news_page.5 http://dailynews.yahoo.com/htx/nm/wl/index.html;
+^ASSIGN news_func.0 _proc.read_lice;
+^ASSIGN news_func.1 _proc.read_slashdot;
+^ASSIGN news_func.2 _proc.read_mpa;
+^ASSIGN news_func.3 _proc.read_era;
+^ASSIGN news_func.4 _proc.read_reut;
+#^ASSIGN news_func.5 _proc.read_times;
+#^ASSIGN news_func.5 _proc.read_yahoo;
+
+# Associated Press via the New York Times
+#ALIAS _proc.read_times (fd) {
+#  UNLESS (eof($fd)) {
+#    XECHO -C $center($word(0 $geom()) Associated Press International Headlines)
+#    XECHO -C $repeat($word(0 $geom()) =)
+#  }
+#  @ :line = 0
+#  UNTIL (eof($fd)) {
+#     @ :text = read($fd)
+#     IF (match(Index $text)) > 0 {
+#        @ :apnews = text
+#XECHO -C $text
+#        for ( @ xx = 10, xx > 0, @ xx-- ) {
+#@ :rrnews = 
+#}}}
+# New York Times International News
+#ALIAS _proc.read_times (fd) {
+#  UNLESS (eof($fd)) {
+#    XECHO -C $center($word(0 $geom()) New York Times International Headlines)
+#    XECHO -C $repeat($word(0 $geom()) =)
+#  }
+#  @ :line = 0
+#  UNTIL (eof($fd)) {
+#     @ :text = read($fd)
+#     IF (match(<NYT_HEADLINE> * $text) > 0 && strlen($before(< $restw(4 $text)))) {
+#        @ :line++
+#        #XECHO -C $cparse(%C$[2]line%n - %c$before(< $restw(4 $text))%n)
+#        XECHO -C $cparse(%C$[2]line%n - %c$before(< ${match(*+1* $text) ? after(4 > $text) : after(2 > $text)})%n)
+#    }
+#  }
+#}
+
+# Yahoo World news
+#ALIAS _proc.read_yahoo (fd) {
+#  UNLESS (eof($fd)) {
+#    XECHO -C $center($word(0 $geom()) Yahoo World News)
+#    XECHO -C $repeat($word(0 $geom()) =)
+#  } 
+#  @ :cnt = 0
+#  UNTIL (eof($fd)) {
+#     @ :text = read($fd)
+#     IF (match(*dailynews.yahoo.com*font?size="1"* $text) > 0) {
+#         XECHO -C $text
+#     }
+#  }
+#}
+
+# Reuters news
+ALIAS _proc.read_reut (fd) {
+  UNLESS (eof($fd)) {
+    XECHO -C $center($word(0 $geom()) Reuters Around the Globe);
+    XECHO -C $repeat($word(0 $geom()) =);
+  };
+  @ :cnt = 0;
+#  @ :rcnt = 0
+  UNTIL (eof($fd)) {
+     #@ :rcnt++
+     @ :text = read($fd);
+#     IF (match(*"newsHeadlineLarge"* $text) > 0) {
+#        @ :cnt++
+        #XECHO -C $cparse(%C$[-2]cnt%n - %c$afterw(class="bigNewslink"> $text)%n)
+#        XECHO -C $cparse(%C$[-2]cnt%n - %c$after(> $before(< $restw(2 $text)))%n)
+#     }
+#     IF (match(*"alt_sideHeadline"* $text)) {
+#           @ :cnt++
+#           XECHO -C $cparse(%C$[-2]cnt%n - %c$after(> $before(< $restw(2 $text))) %n)
+#     }
+     IF (match(*\(Reuters\)* $text) > 0) {
+         #XECHO -C ${cnt==[1] ? cparse(%c$rest(16 $text)%n) : cparse(%c$rest(6 $text)%n)}
+         XECHO -C $cparse(%c $text %n);
+     };
+     IF (match(*"newsArticle.jhtml* $text) && !match(*valign* $text)) {
+           @ :cnt++;
+           XECHO -C $cparse(%C$[-2]cnt%n - %c$after(> $before(< $restw(2 $text))) %n);
+     };
+     IF (match(*sectionNewsHead* $text)) {
+           XECHO -C $cparse(%C**%n - %c$before(-3 < $after(3 > $text)));
+#           XECHO -C $cparse(%C$[-2]cnt%n - %c$after(> $before(< $restw(2 $text))) %n)
+     };
+     IF (match(*"newsDate"* $text)) {
+           XECHO -C $cparse(%C**%n @ %c$before(< $after(> $text)) %n);
+};
+     IF (match(*Updated:* $text)) {
+           XECHO -C $cparse(%C** - $text %n);
+};
+#        IF (strlen($afterw(class="Newslink"> $text))) {
+#           @ :cnt++
+#           XECHO -C $cparse(%C$cnt%n - %c$afterw(class="Newslink"> $text)%n)
+#        }
+#     }
+#
+#     IF (match(*Reformat headlines if necessary* $text) > 0) {@ :bnct = rcnt}
+#     IF (rcnt == (bnct + 4) && cnt != [0]) {
+#     #IF (rcnt == (bnct + 2) && rcnt != [2]) {
+#        @ :cnt++
+#        XECHO -C $cparse(%C$[-2]cnt%n - %c$strip($chr(13) $text)%n)
+#        #$rest(27 $text))%n)
+#     }
+  }
+}
+
+# The Hellenic Radio
+ALIAS _proc.read_era (fd) {
+  UNLESS (eof($fd)) {
+    XECHO -C $center($word(0 $geom()) Hellenic Radio);
+    XECHO -C $repeat($word(0 $geom()) =);
+  };
+  @ :line = 0;
+  UNTIL (eof($fd)) {
+     @ :text = read($fd);
+     IF (match(*<LI><A HREF="#??">[??]</A>* $text) > 0) {
+        @ line++;
+        XECHO -C $cparse(%C$[2]line%n - %c$rest(29 $text)%n);
+    };
+  };
+};
+
+# Macedonian Press Agency
+ALIAS _proc.read_mpa (fd) {
+  UNLESS (eof($fd)) {
+    XECHO -C $center($word(0 $geom()) Macedonian Press Agency Headlines);
+    XECHO -C $repeat($word(0 $geom()) =);
+  };
+  @ :line = 0;
+  UNTIL (eof($fd)) {
+     @ :text = read($fd);
+     IF (match(*<LI><A HREF="#??">[??]</A>* $text) > 0) {
+        @ line++;
+        XECHO -C $cparse(%C$[2]line%n - %c$rest(29 $text)%n);
+    };
+  };
+};
+
+# LiCe news
+ALIAS _proc.read_lice (fd) {
+  UNTIL (eof($fd)) {XECHO -C $read($fd)};
+};
+
+# slashdot (obsolete)
+#ALIAS _proc.read_slashdot (fd) {
+#  @ read($fd)
+#  @ read($fd)
+#  @ :line = 0
+#  UNLESS (eof($fd)) {
+#    XECHO -C $[55]center(55 Slashdot Headline) $[12]center(12 Author)  Reads
+#    XECHO -C $repeat(55 =) $repeat(12 =) =====
+#  }
+#  UNTIL (eof($fd)) {
+#    @ :row = read($fd)
+#    IF (row == [%%]) {
+#      XECHO -C $text
+#      @ :line = 0
+#      CONTINUE
+#    }
+#    IF (line == 0) {
+#      @ :text = cparse(%c$[55]row%n)
+#    } ELSIF (line == 3) {
+#      @ :text #= [ ] ## cparse(%C$[12]row%n)
+#    } ELSIF (line == 6) {
+#      @ :text #= [ ] ## cparse(%b$row%n)
+#    }
+#    @ :line++
+#  }
+#}
+
+ALIAS _proc.read_slashdot (fd) {
+  UNLESS (eof($fd)) {
+    XECHO -C $[55]center(57 Slashdot Headline) $[10]center(10 Author)  ;
+    XECHO -C $repeat(57 =) $repeat(10 =);
+  };
+  UNTIL (eof($fd)) {
+    @ :text = read($fd);
+    IF (match(<title>* $text) > 0) {
+       @ :line = cparse(%c$[57]before(\< $rest(9 $text))));
+    };
+    IF (match(<author>* $text) > 0) {
+       @ :line #= [ $cparse(%C$[10]before(\< $rest(10 $text)))];
+#    }
+#    IF (match(</backslash> $text) > 0) {
+       XECHO -C $line;
+    };
+  };
+};
+
+ALIAS news {
+  UNLESS (@) {
+    uecho /NEWS -[e|l|m|r|s];
+    uecho Options:;
+    uecho   -e = Hellenic Radio (ERA)      (http://hri.org);
+    uecho   -l = LiCe News                 (http://lice.muppetz.com);
+    uecho   -m = Macedonian Press Agency   (http://hri.org);
+    uecho   -r = Reuters Around the Globe  (http://reuters.com);
+    uecho   -s = Slashdot                  (http://slashdot.org);
+    RETURN;
+  };
+
+  ^LOCAL code;
+  WHILE (option = getopt(optopt optarg "elmrs" $*)) {
+    SWITCH ($option) {
+      (l) {^LOCAL code 0};
+      (s) {^LOCAL code 1};
+      (m) {^LOCAL code 2};
+      (e) {^LOCAL code 3};
+      (r) {^LOCAL code 4};
+    };
+  };
+
+  @ :file = [/tmp/WEBNEWS.] ## pid() ## code;
+  _proc.wget_main $news_page[$code] $file;
+  PAUSE 5;
+
+  @ :fd = open($file R);
+  #WAIT =$fd
+
+  IF (fd == -1) {RETURN};
+  $news_func[$code] $fd;
+  @ close($fd);
+  @ unlink($file);
+};
+
+##HS'03
+#tjh/09

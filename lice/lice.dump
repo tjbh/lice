@@ -1,0 +1,35 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# Description: Sends the output of an IRC command to a file.
+ALIAS dump {
+  UNLESS (@) {
+    uecho Usage: /DUMP <command [args ... ]>;
+    RETURN;
+  };
+  ^EXEC -close %dump;
+  @ :dump.it = lice.save_path ## [/IRCDUMP];
+  XECHO -B Dumping output of $toupper($0) to $dump.it;
+  ^EXEC -name dump cat > $dump.it;
+  ^EXEC -in %dump ### Dump commenced at $stime($time());
+  REDIRECT %dump $*;
+  WAIT -CMD IF (1) {
+    ^EXEC -in %dump ### Dump finished at $stime($time());
+    ^EXEC -close %dump;
+    XECHO -B Dump done.;
+  };
+};
+#tjh/11

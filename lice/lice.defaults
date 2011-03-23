@@ -1,0 +1,172 @@
+# Client settings needed for correct script/client usage.
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+SET ALWAYS_SPLIT_BIGGEST OFF;
+SET AUTO_NEWNICK ON;
+SET AUTO_RECONNECT ON;
+SET AUTO_RECONNECT_DELAY 3;
+SET AUTO_REJOIN ON;
+SET AUTO_REJOIN_DELAY 10;
+SET AUTO_UNMARK_AWAY OFF;
+SET AUTO_WHOWAS OFF;
+SET BANNER ##;
+SET BANNER_EXPAND OFF;
+SET BEEP ON;
+SET BEEP_MAX 1;
+SET BEEP_ON_MSG NONE;
+SET BLINK_VIDEO OFF;
+SET BOLD_VIDEO ON;
+SET CHANNEL_NAME_WIDTH 13;
+SET CLOCK ON;
+SET CLOCK_24HOUR OFF;
+SET -CLOCK_FORMAT;
+SET COLOR ON;
+SET COMMAND_MODE OFF;
+SET COMMENT_HACK ON;
+SET CONNECT_TIMEOUT 60;
+SET CONTINUED_LINE    ;
+SET CPU_SAVER_AFTER 10;
+SET CPU_SAVER_EVERY 5;
+SET CURRENT_WINDOW_LEVEL ALL;
+SET DCC_LONG_PATHNAMES OFF;
+SET DCC_SLIDING_WINDOW 4;
+SET DCC_STORE_PATH ~;
+SET DCC_TIMEOUT 300;
+SET DISPATCH_UNKNOWN_COMMANDS OFF;
+SET DISPLAY ON;
+SET DISPLAY_ANSI ON;
+SET DISPLAY_PC_CHARACTERS 4;
+SET DO_NOTIFY_IMMEDIATELY ON;
+SET EIGHT_BIT_CHARACTERS ON;
+SET FLOATING_POINT_MATH OFF;
+SET FLOOD_AFTER 5;
+SET FLOOD_RATE 3;
+SET FLOOD_USERS 10;
+SET FLOOD_WARNING OFF;
+SET FULL_STATUS_LINE ON;
+SET HIDE_PRIVATE_CHANNELS OFF;
+SET HIGHLIGHT_CHAR BOLD;
+SET HIGH_BIT_ESCAPE 2;
+SET HISTORY 25;
+SET HOLD_MODE OFF;
+SET INDENT ON;
+SET -INPUT_PROMPT;
+SET INSERT_MODE ON;
+SET INVERSE_VIDEO ON;
+SET LASTLOG 512;
+SET LASTLOG_LEVEL DCC,ALL;
+SET LOAD_PATH /usr/local/share/epic/script:~/.irc:.;
+SET LOG OFF;
+SET LOGFILE IRCLOG;
+SET MAIL 2;
+SET MANGLE_INBOUND;
+SET MANGLE_LOGFILES;
+SET MANGLE_OUTBOUND;
+SET MAX_RECONNECTs 0;
+SET MAX_RECURSIONS 50;
+SET MIRC_BROKEN_RESUME ON;
+SET MODE_STRIPPER ON;
+SET ND_SPACE_MAX 80;
+SET NOTIFY_HANDLER NOISY;
+SET NOTIFY_INTERVAL 90;
+SET NOTIFY_ON_TERMINATION OFF;
+SET NOTIFY_USERHOST_AUTOMATIC ON;
+SET NO_CONTROL_LOG ON;
+SET NO_CTCP_FLOOD ON;
+SET NO_FAIL_DISCONNECT OFF;
+SET NUM_OF_WHOWAS 1;
+SET QUIT_MESSAGE http://lice.muppetz.com;
+DO {
+  @ :realname = getenv(IRCNAME);
+  SET REALNAME ${strlen($realname)?realname:[http\://lice.muppetz.com]};
+};
+SET -SCREEN_OPTIONS;
+SET SCROLLBACK 256;
+SET SCROLLBACK_RATIO 50;
+SET SCROLL_LINES 1;
+SET SECURITY 0;
+SET SHELL /bin/sh;
+SET SHELL_flags -c;
+SET SHELL_LIMIT 0;
+SET SHOW_CHANNEL_NAMES ON;
+SET SHOW_END_OF_MSGS ON;
+SET SHOW_NUMERICS OFF;
+SET SHOW_STATUS_ALL OFF;
+SET SHOW_WHO_HOPCOUNT OFF;
+# most SET STATUS_* moved to themes/default
+SET -STATUS_USER;
+SET STATUS_USER1 0;
+SET STATUS_USER2 ??;
+SET STATUS_USER3 Idle: ?;
+SET -STATUS_USER4;
+SET SUPPRESS_FROM_REMOTE_SERVER ON;
+SET SUPPRESS_SERVER_MOTD ON;
+SET TAB ON;
+SET TAB_MAX 8;
+SET UNDERLINE_VIDEO ON;
+SET USER_INFORMATION LiCe - http://lice.muppetz.com;
+SET VERBOSE_CTCP OFF;
+SET -XTERM;
+SET -XTERM_OPTIONS;
+
+# Global variables and default settings.
+UNLESS (lice.get(lice.database)) {
+  @lice.add(lice.database 1);
+  @lice.add(main.op 10);
+  @lice.add(main.cch 15);
+  @lice.add(main.agn 5);
+  @lice.add(main.isolate 15);
+  @lice.add(main.mrm 100);
+  @lice.add(main.mnm 3);
+  @lice.add(main.mns 5);
+  @lice.add(main.nst 5);
+  @lice.add(main.cset BCFOP);
+  @lice.add(main.dset GSR);
+  @lice.add(main.mset 1AMNOPQUV);
+  @lice.add(main.wset DT);
+  @lice.add(main.qbuff 200);
+  IF (dlu == 1) {
+    @lice.add(main.set ABFPRT);
+  }{
+    @lice.add(main.set ABFPRTU);
+  };
+  @lice.add(main.theme default);
+  @lice.add(main.tsfmt %I:%M);
+  @lice.add(main.auto_unban 0);
+
+# preferred nickname
+  DO {
+    @ :tmp = getenv(IRCUMODE);
+    @lice.set(main.umode ${strlen($tmp) ? tmp : [-s]});
+    @ :tmp = getenv(IRCNICK);
+    IF (strlen($tmp)) {
+      @lice.set(main.auto_nick $tmp);
+      @lice.set(main.buf $tmp);
+    }{
+      @lice.del(main.auto_nick);
+      @lice.del(main.buf);
+    };
+  };
+};
+
+# reason files 
+@ main.reason_quit = which(quit.reasons);
+@ main.reason_kick = which(kick.reasons);
+@ main.reason_back = which(back.reasons);
+@ main.reason_gone = which(gone.reasons);
+@ main.reason_oops = which(oops.reasons);
+@ main.reason_error = which(error.reasons);
+@ main.reason_revenge = which(revenge.reasons);
+
+# some DCC stuff
+^ASSIGN main.dcc_active_limit 10;
+^ASSIGN main.dcc_send_queue 50;
+^ASSIGN main.dcc_get_queue 50;
+#tjh/11

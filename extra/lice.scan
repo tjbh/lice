@@ -1,0 +1,51 @@
+## addon scan for insecure socks by using a seperate proggie
+
+PACKAGE LiCe
+
+# our prog
+@ ss.scan = [~/.irc/extra/sscan]
+ON ^EXEC_ERRORS "scan*" #
+ON ^EXEC "scan% Y *" #
+ON ^EXEC "scan% N *" {
+    @ :lame = rest(1 $strip(\(\) $~))
+    XEVAL -S $5 {
+       IF (iscset(C $4) && ischanop($servernick() $3)) {
+          _proc.quote_add $5 KICK $3 $2 :$6-
+          IF (iscset(F $4)) {
+            _proc.ban $3 $5 $lame $2 $4
+          }{_proc.quote_flush $5}
+       }{
+         IF (iscset(F $4) && ischanop($servernick() $3)) {
+            _proc.ban $3 $5 $lame $2 $4
+         }
+       }
+       IF (ismset(U)) {_proc.away_save LiCe licelogd $9-}
+       IF (iscset(S $4)) {
+         ^_proc.ul_add Shit SOCKS $uhc($lame)
+         ^_proc.ul_chg_chan Shit SOCKS + $3 KH Don't IRC from open SOCKS servers.
+          _proc.ul_save QUIET
+       }
+    }
+}
+
+ALIAS scan {
+  @ :sc.chan = @ ? [$0] : C
+  FE ($channel($sc.chan)) sc_1 {
+    @ :sc.nick = rest(2 $sc_1)
+    @ :sc.host = userhost($sc.nick)
+    UNLESS (rmatch($X $sc.host)) {
+      _proc.join_socks $sc.nick $sc.host $sc.chan $hash_32bit($sc.chan) $servernum()
+    }
+  }
+}
+
+ALIAS _proc.join_socks (nick,host,chan,hash,serv) {
+  IF (!isset(Q) && dcnt[$hash] < 3) {
+     @ :uid = pass(~ $before(@ $host)) ? strip(~ $before(@ $host)) : before(@ $host)
+     @ :uhos = after(@ $host)
+     ^EXEC -NAME scan[$host] $ss.scan $uid $uhos "$nick" "$chan" $hash $serv
+     #XEVAL -S $serv {^WAIT %scan[$host]}
+  }
+}
+
+#HS/00

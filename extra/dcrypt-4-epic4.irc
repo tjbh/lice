@@ -1,0 +1,207 @@
+####
+#### Dynamicrypt, (c)1996 Slasher. Mods by SrfRoG/asmodean/HSOC
+#### v1.0m, public release.
+####
+#### This code brought to you by Slasher: 100% elite, 100% cryptic.
+####
+#### 02/25/96 : Basic encryption / decryption scheme active.
+#### 02/28/96 : Added user friendly symbols to indicate en/de-cryption
+#### 03/04/96 : Fixed [Bogus Encryption] errors in decrypt sequence.
+#### 03/07/96 : Added multichannel decryption support.
+#### 03/08/96 : Fixed repeating of last message error.
+#### 05/11/96 : Enhanced for ircii-2.8.2
+####            - Added fec() support, for faster proc.
+####            - Lots of hacks to make it faster/safer.
+#### 07/11/96 : added ON PUBLIC/ON PUBLIC_OTHER hooks to avoid multiple-
+####            leaks. Also changed the public mask to ^O^O to avoid fake
+####            encryption.
+#### 04/24/98 : Enhanced for EPIC 3.004 by asmodean
+####            The encryption now designates blocks of encrypted text,
+####            deliminated by ascii 5 chars (^E), instead of being
+####            hard coded to public text. Encrypted blocks anywhere
+####            are automatically decrypted and underlined.
+#### 06/07/98 : Changed the function names to avoid conflict with internal
+####            EPIC client functions. Now dencrypt() and ddecrypt().
+#### 02/11/98 : Added more aliases eglobops/ewall(ops).
+#### 09/16/00 : Ported for EPIC4 by HSOC (FINALLY)
+####            added multiple hooks for decoding.
+
+@ crypt.ver = [v1.0m]
+@ crypt.dec = chr(5)
+@ crypt.alpha = [abcdefghijklmnopqrstuvwxyz]
+
+alias e {
+  if ([$0]) {
+    MSG $C $crypt.dec$crypt.dec$cencrypt($*)
+  }{uecho [?] USAGE: /E <text to encrypt>}
+}
+alias em emsg
+alias en enotice
+alias emsg if ([$0]) {msg $0 $crypt.dec$crypt.dec$cencrypt($1-)}{uecho [?] USAGE: /EMSG <nick/channel> <message to send encrypted>}
+alias enotice if ([$0]) {notice $0 $crypt.dec$crypt.dec$cencrypt($1-)}{uecho [?] USAGE: /ENOTICE <nick/channel> <notice to send encrypted>}
+alias ekill if ([$0]) {kill $0 $crypt.dec$crypt.dec$cencrypt($1-)}{uecho [?] USAGE: /EKILL <nick> <kill message to encrypt>}
+alias eme if ([$0]) {me $crypt.dec$crypt.dec$cencrypt($*)}{uecho [?] USAGE: /EME <action text to say encrypted>}
+alias eglobops if ([$0]) {globops $crypt.dec$crypt.dec$cencrypt($*)}{uecho [?] USAGE: /EGLOBOPS <globop message to send encrypted>}
+alias ewallops if ([$0]) {wallops $crypt.dec$crypt.dec $cencrypt($*)}{uecho [^B?^B] USAGE: /EWALLOPS <wallop message to send encrypted>}
+alias etopic if ([$0]) {
+  if (ischannel($0)) {
+    topic $0 $crypt.dec$crypt.dec$cencrypt($1-)
+  }{etopic $C $*}
+}{echo [?] USAGE: /ETOPIC [channel] <topic to set encrypted>}
+alias ekick if ([$0]) {
+  if (ischannel($0)) {
+    kick $0 $1 $crypt.dec$crypt.dec$cencrypt($2-)
+  }{ekick $C $*}
+}{echo [?] USAGE: /EKICK [channel] <nick> <kick message to encrypt>}
+alias ewall {
+  IF (@) {
+    IF (ischannel($0) && onchannel($N $0)) {
+      ^LOCAL wall.chan $0
+      ^LOCAL wall.msg $1-
+    }{
+      ^LOCAL wall.chan $C
+      ^LOCAL wall.msg $*
+    }
+    UNLESS (ischanop($N $wall.chan)) {ECHO $fmt.banner_alert() Warning: You are not channel operator on $ch($wall.chan)}
+    @ :_e.out = cencrypt($wall.msg)
+    IF (left(1 $R) == [u]) {
+      @ :wall.many = numwords($chops($wall.chan))
+      QUOTE NOTICE @$wall_chan :$crypt.dec$crypt.dec   eWall:$wall.chan\($wall.many\) $_e.out
+    }{
+      @ wall_list = chops($wall.chan)
+      @ :wall.many = numwords($chops($wall.chan))
+      @ wall_list = remw($N $wall_list)
+      ^ASSIGN wall_send $crypt.dec$crypt.dec   eWall:$wall.chan\($wall.many\) $_e.out
+      _proc.loop_send $winserv() NOTICE wall_list wall_send
+    }
+    mecho >>12-11e7Wall:12-$wall.chan\\($wall.many\) $wall.msg
+  }{uecho [?] USAGE: /EWALL [channel] <message>}
+}
+
+^on ^public '% % $crypt.dec$crypt.dec*' {
+  xecho -w $chanwin($1) 11e\: $fmt.public($0 $1 $decrypt($tolower($mid(2 256 $2-))))
+}
+^on ^public_other '% % $crypt.dec$crypt.dec*' {
+  xecho -w $chanwin($1) 11e\: $fmt.public_other($0 $1 $decrypt($tolower($mid(2 256 $2-))))
+}
+^on ^public_msg '% % $crypt.dec$crypt.dec*' {
+  xecho -w $chanwin($1) 11e\: $fmt.public_msg($0 $1 $decrypt($tolower($mid(2 256 $2-))))
+}
+^on ^public_notice '% % $crypt.dec$crypt.dec*' {
+  xecho -w $chanwin($1) 11e\: $fmt.public_notice($0 $1 $decrypt($tolower($mid(2 256 $2-))))
+}
+^on ^action '% % $crypt.dec$crypt.dec*' {
+  if (ischannel($1)) {
+     xecho -w $chanwin($1) 11e\: $fmt.action($0 $1 $decrypt($tolower($mid(2 256 $2-))))            
+  }{
+  echo 11e\: $fmt.action_me($0 $1 $decrypt($tolower($mid(2 256 $2-))))
+  }
+}
+^on ^kick '% % % $crypt.dec$crypt.dec*' {
+   @ :text = ([$0] == servernick()) ? fmt.kick_me($0 $1 $2 $decrypt($tolower($mid(2 256 $3-)))) : fmt.kick($0 $1 $2 $decrypt($tolower($mid(2 256 $3-))))
+   xecho -w $chanwin($2) 11e\: $fmt.banner_kick() $text
+}
+^on ^kill '% % % % $crypt.dec$crypt.dec*' {
+   xecho -w OV$servernum() 11e\: ### KILL $0\: $1 killed by $2 \($decrypt($tolower($mid(2 256 $4-)))\)
+}
+^on ^332 '% % $crypt.dec$crypt.dec*'{
+   xecho -w $chanwin($1) 11e\: $fmt.banner_chan() $fmt.topic_set($1 $decrypt($tolower($mid(2 256 $2-))))
+}
+^on ^topic '% % $crypt.dec$crypt.dec*' {
+   xecho -w $chanwin($1) 11e\: $fmt.banner_chan() $fmt.topic($0 $1 $decrypt($tolower($mid(2 256 $2-))))
+}
+^on ^wallop '% % $crypt.dec$crypt.dec*' {
+   xecho -w OV$servernum() 11e\: $fmt.banner_server() $fmt.wallop($0 $1 $decrypt($tolower($mid(2 256 $2-))))
+}
+^on ^server_notice '% ??? %GLOBAL% -- % % $crypt.dec$crypt.dec*' {
+   xecho -w OV$servernum() 11e\: $fmt.banner_server() #GLOBOPS# $fmt.wallop($5 null $decrypt($tolower($mid(2 256 $6-))))
+}
+^on ^msg '% $crypt.dec$crypt.dec*' {
+   if (ismset(M)) {_proc.away_save $0 $userhost() $decrypt($tolower($mid(2 256 $1-)))}
+   mecho 11e\: $fmt.msg($0 $decrypt($tolower($mid(2 256 $1-)))) $chr(7)
+}
+^on ^msg_group '% % $crypt.dec$crypt.dec*' {
+   if (ismset(M)) {_proc.away_save $0 $userhost() [$1] $decrypt($tolower($mid(2 256 $2-)))}
+   mecho 11e\: $fmt.msg_group($0 $1 $decrypt($tolower($mid(2 256 $2-))))
+}
+^on ^notice '% $crypt.dec$crypt.dec*' {
+   if (ismset(M)) {_proc.away_save $0 $userhost() $decrypt($tolower($mid(2 256 $1-)))}
+   mecho 11e\: $fmt.notice($0 $decrypt($tolower($mid(2 256 $1-))))
+}
+^on ^send_action '% $crypt.dec$crypt.dec*' {
+    if (ischannel($0)) {
+       xecho -w $chanwin($0) 11e\: $fmt.send_action($0 $decrypt($tolower($mid(2 256 $1-))))
+    }{
+    echo 11e\: $fmt.send_action_me($0 $decrypt($tolower($mid(2 256 $1-))))
+    }
+}
+^on ^send_msg '% $crypt.dec$crypt.dec*' {
+    mecho 11e\: $fmt.send_msg($0 $decrypt($tolower($mid(2 256 $1-))))
+}
+^on ^send_notice '% $crypt.dec$crypt.dec*' {
+    mecho 11e\: $fmt.send_notice($0 $decrypt($tolower($mid(2 256 $1-))))
+}
+^on ^send_public '% $crypt.dec$crypt.dec*' {
+    xecho -w $chanwin($0) 11e\: $fmt.send_public($0 $decrypt($tolower($mid(2 256 $1-))))
+}
+
+alias decrypt {
+  @ _d.csum = index($mid(0 1 $0-) $crypt.alpha)
+  @ _d.rand = index($mid(1 1 $0-) $crypt.alpha)
+  @ _d.line = mid(2 256 $0-)
+  @ _d.outs = []
+
+  fec ($_d.line) _d {
+    @ _d.indx = index($_d $crypt.alpha)
+    if ((_d.indx - _d.rand) < 0)
+    {@ _d.mask = 26 + _d.indx - _d.rand}
+    {@ _d.mask = _d.indx - _d.rand}
+    if (_d.indx >= 0)
+     {@ _d.outs = [$_d.outs]##[$mid($_d.mask 1 $crypt.alpha)]}
+     {@ _d.outs = [$_d.outs]##[$_d]}
+  }
+  @ _d.fchr = index($mid(0 1 $_d.outs) $crypt.alpha)
+  @ _d.lchr = index($mid(${@_d.outs - 1} 1 $_d.outs) $crypt.alpha)
+  if (_d.lchr > _d.fchr) {@ _d.mask = _d.lchr - _d.fchr}{@ _d.mask = _d.fchr - _d.lchr}
+  if ([$_d.csum]==[$_d.mask])
+  {@ function_return = [$_d.outs]}
+  {@ function_return = [$_d.line (no encryption)]}
+}
+
+alias cencrypt {
+  @ _e.line = tolower($0-)
+  @ _e.rand = rand(24) + 1
+  @ _e.outs = []
+
+  fec ($_e.line) _e {
+    @ _e.indx = index($_e $crypt.alpha)
+    if ((_e.indx + _e.rand) > 25)
+    {@ _e.mask = _e.indx + _e.rand - 26}
+    {@ _e.mask = _e.indx + _e.rand}
+    if (_e.indx >= 0)
+    {@ _e.outs = [$_e.outs]##[$mid($_e.mask 1 $crypt.alpha)]}
+    {@ _e.outs = [$_e.outs]##[$_e]}
+  }
+  @ _e.fchr = index($mid(0 1 $_e.line) $crypt.alpha)
+  @ _e.lchr = index($mid(${@_e.line - 1} 1 $_e.line) $crypt.alpha)
+  if (_e.lchr > _e.fchr) {@ _e.csum = _e.lchr - _e.fchr}{@ _e.csum = _e.fchr - _e.lchr}
+  @ _e.csum = mid($_e.csum 1 $crypt.alpha)
+  @ function_return = [$_e.csum]##[$mid($_e.rand 1 $crypt.alpha)]##[$_e.outs]
+}
+
+alias dcrypt crypt
+alias crypt {
+echo
+echo  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+echo  @@  DynamiCrypt $crypt.ver\  @@  Encrypt : /E <text to encrypt>   @@
+echo  @@---------------------@@  Decrypt : automatic.             @@
+echo  @@  (c)1996  Slasher   @@  Mods: SrfRoG (srfrog@srfrog.com) @@
+echo  @@==========================================================@@
+echo  @@                100% elite, 100% cryptic                  @@
+echo  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+echo
+}
+
+eval echo *** Slasher's \DynamiCrypt $crypt.ver\ now loaded. /CRYPT for help.
+@ lice(DynamiCrypt $crypt.ver)
+@ srand($time())

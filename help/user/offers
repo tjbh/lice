@@ -1,0 +1,6 @@
+Usage: OFFERS [nick|channel] 
+   Requests CTCP aDCC LIST information for a nick or channel, or current
+   channel if no arguments.
+
+See also: [SC] [P] [VER]
+

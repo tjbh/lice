@@ -1,0 +1,25 @@
+### darkness oh oh oh great one!
+### do we really want to see all notices? :p
+
+PACKAGE dark
+
+ALIAS darkness dark $*
+ALIAS dark (switch) {
+  IF (switch) {
+     IF (switch == [OFF]) {
+        ^ASSIGN -dsw
+        XECHO -B Removed filter of annoying server notices in $servername()
+        ^ON ^SERVER_NOTICE -"% ??? %NOTICE% -- K-lined *"
+        ^ON ^SERVER_NOTICE -"% ??? %NOTICE% -- Autokilled *"
+        ^ON ^SERVER_NOTICE -"% ??? %NOTICE% -- SSL_accept() *"
+        RETURN
+     }
+     @ dsw = 1
+     XECHO -B Now filtering annoying server notices in $servername()
+     ^ON ^SERVER_NOTICE "% ??? %NOTICE% -- K-lined *" #
+     ^ON ^SERVER_NOTICE "% ??? %NOTICE% -- Autokilled *" #
+     ^ON ^SERVER_NOTICE "% ??? %NOTICE% -- SSL_accept() *" #
+  }{uecho Usage: /DARKNESS [ON|OFF] \(currently ${dsw ? [ON] : [OFF]}\)}
+}
+
+#HS/03

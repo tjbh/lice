@@ -1,0 +1,4 @@
+!VOICE <password> [channel]
+   This will tell me to voice you on any channel where I can.
+   If you give a channel name, I'll just voice you on that channel.
+   You must have VOICE access on these channels, of course.

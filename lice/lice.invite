@@ -1,0 +1,33 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS invite {
+  UNLESS (@) {
+    uecho Usage: /INV <nick> [chan];
+    uecho Usage: /INV <chan> <nicks ...>;
+    uecho Usage: /INV <chan to> <chan from>;
+    RETURN;
+  };
+  IF (ischannel($0)) {
+    @ :serv = winserv();
+    @ :list = ischannel($1) ? chanusers($1) : [$1-];
+    FE ($list) nick {_proc.quote_add $serv INVITE $nick $0};
+    _proc.quote_flush $serv;
+  }{
+    //INVITE $0 ${ischannel($1)?[$1]:C};
+  };
+};
+#tjh/09

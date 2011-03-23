@@ -1,0 +1,39 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# !PASS command
+ALIAS _proc.ulw_pass (nick,uh,serv,pass,npass) {
+  @ :myhand = find_in_list(User $nick!$uh);
+  UNLESS (myhand) {RETURN};
+  FE ($myhand) hand {
+  IF (strlen($lice.get(main_PL$hand))) {
+    IF (pass != lice.get(main_PL$hand)) {
+      XQUOTE -S $serv NOTICE $nick :Invalid password. $randread($main.reason_error);
+      RETURN;
+    };
+    IF (!strlen($npass) || npass == pass) {
+      XQUOTE -S $serv NOTICE $nick :You already have a password set.;
+      RETURN;
+    };
+    @lice.set(main_PL$hand $npass);
+  }{
+     @lice.set(main_PL$hand $pass); 
+  };
+  _proc.ul_save;
+  XQUOTE -S $serv NOTICE $nick :Password set to '$lice.get(main_PL$hand)\'.;
+  };
+};
+#tjh/11

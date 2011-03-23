@@ -1,0 +1,91 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS _proc.split_save (scurr,ssplit,chan,nick) {
+  @ :split.test = matchitem(NSL $ssplit $chan *);
+  IF (split.test >= 0) {
+    @ :split.text = getitem(NSL $split.test);
+    @ :split.time = word(2 $split.text);
+    @ :split.nick = restw(3 $split.text);
+    @ :split.find = findw($strip(@ $nick) $strip(@ $split.nick));
+    IF (split.find == -1) {
+      @ :split.nick #= [ ] ## nick;
+    }{
+      @ :split.nick = notw($split.find $split.nick) ## [ ] ## nick;
+    };
+  }{
+    @ :split.nick = nick;
+    @ :split.time = time();
+    @ :split.test = numitems(NSL);
+    XECHO -W $chan $fmt.banner_alert() Possible netsplit: $scurr <- $ssplit \($chan\);
+    IF (ismset(V)) {iecho Press "Esc-f", for split details.};
+  };
+  @ setitem(NSL $split.test $ssplit $chan $split.time $split.nick);
+};
+
+ALIAS _proc.split_jump (number) {
+  IF (numitems(NSL) == 0) {
+    XECHO -B No netsplits recorded.;
+    RETURN;
+  };
+  @ :si.z = numitems(NSL) - 1;
+  FE ($jot(0 $si.z)) si.c {
+    @ si.t = getitem(NSL $si.c);
+    IF (number == si.c + 1) {
+     INPUT_CHAR "Do you want to connect using a new window ? (y/n) " {
+       IF ([$0]==[Y]) {
+          iecho Creating connection to $word(0 $si.t)...;
+          win_new SERVER $word(0 $si.t):::$N$rand(99);
+       }{ iecho Connecting to $word(0 $si.t)...;
+          window SERVER $word(0 $si.t):::$N;
+       };};
+    };
+};};
+
+## detects netjoins + silences #channel JOINS/PARTS/CRAP temporarily
+## blessing in *BIG* chans =)
+ON #-JOIN -81 * {
+ UNLESS (numitems(NSL) == 0) { 
+  @ :chan = [$1];
+  @ :hash = hash_32bit($chan);
+  #UNLESS (dcnt[$hash]) {@ dcnt[$hash] = 1}
+  @ :split = matchitem(NSL % $chan *$0*);
+  IF (split > -1 && isset(Q) && !iscset(Q $hash)) {@dcnt[$hash]++};
+  IF (dcnt[$hash] == 5) {
+     XECHO -W $chan $fmt.banner_alert() Possible Netjoin in progress... \($chan\);
+     //^IGNORE $chan JOINS PARTS CRAP;
+     ^TIMER $lice.get(main.isolate) //^IGNORE $chan -JOINS -PARTS -CRAP NONE;
+     ^ASSIGN -dcnt[$hash];
+  };
+ }{purge dcnt};
+};
+
+ALIAS _proc.split_info {
+  IF (numitems(NSL) == 0) {
+    XECHO -B No netsplit details recorded.;
+    RETURN;
+  };
+  @ :si.z = numitems(NSL) - 1;
+  iecho -------- Netsplit details --------;
+  FE ($jot(0 $si.z)) si.c {
+    @ :si.t = getitem(NSL $si.c);
+    iecho [$[2]{si.c + 1}] $word(0 $si.t) detected on $ch($word(1 $si.t)) \($tdiff2(${time() - word(2 $si.t)}) ago\);
+    echo.recursive $restw(3 $si.t);
+    #IF (ismset(V)) {iecho Press "Esc-e", to connect to $word(0 $si.t).}
+    IF (ismset(V)) {iecho Press "Esc\-${si.c + 1}", to connect to $word(0 $si.t).};
+  };
+};
+#tjh/09

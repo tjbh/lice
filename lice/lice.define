@@ -1,0 +1,49 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS define {
+  UNLESS (@) {
+    uecho Usage: /DEFINE <word | phrase>;
+    RETURN;
+  };
+  @ :def.text = ["$*"];
+  @ :def.fd = connect(dict.org 2628);
+  WAIT =$def.fd;
+  UNLESS (def.fd) {
+    XECHO -B Connection failed.;
+    RETURN;
+  };
+  ^ON ^DCC_RAW "$def.fd % D 150 *" {
+    @ :str = [$4 definition] ## plural($4) ## [ retrieved];
+    @ :wid = (word(0 $geom()) - 3) - strlen($str);
+    @ :wid /= 2;
+    XECHO -C $repeat($wid #) $str $repeat($wid #)\;
+  };
+  ^ON ^DCC_RAW "$def.fd % D 151 *" {XECHO -C $chop(1 $4-)};
+  ^ON ^DCC_RAW "$def.fd % D 552 *" {XECHO -C $banner No definition found.};
+  ^ON ^DCC_RAW "$def.fd % D *" {UNLESS (isdigit($3)) {XECHO -C $chop(1 $3-)}};
+  ^ON ^DCC_RAW "$def.fd % C" {
+    ^ON ^DCC_RAW -"$0 % D 150 *";
+    ^ON ^DCC_RAW -"$0 % D 151 *";
+    ^ON ^DCC_RAW -"$0 % D 552 *";
+    ^ON ^DCC_RAW -"$0 % D *";
+    ^ON ^DCC_RAW -"$0 % C";
+  };
+  ^DCC RAW $def.fd dict.org DEFINE * $def.text;
+  ^DCC RAW $def.fd dict.org QUIT;
+};
+ALIAS dict {define $*};
+#tjh/09

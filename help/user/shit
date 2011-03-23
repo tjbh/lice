@@ -1,0 +1,76 @@
+Usage: SHIT -a <handle> [host]
+Usage: SHIT -c <handle> <[+|-]channel|#*> [[<-|+>modes] [greet msg]]
+Usage: SHIT -d <handle|pattern>
+Usage: SHIT -h <handle> <[+|-]host>
+Usage: SHIT -l [handle]
+
+Options and Operation:
+	-a	Creates a new handle in your SHIT database.
+		If the handle matches the nickname of someone in
+		one of your channels, their user@host will be
+		inserted in the handle's host list. Alternately,
+		a host can be specified and this one will be
+		inserted into the handle's host list.
+		NOTE: If no nickname matches the handle, or
+		no additional host is specified, the handle will
+		have no hosts associated. Then, one must use the
+		-h option to insert/remove hosts to this handle.
+
+	-c	Insert/Removes channels for an existing handle. If #*
+		is specified as channel, the settings will match all
+		possible channels.
+		NOTE: A handle without channels will be automatically
+		purged from the database.
+
+	-d	Deletes a handle, and all associated hosts and
+		channels, from the SHIT database. If a pattern is given,
+		all matching handles will be removed.
+		NOTE: a pattern of * will effectively remove all the
+		handles and wipe your list clean.
+
+	-h	Insert/Removes hosts for an existing handle.
+		NOTE: Handles can initially be host-less this is
+		only useful for maintainance purposes.
+
+	-l	Lists all currently active handles. If a handle
+		is specified, it shows detailed listing of the
+		handle's properties.
+
+Channel modes (for -c):
+	A	IP ADDR: Bans the user's IP address.
+	B	BAN ENFORCE: Will keep user permanently banned.
+        C	COUNTRY: Bans the country or inet organization.
+	D	DEOP: Deop users shitted.
+	E	EXACT: Bans user with the exact pattern in shitlist.
+        F	FUCK: Bans the user's host with a pattern.
+        H	HOST: Bans the user's host.
+	K	KICK: Kick users shitted.
+        N	NORMAL: Bans with a simple *!*user@*host mask.
+        U	USERNAME: Bans only the user's username.
+
+Example 1: Group all those lamers that annoy me and kick-ban from #LiCe,
+	   ban from #Linux.
+
+	/SHIT -a Lamers
+	/SHIT -c Lamers +#LiCe +KN go away lamers!!
+	/SHIT -c Lamers +#Linux +N
+	/SHIT -h Lamers +*!*lamer1@*host1.com
+	/SHIT -h Lamers +*!*lamer2@*
+	/SHIT -h Lamers +Vassago!*@*host3.com
+			...
+
+Example 2: Can't seem to get rid of this lamer 'asmodean', let's shit
+	   his ass! We assume he's online (he always is), so the
+	   script will auto-add his current user@host. asmodean can
+	   be one slippery mofo, so we must kick-ban and enforce the
+	   ban. We'll ban his exact user@host only.
+
+	/SHIT -a asmodean
+	/SHIT -c asmodean +#LiCe +KBE where's skuld4 you lamah?@!
+
+Example 3: Seems asmodean insists on not releasing a new skuld for LiCe4,
+	   off with him then! Let's ban his arse all over !!
+
+	/SHIT -a asmodean
+	/SHIT -c asmodean +#* +KBF update http://elfz.codehack.com too!
+

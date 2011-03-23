@@ -1,0 +1,16 @@
+Usage: PAGER <[path/]filename> 
+      Allows you to view text files in your ircii active window.
+      The internal ircii viewer/pager is utilized (ie. /help).
+
+      Example:
+           /PAGER ~/ircrc.example
+           /PAGER ./ircrc.example
+           /PAGER /usr/local/lib/irc/ircII.servers
+           /PAGER myfile.txt
+
+      Known limitations:
+           - Only one file at a time can be viewed.
+           - '.' in the path is assumed as current dir.
+
+See also: [DUMP] [MEMO]
+

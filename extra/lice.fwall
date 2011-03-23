@@ -1,0 +1,27 @@
+#
+#   IRC Script Program. For use with ircii-EPIC4 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by HSOC, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+
+PACKAGE LiCe
+
+ALIAS fwall {
+  @ :fw_chan = ischannel($0) ? [$0] : C
+  @ :fw_hash = hash_32bit($fw_chan)
+  @ :fw_text = (fw_chan == [$0]) ? [$1-] : [$0-]
+  @ fw_send = []
+  FE ($channel($fw_chan)) fw_1 {
+     @ :fw_nick = rest(2 $fw_1)
+     @ :fw_mode = get_cookie(User $fw_chan $fw_nick $fw_hash)
+     IF (fw_mode > 0) {PUSH fw_send $fw_nick}
+  }
+  UNLESS (strlen($fw_send) == 0 || strlen($fw_text) == 0) {
+      @ fw_who = [fWall:$fw_chan\\($numwords($fw_send)\) $fw_text]
+      mecho $fmt.wallop_me($fw_chan $numwords($fw_send) $fw_text)
+      _proc.loop_send $winserv() NOTICE fw_send fw_who
+  }{uecho Usage\: /FWALL <#channel> message}
+  purge fw
+}

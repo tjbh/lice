@@ -1,0 +1,206 @@
+# Dir.    : ~/Deturbo
+# Name    : tool.talk
+# Desc.   : Cool Talking Tool - DESS
+# Version : 5.0
+# ToolId  : T7
+# Date    : 1/6/95
+# Author  : Converted by FRobOS!bcoats@indiana.edu
+#         : See additional credits below.
+# Size    : 11009
+# Attrib. : rw-r--r--
+#
+#     This tool is a collection of CoolTalk aliases converted to
+# DESS originally taken from SuperPak by TG!cedras@rahul.net.  
+# Original CoolTalk written by Sunil!sunil@silicone.che.sdsmt.edu and 
+# drow!drow@phantom.com.  Thanks to all these people for providing the 
+# source of this tool.
+
+# DESS tool setup
+#^De.Tool.id T7 TALK 5.0 FRobOS!bcoats@indiana.edu
+
+IF ([$De.Version]==[])
+    {^alias De.Echo echo *** $0-
+     ^alias HelpTalk T7.HelpTalk
+     echo *** Talk loading - a DESS tool script
+     echo *** /HelpTalk for help.
+    }
+
+
+ALIAS BSAY {
+   IF (strlen($0)) {
+      @ :txt = ischannel($0) ? [$1-] : [$0-]
+      @ :wid = strlen(SAY1 $txt) / 2
+      MSG ${ischannel($0)?[$0]:[$C]} $repeat($wid 2,10$chr(219)10,2$chr(219))
+      MSG ${ischannel($0)?[$0]:[$C]} 10,2$chr(219)11 $txt 2,10$chr(219)
+      MSG ${ischannel($0)?[$0]:[$C]} $repeat($wid 2,10$chr(219)10,2$chr(219))
+   }{ECHO *** Usage: /BSAY [#channel] <text>}
+}
+
+# DESS tool
+
+^assign T7.Sane.Set abcdefghijklmnopqrstuvwxyz
+^assign T7.Leet.Set.0.0 a
+^assign T7.Leet.Set.0.1 A
+^assign T7.Leet.Set.0.2 @
+^assign T7.Leet.Set.0.3 a
+^assign T7.Leet.Set.1.0 b
+^assign T7.Leet.Set.1.1 B
+^assign T7.Leet.Set.1.2 |3
+^assign T7.Leet.Set.1.3 b
+^assign T7.Leet.Set.2.0 c
+^assign T7.Leet.Set.2.1 C
+^assign T7.Leet.Set.2.2 (
+^assign T7.Leet.Set.2.3 [
+^assign T7.Leet.Set.3.0 d
+^assign T7.Leet.Set.3.1 D
+^assign T7.Leet.Set.3.2 c|
+^assign T7.Leet.Set.3.3 |)
+^assign T7.Leet.Set.4.0 e
+^assign T7.Leet.Set.4.1 E
+^assign T7.Leet.Set.4.2 3
+^assign T7.Leet.Set.4.3 [-
+^assign T7.Leet.Set.5.0 f
+^assign T7.Leet.Set.5.1 F
+^assign T7.Leet.Set.5.2 /=
+^assign T7.Leet.Set.5.3 ph
+^assign T7.Leet.Set.6.0 g
+^assign T7.Leet.Set.6.1 G
+^assign T7.Leet.Set.6.2 9
+^assign T7.Leet.Set.6.3 g
+^assign T7.Leet.Set.7.0 h
+^assign T7.Leet.Set.7.1 H
+^assign T7.Leet.Set.7.2 #
+^assign T7.Leet.Set.7.3 |-|
+^assign T7.Leet.Set.8.0 i
+^assign T7.Leet.Set.8.1 I
+^assign T7.Leet.Set.8.2 1
+^assign T7.Leet.Set.8.3 !
+^assign T7.Leet.Set.9.0 j
+^assign T7.Leet.Set.9.1 J
+^assign T7.Leet.Set.9.2 _/
+^assign T7.Leet.Set.9.3 j
+^assign T7.Leet.Set.10.0 k
+^assign T7.Leet.Set.10.1 K
+^assign T7.Leet.Set.10.2 |<
+^assign T7.Leet.Set.10.3 k
+^assign T7.Leet.Set.11.0 l
+^assign T7.Leet.Set.11.1 L
+^assign T7.Leet.Set.11.2 |_
+^assign T7.Leet.Set.11.3 /_
+^assign T7.Leet.Set.12.0 m
+^assign T7.Leet.Set.12.1 M
+^assign T7.Leet.Set.12.2 |\/|
+^assign T7.Leet.Set.12.3 m
+^assign T7.Leet.Set.13.0 n
+^assign T7.Leet.Set.13.1 N
+^assign T7.Leet.Set.13.2 |\|
+^assign T7.Leet.Set.13.3 /v
+^assign T7.Leet.Set.14.0 o
+^assign T7.Leet.Set.14.1 O
+^assign T7.Leet.Set.14.2 0
+^assign T7.Leet.Set.14.3 ()
+^assign T7.Leet.Set.15.0 p
+^assign T7.Leet.Set.15.1 P
+^assign T7.Leet.Set.15.2 />
+^assign T7.Leet.Set.15.3 p
+^assign T7.Leet.Set.16.0 q
+^assign T7.Leet.Set.16.1 Q
+^assign T7.Leet.Set.16.2 (,)
+^assign T7.Leet.Set.16.3 q
+^assign T7.Leet.Set.17.0 r
+^assign T7.Leet.Set.17.1 R
+^assign T7.Leet.Set.17.2 /~
+^assign T7.Leet.Set.17.3 /^
+^assign T7.Leet.Set.18.0 s
+^assign T7.Leet.Set.18.1 S
+^assign T7.Leet.Set.18.2 5
+^assign T7.Leet.Set.18.3 $
+^assign T7.Leet.Set.19.0 t
+^assign T7.Leet.Set.19.1 T
+^assign T7.Leet.Set.19.2 +
+^assign T7.Leet.Set.19.3 ~|~
+^assign T7.Leet.Set.20.0 u
+^assign T7.Leet.Set.20.1 U
+^assign T7.Leet.Set.20.2 (_)
+^assign T7.Leet.Set.20.3 |_|
+^assign T7.Leet.Set.21.0 v
+^assign T7.Leet.Set.21.1 V
+^assign T7.Leet.Set.21.2 \/
+^assign T7.Leet.Set.21.3 v
+^assign T7.Leet.Set.22.0 w
+^assign T7.Leet.Set.22.1 W
+^assign T7.Leet.Set.22.2 |/\|
+^assign T7.Leet.Set.22.3 \/\/
+^assign T7.Leet.Set.23.0 x
+^assign T7.Leet.Set.23.1 X
+^assign T7.Leet.Set.23.2 ><
+^assign T7.Leet.Set.23.3 x
+^assign T7.Leet.Set.24.0 y
+^assign T7.Leet.Set.24.1 Y
+^assign T7.Leet.Set.24.2 `/
+^assign T7.Leet.Set.24.3 v/
+^assign T7.Leet.Set.25.0 z
+^assign T7.Leet.Set.25.1 Z
+^assign T7.Leet.Set.25.2 2
+^assign T7.Leet.Set.25.3 ~/_
+
+alias T7.CoolTalk.1 {@ T7.Sane.Str = [$*]
+                     @ T7.Sane.Len = @T7.Sane.Str
+                     @ T7.Leet.Str = []
+                     @ T7.Leet.Len = 0
+                     while (T7.Leet.Len < T7.Sane.Len)
+                     {@ T7.Leet.Ind = index($mid($T7.Leet.Len 1 $T7.Sane.Str) $T7.sane.set)
+                      if (T7.Leet.Ind > -1)
+                      {@ T7.Leet.Str = T7.Leet.Str ## T7.leet.set[$T7.Leet.Ind][$rand(4)]
+                      }
+                      {@ T7.Leet.Str = T7.Leet.Str ## mid($T7.Leet.Len 1 $T7.Sane.Str)
+                      }
+                      @ T7.Leet.Len = T7.Leet.Len + 1
+                     }
+                     @ function_return = T7.Leet.Str
+                     ^assign -T7.Leet.Len ;^assign -T7.Leet.Str ;^assign -T7.Leet.Ind
+                     ^assign -T7.Sane.Str ;^assign -T7.Sane.Str
+                    }
+alias T7.CoolTalk.2 {@ T7.In = [$0-]
+                     @ T7.Out = []
+                     @ T7.Sz = @T7.In
+                     @ T7.Pt=0
+                     while (T7.Pt < T7.Sz) 
+                     {@ T7.Out = [$mid($T7.Pt 1 $T7.In)] ## T7.Out
+                      @ T7.Pt = T7.Pt + 1
+                     }
+                     @ function_return= T7.Out
+                    }
+
+          
+^alias Me1 //me $T7.CoolTalk.1($0-) 
+^alias Say1 //say $T7.CoolTalk.1($0-)
+^alias Msg1 //notice $0 $T7.CoolTalk.1($1-)
+^alias Topic1 //topic $C $T7.CoolTalk.1($0-)
+#^alias Describe1 //describe $0 $T7.CoolTalk.1($1-)
+#^alias Reply1 Reply $0 $T7.CoolTalk.1($1-)
+
+
+^alias Me2 //me $T7.CoolTalk.2($0-)
+^alias Say2 //say $T7.CoolTalk.2($0-)
+^alias Msg2 //notice $0 $T7.CoolTalk.2($1-)
+^alias Topic2 //topic $C $T7.CoolTalk.2($0-)
+#^alias Describe2 //describe $0 $T7.CoolTalk.2($1-)
+#^alias Reply2 Reply $0 $T7.CoolTalk.2($1-)
+
+
+^alias T7.HelpTalk {                    
+echo                   $bold$under\CoolTalk$bold$under  $boldVersion 5.0   FroboS 
+echo
+echo  CoolTalk is a collection of talking/msging/etc alaises taken from
+echo  Various Sources(SuperPak, Infinity, jfk), and modified slightly to fit 
+echo  DESS format to work with deturbo.  Original CoolTalk co-authored by
+echo  Sunil!sunil@silicone.che.sdsmt.edu and drow!drow@phantom.com.  
+echo 
+echo  Usage:   /me#   /say#   /msg#   /topic#   /describe#
+echo           (Where # is a number value 1-2 ie. /me2 <text>)
+echo
+echo  Samples:
+echo     1  $T7.CoolTalk.1(Sample Text)     2  $T7.CoolTalk.2(Sample Text)
+                       }
+##-end

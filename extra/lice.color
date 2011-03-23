@@ -1,0 +1,33 @@
+### color is lame!!!
+
+PACKAGE LiCe
+
+ALIAS color (chan,switch) {
+  IF (switch) {
+     IF (switch == [OFF]) {
+        XECHO -B Removed COLORBAN in $chan
+        ^ASSIGN -color[$hash_32bit($chan)]
+        ^ON #-PUBLIC 31 -'% $chan **'
+        RETURN
+     }
+     XECHO -B Now enforcing COLORBAN in $chan
+     ^ASSIGN color[$hash_32bit($chan)] 1
+     ^ON #-PUBLIC 31 '% $chan **' {
+         IF (!ischanop($servernick() $1)) {RETURN}
+         @ :serv = servernum()
+         @ :chan.hash = hash_32bit($1)
+         IF (iscset(F $chan.hash)) {
+            _proc.ban $1 $serv $mask(2 $userhost($0)) $0 $chan.hash
+         }
+         IF (iscset(C $chan.hash)) {
+                _proc.quote_add $serv KICK $1 $0 :Brought to you by TECHNICOLOR(c)
+                _proc.quote_flush $serv
+         }
+     }
+  }{
+  IF (chan == [ON] || chan == [OFF]) {/COLOR $C $chan}{
+    @ ch = chan ? chan : C   
+    uecho COLORBAN in $ch is ${color[$hash_32bit($ch)]?[ON]:[OFF]}
+    uecho Usage: /COLOR <#channel> [ON|OFF]
+  }}
+}

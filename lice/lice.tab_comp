@@ -1,0 +1,102 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+#XXX - TODO: sub-command layers. ie., /DCC SE<TAB> -> /DCC SEND
+
+# Nick completion layer
+ALIAS nick_comp (word) {
+  @ :list = pattern(${word}* $chanusers($C));
+  @FUNCTION_RETURN = strlen($list) ? list : file_comp($word);
+};
+
+# Channel completion layer
+ALIAS chan_comp (word) {
+  @ :list = pattern(${word}* $mychannels());
+  @FUNCTION_RETURN = strlen($list) ? list : file_comp($word);
+};
+
+# File completion layer
+ALIAS file_comp (word) {@FUNCTION_RETURN = glob(\"${word}*\")};
+
+# Operations for files
+ALIAS isfile (fn) {@FUNCTION_RETURN = !!pass(+=\$'\;%!@*~/,.:\"#&? $fn)};
+ALIAS file_prefix (word) {
+  @ :ret = prefix($word);
+  @ :ret = (index(" " $word(0 $word)) == -1) ? ret : [\"] ## ret ## [\"];
+  @FUNCTION_RETURN = ret;
+};
+ALIAS my_prefix (wn) {@FUNCTION_RETURN = isfile($wn) ? file_prefix($wn) : prefix($wn)};
+
+# This splits our input line and inserts the completion
+ALIAS word_completion (pos) {
+  ^LOCAL oline $L;
+  @ :wpos = indextoword(${pos - 1} $oline);
+  @ :word = word($wpos $^\oline);
+  @ :s_bot = rest($pos $oline);
+  @ :s_top = mid(0 $wordtoindex($wpos $oline) $oline);
+  IF (ischannel($word)) {
+    @ :comp = chan_comp($word);
+    @ :num  = numwords($comp);
+    @ :word = (num > 1) ? my_prefix($comp) : comp;
+  } ELSIF (isfile($word)) {
+    @ :comp = file_comp($word);
+    @ :num  = numwords($comp);
+    @ :word = (num > 1) ? file_prefix($comp) : comp;
+  } ELSE {
+    @ :comp = nick_comp($word);
+    @ :num  = numwords($comp);
+    @ :word = num ? ((num > 1) ? my_prefix($comp) : (strlen($s_top) || isfile($comp)) ? comp : fmt.talk_reply($comp) # [ ]) : comp;
+  };
+  UNLESS (num) {RETURN};
+
+  PARSEKEY ERASE_LINE;
+  @ :nline = s_top ## word ## s_bot;
+  XTYPE -L $nline;
+
+  IF (num == 1) {RETURN};
+
+  XECHO -B Possible matches:;
+  IF (maxlen($comp) > 10) {
+    FE ($comp) x1 {ECHO $pad(4 " ") $x1};
+  }{
+    echo.recursive $comp;
+  };
+};
+
+# msg completion module
+ALIAS msg_completion (cmd) {
+  @ :serv = winserv();
+  IF (serv < 0) {RETURN};
+  @ :nick = shift(tabnick[$serv]);
+  IF (strlen($nick)) {
+    PUSH tabnick[$serv] $nick;
+    PARSEKEY ERASE_LINE;
+    @ :nick #= [ ];
+    XTYPE -L $cmd $nick;
+  };
+};
+
+# tab completion routine
+# XXX - we can go more broad here by adding
+#       command-specific options.
+ALIAS tab_completion {
+  IF (!L || (word(0 $L) == [/MSG] && numwords($L) == 2)) {
+    msg_completion /MSG;
+  }{
+    word_completion $curpos();
+  };
+};
+#tjh/09

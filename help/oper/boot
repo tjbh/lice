@@ -1,0 +1,6 @@
+Usage: BOOT <nick> 
+   Kicks and bans a nick from all the channels you are currently
+   in (if found), at once.
+
+See also: [KICK] [BAN] [user]
+

@@ -1,0 +1,51 @@
+# /silence - a more efficient interface
+# Written by HSOC, slightly modified to support silence toggle by tjh
+# Updated for EPIC5 by tjh
+# TODO Clean up this mess!
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS silence {
+  IF (_proc.ssupport()) {
+    IF (match($left(1 $0) + -)) {
+       @ sil.sign = left(1 $0);
+       @ sil.dork = rest(1 $0);
+       UNLESS (rmatch($0 *!* *@* *.*)) {
+          USERHOST $sil.dork -CMD UNLESS ([$4]==[<UNKNOWN>] || [$4]==[]) {
+             //SILENCE $sil.sign*@$4;
+             //SILENCE $sil.sign$sil.dork*;
+          }{//SILENCE $sil.sign$sil.dork*}
+       };{//SILENCE $0}
+    };{
+    @ sil.cnt = 1;
+
+#   IF ([$0] == '') {@ sil.pers = [$N]} {@ sil.pers = [$0]};
+# I'm not happy with this. $N can not be correct, but it *seems* to work.
+    @ sil.pers = @ ? [$0] : [$N];
+    iecho ---- Silence List for $sil.pers@$S;
+    ^ON ^271 * {
+      @ sil.mask = [$2];
+      iecho [$[2]sil.cnt] $sil.mask;
+      @sil.cnt++;
+    };
+    //SILENCE $sil.pers;
+    };
+  }{
+     iecho This server does not support silence.;
+  };
+};
+ON ^272 * {iecho ---- End of Silence List;purge sil};
+
+ALIAS _proc.ssupport {
+  @:serv = serverctl(FROM_SERVER);
+  IF ((MATCH(SILENCE $serverctl(GET $serv 005s))) > 0) {
+    @:FUNCTION_RETURN = 1;
+  }{
+    @:FUNCTION_RETURN = 0;
+  };
+};

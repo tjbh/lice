@@ -1,0 +1,4 @@
+!WHOAMI <password>
+   This will give you information about your registered
+   hostnames and channels.  Also, will display your access
+   and info for each channel.

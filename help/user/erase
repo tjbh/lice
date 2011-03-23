@@ -1,0 +1,6 @@
+Usage: ERASE [#]
+   Erases all messages recorded (while AWAY) from memory. If a message
+   number is specified, only that message is erased.
+
+See also: [PLAY] [GONE] [BACK]
+ 

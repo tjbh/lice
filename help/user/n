@@ -1,0 +1,6 @@
+Usage: N <nick|channel> <notice text> 
+Usage: N <nick1,...,nicks,channel1,...,channels> <notice text> 
+   Sends a NOTICE to nick(s) or channel(s)
+
+See also: [M] [OOPS] [RELN]
+

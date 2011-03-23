@@ -1,0 +1,83 @@
+Usage: FRIEND -a <handle> [host]
+Usage: FRIEND -c <handle> <[+|-]channel|#*> [[<-|+>modes] [greet msg]]
+Usage: FRIEND -d <handle|pattern>
+Usage: FRIEND -h <handle> <[+|-]host>
+Usage: FRIEND -l [handle]
+
+Options and Operation:
+	-a	Creates a new handle in your FRIEND database.
+		If the handle matches the nickname of someone in
+		one of your channels, their user@host will be
+		inserted in the handle's host list. Alternately,
+		a host can be specified and this one will be
+		inserted into the handle's host list.
+		NOTE: If no nickname matches the handle, or
+		no additional host is specified, the handle will
+		have no hosts associated. Then, one must use the
+		-h option to insert/remove hosts to this handle.
+
+	-c	Insert/Removes channels for an existing handle. If #*
+		is specified as channel, the settings will match all
+		possible channels.
+		NOTE: A handle without channels will be automatically
+		purged from the database.
+
+	-d	Deletes a handle, and all associated hosts and
+		channels, from the FRIEND database. If a pattern is given,
+		all matching handles will be removed.
+		NOTE: a pattern of * will effectively remove all the
+		handles and wipe your list clean.
+
+	-h	Insert/Removes hosts for an existing handle.
+		NOTE: Handles can initially be host-less this is
+		only useful for maintainance purposes.
+
+	-l	Lists all currently active handles. If a handle
+		is specified, it shows detailed listing of the
+		handle's properties.
+
+Channel modes (for -c):
+	A	AUTOMODE: gives channel op or voice when they join.
+		+A by itself does nothing, the users need +O or +V also.
+		Note: automodes _dont_ requite password, use with caution
+	E	EXCEPTION: allows the user to do the following:
+			1) Deop other protected users
+			2) Kick/Ban protected users
+			3) Remove perma-bans
+			4) Change locked channel modes
+	F	FLOOD FREE: the user won't trigger flood protection
+	G	GREET: displays a greet everytime the user joins
+		the channel.
+	I	INVITE: invites the user to the channel via !INVITE
+	O	OP: gives the user channel operator (+o) via !OP
+	P	PROTECT: protects user from others who KICK/BAN/DEOP
+	R	REVENGE: revenges user from others who KICK/BAN/DEOP
+	U	UNBAN: removes bans matching user via !UNBAN
+	V	VOICE: gives the user voice status (+v) via !VOICE
+
+Example 1: Add all #LiCe ops to an auto-op and protect list, no greeting.
+
+	/FRIEND -a LiCe_Ops
+	/FRIEND -c LiCe_Ops +#LiCe +AOP
+	/FRIEND -h LiCe_Ops +*!*user1@*host1.com
+	/FRIEND -h LiCe_Ops +*!*user2@*host2.com
+	/FRIEND -h LiCe_Ops +LiCe!*e@*mistik.net
+		...
+
+Example 2: Create a handle for SrfRoG on #LiCe and #Linux. On #LiCe,
+	   we want to op (no auto), protect, revenge and greet. On #Linux,
+	   auto-voice and protect only. We know SrfRoG is online now,
+	   so his current user@host will be auto-added (SrfRoG can add
+	   his own hosts via /msg !IDENT later).
+
+	/FRIEND -a SrfRoG
+	/FRIEND -c SrfRoG +#LiCe +OPRG Hi there frog!
+	/FRIEND -c SrfRoG +#Linux +AVP
+
+Example 3: "Hmm... SrfRoG is a really cool guy, spending time on LiCe and
+	   giving it away. The least I could do is give him ops in all my 
+           channels!"
+
+	/FRIEND -a SrfRoG *!cag@codehack.com
+	/FRIEND -c SrfRoG +#* +AOPE frogs are cool! :)
+

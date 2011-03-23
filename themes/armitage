@@ -1,0 +1,189 @@
+#
+# Description: .armitage. color theme.
+# Author: voland (voland@myboringlife.com)
+# based on echoes theme by whitefang.
+# TODO:
+# - so many things...
+#
+#  	ok... here's the idea... color sets/and ideas 
+#   taken mainly from BitchX script cypress
+#     if u like it.. use it ;)
+# many thanks to whitefang for the help :)
+#
+#   Have Fun (Gun?)
+
+clear
+eval xecho .armitage.  theme by Voland
+
+EVAL XECHO -r $chr(27)\(U
+SET NOTIFY_USERHOST_AUTOMATIC ON
+SET STATUS_DOES_EXPANDOS ON
+
+# Event formats
+
+ALIAS fmt.action    RETURN 12์ 16$014/12$1 $2-
+ALIAS fmt.action_me RETURN 12์ 12$0 $2-
+
+### show modes idea from cypress, function by whitefang, thanx @whitefang :)
+
+ALIAS fmt.auto_reply RETURN 2<${ischanop($0 $1)?[14@]:ischanvoice($0 $1)?[14+]:[]]}16$02> $2-
+
+### neat eh?
+
+ALIAS fmt.auto_reply_other RETURN 2<16$014/12$12> $2-
+ALIAS fmt.channel_nick  RETURN 16nickchange 14\[\(2$114\) -> 14\(12$214\)\]
+ALIAS fmt.channel_signoff RETURN 14\(16quit14/12$014\) - 16$114 \($2-14\)
+ALIAS fmt.ctcp_channel  RETURN 14\[12$014\(2$userhost()14\) requested 12CTCP 16$toupper($2) from 12$1 
+ALIAS fmt.ctcp_me   RETURN 14\[12$014\(2$userhost()14\)\] requested 12CTCP 16$toupper($2)  from 12$N
+ALIAS fmt.ctcp_server   RETURN 14\[12$014\(10$userhost()14\)\] requested 12CTCP 16$toupper($2)  from 12$N
+ALIAS fmt.dcc_chat  RETURN 14\[.2.12d2cc14\(12$014\)\] $1-
+ALIAS fmt.invite    RETURN 14<2$014\(12invite14.2$114\)>
+ALIAS fmt.join RETURN 14\(16join14/16$114\) - 16$0 14\[2$sar(g/@/12@2/$sar(g/./12.2/$2))14\]
+ALIAS fmt.kick      RETURN 16$0 was kicked off 12$2 by 16$1 14\($3-14\)
+ALIAS fmt.kick_me       RETURN 16Yoy were kicked of 12$2 by 16$1 14\($3-14\)   
+ALIAS fmt.leave RETURN 14\(16part14/16$114\) - 16$0 14\[2$sar(g/@/12@2/$sar(g/./12.2/$2))14\] 14\($3-14\)
+ALIAS fmt.mode      RETURN 14\[16mode14/12$1\(16$2-\)14\] by 16$0
+ALIAS fmt.mode_bans RETURN 14\[16mode14/12$1\(16$2-\)14\] by 12$0  
+ALIAS fmt.mode_me   RETURN 14\[16mode14/12$N14\(16$214\)\]
+ALIAS fmt.mode_server   RETURN 14\[12s2erver12m2ode14/16$1 14\[\(16$2-14\)\] by 16$0 
+ALIAS fmt.msg RETURN 14\(16msg14/12$014\[2$sar(/@/12@2/$sar(g/./12.2/$userhost()))14\)\] $1-
+ALIAS fmt.msg_group RETURN 14\(16msg14/12$014\[2$sar(/@/12@2/2$sar(g/./12.2/$userhost()))14\):12$114\) $2-
+ALIAS fmt.notice        RETURN 2-12\(16$012\)2- $1-
+ALIAS fmt.notify_signoff   RETURN 14\[16notify14/2sign12off14\] 16$0
+ALIAS fmt.notify_signon RETURN 14\[16notify14/2sign12on14\] 16$014\(2$sar(/@/12@2/$sar(g/./12.2/$1))14\)
+ALIAS fmt.notify_signon_uh RETURN 14\[16notify14/2sign12on14\] 16$014\(2$sar(/@/12@2/$sar(g/./12.2/$1))14\)
+
+### show modes idea from cypress, function by whitefang, thanx @whitefang :)
+
+ALIAS fmt.public RETURN 2<${ischanop($0 $1)?[14@]:ischanvoice($0 $1)?[14+]:[]}$02> $2-
+ALIAS fmt.public_msg RETURN 2<${ischanop($0 $1)?[14@]:ischanvoice($0 $1)?[14+]:[]}$02> $2-
+
+### neat eh?
+
+ALIAS fmt.public_other  RETURN 2<$014:15$12> $2-
+ALIAS fmt.public_notice RETURN 2-12<16$012>:16$12- $2-
+
+ALIAS fmt.sc_max RETURN 5
+ALIAS fmt.sc_top {
+ECHO 14\[16names14/16$014\]
+		      RETURN 12ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+}
+ALIAS fmt.sc_mid (list) {
+@ :cnt = 0
+FE ($list) xx {
+  @ :cnt++
+  @ :mod = pass(@+ $xx)
+  @ :spc = mod ? mod : [ ]
+  @ :nic = strip(@+ $xx)
+  @ :ret #= [14\[12] ## spc ## [2] ## [$[10]nic] ## [${cnt!=fmt.sc_max()?[14\] ]:[]}]
+}
+		      RETURN 12บ $ret
+}
+ALIAS fmt.sc_bot 	RETURN 12ำฤฤฤฤฤ14\[\( 16$014 \)14\[16+o14\(16$114\)16-o14\(16$314\)16+v14\(16$214\)\]\(16total14/16$414\)\]
+
+ALIAS fmt.send_action   RETURN 12์ $N $1-
+ALIAS fmt.send_action_me RETURN 14ฏ [12a2ct14/16$014\] $1-
+ALIAS fmt.send_dcc_chat RETURN 14ฏ \[12d2cc14\(12$014\)\] $1-
+ALIAS fmt.send_msg  RETURN 14ฏ\[12m2sg14\(12$014\)\] $1-
+ALIAS fmt.send_notice   RETURN 14ฏ \[12n2otice14\(12$014\)] $1-
+
+### show modes idea from cypress, function by whitefang, thanx @whitefang :)
+
+ALIAS fmt.send_public RETURN 12<${ischanop($N $0)?[14@]:ischanvoice($N $0)?[14+]:[]}$N12> $1-
+
+### neat eh?
+
+ALIAS fmt.server_notice RETURN 14\[12$sar(g/./2.12/$0)14\] $afterw(Notice  $sar(g/@/12@/$sar(g/./12./$sar(g/!/12!/$sar(g/KILL/16KILL/$sar(g/STATS/16STATS/$sar(g/SQUIT/16SQUIT/$sar(g/CONNECT/16CONNECT/$sar(g/gline/16GLINE/$1-)))))))))
+
+ALIAS fmt.topic {
+  IF (strlen($2-)) {
+				RETURN 14\[16topic14/12$114\] - 14\[16$014/\($2-14\)\]
+  } {
+				RETURN 14\[16topic14/12$1 unset by 14[$014]
+  }
+}
+ALIAS fmt.topic_set {
+  IF ([$1-]==[<No Topic Set>]) {
+				RETURN $0 : No topic is set.
+  }
+  IF ([$1]==[Set]&&[$2]==[by]&&[$4]==[on]) {
+				RETURN 14\[16topic set by 16$3 14\(16$tolower($5-)14\)\]
+  } {
+				RETURN 14\[16topic14/12$014\($1-14\)\]
+  }
+}
+
+ALIAS fmt.titlebar		RETURN 14\[16topic14/12$014\($1-14\)\]
+
+
+ALIAS fmt.usercmd   RETURN 14\[12f2riend14\] 16$1 request from 12$0  
+ALIAS fmt.wallop    RETURN 14!12$014:12$114! $sar(g/OPERWALL/16OPERWALL/$sar(g/WALLOPS/16WALLOPS/$sar(g/LOCOPS/16LOCOPS/$sar(g/SLOCOPS/16SLOCOPS/$2-))))
+ALIAS fmt.wallop_me RETURN 14!12$014:12$114! $sar(g/OPERWALL/16OPERWALL/$sar(g/WALLOPS/16WALLOPS/$sar(g/LOCOPS/16LOCOPS/$sar(g/SLOCOPS/16SLOCOPS/$2-))))
+ALIAS fmt.wallop_server RETURN 14!12$014:12$114! $sar(g/./12./$sar(g/SQUIT/16SQUIT/$sar(g/CONNECT/16CONNECT/$sar(g/gline/16GLINE/$2-))))
+
+ALIAS fmt.whois_bot RETURN $()12ำฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤ\]
+ALIAS fmt.whois_mid {
+IF (temp.syn.whois_uh) {
+  echo 12บ 12a2ddress  14๐15 $sar(/@/12@/$sar(g/./12./$temp.syn.whois_uh))
+  ^assign -temp.syn.whois_uh
+}
+SWITCH ($0) {
+  (Ircname)   {RETURN 12บ 12n2ame     14๐ $1-}
+  (Domain)    {RETURN 12บ 12h2ost     14๐ $1-}
+  (Shitlist)  {RETURN 12บ 12shit        14๐ $1-}
+  (Userlist)  {RETURN 12บ 12u2ser     14๐ $1-}   
+  (Channels)  {RETURN 12บ 12c2han's   14๐ $sar(g/@/12@/$sar(g/+/12+/$1-))}
+  (Server)    {RETURN 12บ 12s2erver   14๐ $sar(g/./12./$1-)}
+  (Away)      {RETURN 12บ 12a2way     14๐ $1-}
+  (Operator)  {RETURN 12บ 12o2perator 14๐ 16$1 can 16/KILL people you can't 14\(IRC 16Operat16or14\)}
+  (Signon)    {RETURN 12บ 12s2ignon   14๐ $1-}
+  (Idle)      {RETURN 12บ 12i2dle     14๐ $1-}
+}
+}
+ALIAS fmt.whois_top { 
+^ASSIGN temp.syn.whois_uh $2@$3
+RETURN 12ึฤ\[14\( $tolower($0)16: 16$114 \)12\]12ฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤ\]
+}
+# Banner for this theme
+SET BANNER 12‘
+
+# Event banner colors
+ALIAS fmt.banner_info   RETURN $G
+ALIAS fmt.banner_party  RETURN $G 
+ALIAS fmt.banner_join   RETURN 14ฏ
+ALIAS fmt.banner_leave  RETURN 14ฎ  
+ALIAS fmt.banner_signon RETURN 14ฏ2ฏ12ฏ
+ALIAS fmt.banner_signoff    RETURN 14ฎ2ฎ12ฎ 
+ALIAS fmt.banner_invite RETURN 14ฏ2ฏ12ฏ
+ALIAS fmt.banner_mode   RETURN $G
+ALIAS fmt.banner_kick   RETURN $G
+ALIAS fmt.banner_nick   RETURN $G
+ALIAS fmt.banner_ctcp	RETURN 14ฏ2ฏ12ฏ
+ALIAS fmt.banner_dcc    RETURN $G
+ALIAS fmt.banner_alert  RETURN $G
+ALIAS fmt.banner_userlist   RETURN $G
+ALIAS -fmt.banner_server
+ALIAS fmt.banner_usage  RETURN $G
+ALIAS fmt.talk_reply RETURN ..$0,
+
+SET CLOCK_24HOUR On
+SET STATUS_NO_REPEAT OFF
+SET STATUS_AWAY 14\(12a2way14\)
+SET STATUS_CHANNEL 16%C
+SET STATUS_CHANOP 12@
+SET STATUS_CLOCK 12๙ 12t2ime14/16%T
+SET STATUS_FORMAT 14๐ 16%R12:%*%@%N%#%B%C%+%A14ฤ%>%!112:16%2 14๐
+SET STATUS_FORMAT1 14[12n2ick12 ๙ %*%=%@$%N%# %A %Q %>12 ๙ %F12 ๙ %412%R12 ๙ 12l2ag14/16%214]
+SET STATUS_FORMAT2 14[12c2han12 ๙ %C%+ %D %>12 ๙ 12t2og14/16%0 %T 14]
+SET STATUS_HOLD_LINES 10, %B
+SET -STATUS_MAIL 
+SET STATUS_MODE 14/16+%+
+SET STATUS_QUERY 12q2uery14/16%Q
+SET STATUS_NICK 16%N
+SET STATUS_USER4 12w2in14/
+SET STATUS_NOTIFY 12a2ct14/16%F
+SET STATUS_OPER 12*
+SET STATUS_UMODE 14/16+%#
+SET STATUS_VOICE 12+
+SET STATUS_WINDOW ^^^^^
+set input_prompt 14\<12$C14\> 

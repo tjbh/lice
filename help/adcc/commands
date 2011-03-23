@@ -1,0 +1,54 @@
+
+These are subcommands of the ADCC command:
+
+EDIT
+   To edit details of aDCC offer packs.
+
+OFFER
+   Create aDCC file offer packs.
+
+PLIST
+   Display the file offers to nicks/channels.
+	Usage:	/ADCC PLIST [*|<nick1,...,nickN|channel1,...,channelN>]
+	ie.
+		/ADCC PLIST <channel>		send to "channel"
+		/ADCC PLIST <nick>		send to "nick"
+		/ADCC PLIST *			all channels you are on.
+		/ADCC PLIST			same as above.
+		/ADCC PLIST <nick1,nick2>	send to two nicks.
+		/ADCC PLIST <channel1,channel2>	send to two channels.
+		/ADCC PLIST <nick,channel>	combo :)
+
+QUEUE
+   Manipulate the status of the AutoSEND queue, and view all files queued.
+
+NOTICE
+   Announce your current channel that you are Same format as "PLIST" (See
+   above).
+
+REMOVE
+   Remove one or all aDCC offer packs.
+
+RESET
+   Resets all counters and displays, including the status bar.
+
+SAVE
+   Saves your offerlist to a file, for later use.
+
+SEND
+   Send a file(s) to nick. Wildcards allowed.
+
+SETUP
+   Modify the aDCC current settings.
+
+STATUS
+   Show the current aDCC configuration.
+
+The commands are in majority self-explanatory.
+
+   The matter of security also applies here, never do a command like:
+   "/ADCC SEND <nick> ~/*" which sends all the files in your HOME dir,
+   unless you know what you are doing.
+
+See also: [user SETUP] [user DTOG]
+

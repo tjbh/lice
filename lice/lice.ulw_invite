@@ -1,0 +1,43 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# !INVITE command
+ALIAS _proc.ulw_invite (nick,uh,serv,pass,chan) {
+  @ :myhand = find_in_list(User $nick!$uh);
+  UNLESS (myhand) {RETURN};
+  FE ($myhand) hand {
+  UNLESS (lice.get(main_PL$hand)) {
+    XQUOTE -S $serv NOTICE $nick :You don't have a password set. Type: /MSG $servernick($serv) !HELP PASS;
+    RETURN;
+  };
+  IF (pass != lice.get(main_PL$hand)) {
+    XQUOTE -S $serv NOTICE $nick :Invalid password. $randread($main.reason_error);
+    RETURN;
+  };
+  @ :chan_list = strlen($chan) ? chan : mychannels($serv);
+  XEVAL -S $serv {
+    FE ($chan_list) cn {
+      IF (onchannel($nick $cn) || !ischanop($servernick() $cn) || !iscset(P $hash_32bit($cn))) {CONTINUE};
+      @ :test = (word(0 $getitem(ChanUser$hand 0)) == [#*]) ? 0 : matchitem(ChanUser$hand $cn *);
+      IF (test < 0) {CONTINUE};
+      @ :mode = word(1 $getitem(ChanUser$hand $test));
+      IF (mode & 16) {_proc.quote_add $serv INVITE $nick $cn};
+    };
+  };
+  };
+  _proc.quote_flush $serv;
+};
+#tjh/09

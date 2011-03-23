@@ -1,0 +1,37 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# DCC Auto SEND/GET Queue
+ALIAS _proc.dcc_queue_load (cmd) {
+  WHILE ((numitems(DQ$cmd) > 0) && (main.dcc_active_limit > temp.dcc_active)) {
+    @ temp.dcc_active++;
+    @ :item = queue.head(DQ$cmd);
+    @ :nick = word(0 $item);
+    @ :file = (cmd == [GET]) ? word(1 $item) : [\"] ## urldecode($word(1 $item)) ## [\"];
+    WAIT -CMD //^DCC $cmd $nick $file;
+  };
+};
+
+# check our queue
+ALIAS _proc.dcc_queue_check {
+  IF (temp.dcc_active < 0) {@ temp.dcc_active = 0};
+  IF (numitems(DQGET) > 0) {^TIMER -REF DQLOAD 10 _proc.dcc_queue_load GET};
+  IF (numitems(DQSEND) > 0) {^TIMER -REF DQLOAD 10 _proc.dcc_queue_load SEND};
+};
+
+# heartbeat of our timed queue
+ON #-TIMER 13 * {^TIMER -REF DQCHK 5 _proc.dcc_queue_check};
+#tjh/09

@@ -1,0 +1,6 @@
+Usage: WLM [channel]
+   Sends a wall of your last rec'v message.
+   The channel is optional, defaults to your current channel.
+
+See also: [WALL] [WLN]
+

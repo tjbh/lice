@@ -1,0 +1,18 @@
+Usage: RDCC <-a|-c|-g|-s> [nick]
+     Removes multiple DCCs at once, optionally matching
+     nickname(s).
+
+Options:
+	-a            - Remove ALL DCCs
+	-c            - Remove DCC CHATs
+	-g            - Remove DCC GETs
+	-s            - Remove DCC SENDs
+
+ie.
+     /RDCC -a         - Remove all DCCs.
+     /RDCC -a SrfRoG  - Remove all DCCs for SrfRoG.
+     /RDCC -a *frog*  - Remove all DCCs for nicks matching *frog*.
+     /RDCC -g         - Remove all DCC GETs.
+
+See also: [ADCC] [REDCC]
+

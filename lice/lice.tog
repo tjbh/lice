@@ -1,0 +1,78 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.muppetz.com
+# ---------------------------------------------------------------------------
+#
+# Modified by tjh 2010
+#
+
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS _proc.setup_tog {
+  iecho +------- Current LiCe Toggle Settings ---------------------------+;
+  iecho | Description                              | Tog | Set | Default |;
+  iecho +------------------------------------------+-----+-----+----------;
+  iecho Auto change to preferred nick (AutoNick).  |  A  | $[3]isset.show($isset(A)) | On;
+  iecho Enable actions for SHIT users.             |  B  | $[3]isset.show($isset(B)) | On;
+  iecho Channel Protection: Auto KICK flooders.    |  C  | $[3]isset.show($isset(C)) | Off;
+  iecho Flood Protection or Auto IGNORE flooders.  |  F  | $[3]isset.show($isset(F)) | On;
+  iecho Auto lookup IP addresses in WHOIS/WHOWAS.  |  H  | $[3]isset.show($isset(H)) | Off;
+  iecho Auto JOIN all channels you are invited.    |  I  | $[3]isset.show($isset(I)) | Off;
+  iecho Auto clone bot notification on JOIN.       |  J  | $[3]isset.show($isset(J)) | Off;
+  iecho NetHack Protection: AutoDEOP nethackers.   |  N  | $[3]isset.show($isset(N)) | Off;
+  iecho FRIEND !MSG commands (Global).             |  P  | $[3]isset.show($isset(P)) | On;
+  iecho QUIET MODE: LiCe runs in stealth status.   |  Q  | $[3]isset.show($isset(Q)) | Off;
+  iecho Auto regain ops in empty opless channels.  |  R  | $[3]isset.show($isset(R)) | Off;
+  iecho Auto define top-level dom in WHOIS/WHOWAS. |  T  | $[3]isset.show($isset(T)) | On;
+  UNLESS (dlu == 1) {
+    iecho Automatically check for LiCe updates/news. |  U  | $[3]isset.show($isset(U)) | On;
+  };
+  iecho Lurking mode. No AutoAWAY or idle times.   |  X  | $[3]isset.show($isset(X)) | Off;
+  INPUT "Letters to change toggles (ENTER to skip): " IF (@) {tog $*}
+};
+ALIAS tog {
+  UNLESS (@) {
+    _proc.setup_tog;
+    RETURN;
+  };
+  FEC ($toupper($0)) _t {
+    IF (isset($_t)) {
+      @ lice.set(main.set $strip($_t $lice.get(main.set)));
+      SWITCH ($_t) {
+	(F) {@ main.old_flood_users = FLOOD_USERS;^SET FLOOD_USERS 0};
+        (B) (C) (I) (J) (N) (P) {
+          @ main.cset = strip($_t $main.cset);
+          FOREACH chan _c {UNLESS (pass(A $chan[$_c][S])) {@ chan[$_c][S] = strip($_t $chan[$_c][S])}};
+        };
+        (Q) {^STACK PUSH SET CLIENT_INFORMATION;^SET CLIENT_INFORMATION $lice()};
+      };
+    }{
+      UNLESS (dlu == 1) {
+        @ lice.set(main.set $pass(ABCFHIJNPRTQUX $lice.get(main.set) $_t));
+      }{
+        @ lice.set(main.set $pass(ABCFHIJNPRTQX $lice.get(main.set) $_t));
+      };
+      SWITCH ($_t) {
+	(F) {^SET FLOOD_USERS $main.old_flood_users;^ASSIGN -main.old_flood_users};
+        (B) (C) (I) (J) (N) (P) {
+          @ main.cset #= _t;
+          FOREACH chan _c {UNLESS (pass($_t $chan[$_c][S]) || pass(A $chan[$_c][S])) {@ chan[$_c][S] #= _t}};
+        };
+        (Q) {^STACK POP SET CLIENT_INFORMATION};
+      };
+    };
+  };
+  UNLESS (lice.get(main.set)) {lice.del(main.set)};
+  XECHO -B Main toggles now: $lice.get(main.set);
+  ^SET STATUS_USER $lice.get(main.set);
+};
+#tjh/10

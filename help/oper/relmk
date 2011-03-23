@@ -1,0 +1,6 @@
+Usage: RELMK [nick] 
+   Uses last recieved message as the kick reason to "nick"
+   If no nick is given, it acts like "/RELM".
+
+See also: [RELM] [RELN] [user TLM] [RELNK]
+

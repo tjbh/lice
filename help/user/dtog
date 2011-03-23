@@ -1,0 +1,26 @@
+Usage: DTOG [message toggle letter(s)] 
+   Control the behavior of all message logging in the program.
+
+C
+   DCC AutoCLOSE all incoming file requests.
+
+G
+   DCC AutoGET all files sent to you.
+
+S
+   DCC AutoSEND files offered in packs.
+
+O
+   Overwrite duplicate files on DCC GETs. If not set, files are
+   incrementally renamed and never copied over. Unless AutoRESUME
+   is enabled.
+
+Q
+   DCC QUIET MODE. Supress error notices.
+
+R
+   DCC AutoRESUME. Completes interrupted file downloads.
+
+
+See also: [SENSORS] [TOG] [AR] [MTOG] [CTOG]
+

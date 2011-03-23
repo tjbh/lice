@@ -1,0 +1,19 @@
+Usage: GONE [-a|-q] [message]
+   Marks you AWAY and tells the last channel/nick you had contact
+   your new AWAY status.
+
+   The message will be your AWAY message.
+   The "-q" is used to cancel channel announcing.
+
+     e.g. /GONE -q nobody will see my away msg ;)
+
+   Normally, LiCe (EPIC) will put you on AWAY status on your current
+   server. To set yourself AWAY in all your connected servers at once,
+   use the "-a" flag.
+
+     e.g. /GONE -a Gone for the weekend, bye bye!!
+
+   Edit the file "~/.irc/gone.reasons" to customize the default message.
+
+See also: [BACK] [PLAY] [ERASE]
+

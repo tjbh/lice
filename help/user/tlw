@@ -1,0 +1,6 @@
+Usage: TLW [channel]
+   Makes a topic of the last channel WALLOP.
+   The channel is optional, defaults to your current channel.
+
+See also: [WLN] [TLM] [RELM] [oper]
+

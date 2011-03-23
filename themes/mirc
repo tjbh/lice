@@ -1,0 +1,109 @@
+#
+# Description: MIRC color theme.
+# Author: Hillie (hillie@amigascne.org)
+#
+
+PACKAGE LiCeTheme
+ECHO * Warning! You must use a white background for this to look right.
+
+purge temp.mcol
+purge temp.mopt
+
+# boolean: Prefix own PUBLIC TEXT?
+@ temp[MOPT][PREFIX] = 0
+# boolean: Show USERHOST in notify? [must be on/off]
+^SET NOTIFY_USERHOST_AUTOMATIC Off
+
+# Event color vars [edit this to your liking]
+@ temp[MCOL][NORMAL] = [1]
+@ temp[MCOL][ACTION] = [6]
+@ temp[MCOL][CTCP] = [7]
+@ temp[MCOL][HILITE] = [4]
+@ temp[MCOL][INFO] = [2]
+@ temp[MCOL][INFO2] = [3]
+@ temp[MCOL][INVITE] =[3]
+@ temp[MCOL][JOIN] = [3]
+@ temp[MCOL][KICK] = [3]
+@ temp[MCOL][MODE] = [3]
+@ temp[MCOL][NICK] = [3]
+@ temp[MCOL][NOTICE] = [4]
+@ temp[MCOL][NOTIFY] = [2]
+@ temp[MCOL][OTHER] = [6]
+@ temp[MCOL][OWN] = [1]
+@ temp[MCOL][PART] = [3]
+@ temp[MCOL][QUIT] = [2]
+@ temp[MCOL][TOPIC] = [3]
+@ temp[MCOL][WALLOPS] = [4]
+@ temp[MCOL][WHOIS] = [1]
+
+# Event formats
+ALIAS fmt.action	RETURN ${temp[MCOL][NORMAL]}* $0${([$1]==C)?[]:[\:$1]} $2-
+ALIAS fmt.action_me	RETURN ${temp[MCOL][NORMAL]}* $1-
+ALIAS fmt.auto_reply	RETURN ${temp[MCOL][HILITE]}<$0> $2-
+ALIAS fmt.auto_reply_other RETURN ${temp[MCOL][HILITE]}<$0:$1> $2-
+ALIAS fmt.channel_nick	RETURN $1 is now known as $2
+ALIAS fmt.channel_signoff  RETURN Quits $0: $1 \($2-\)
+ALIAS fmt.ctcp_channel	RETURN [$0 $toupper($2)\]
+ALIAS fmt.ctcp_me	RETURN [$0 $toupper($2)\]
+ALIAS fmt.ctcp_server	RETURN [$0 $toupper($2)\]
+ALIAS fmt.dcc_chat	RETURN ${temp[MCOL][NORMAL]}=$0= $1-
+ALIAS fmt.invite	RETURN ${temp[MCOL][INVITE]}$0 \($2\) invites you to $1
+ALIAS fmt.join		RETURN $0 \($2\) has joined $1
+ALIAS fmt.kick		RETURN $0 was kicked from $2 by $1 \($3-\)
+ALIAS fmt.kick_me	RETURN You were kicked from $2 by $1 \($3-\)
+ALIAS fmt.leave		RETURN $0 has left $1 \($2\)
+ALIAS fmt.mode		RETURN $0 sets mode on $1: $2-
+ALIAS fmt.mode_bans	RETURN $0 sets mode on $1: $2-
+ALIAS fmt.mode_me	RETURN ${temp[MCOL][MODE]}$N sets mode: $2-
+ALIAS fmt.mode_server	RETURN $0 sets mode on $1: $2-
+ALIAS fmt.msg		RETURN ${temp[MCOL][NORMAL]}*$0* $1-
+ALIAS fmt.msg_group	RETURN ${temp[MCOL][NORMAL]}*$0* \($1:$S\) $2-
+ALIAS fmt.notice	RETURN ${temp[MCOL][NOTICE]}-$0\- $1-
+ALIAS fmt.notify_signoff   RETURN $0 is no longer on IRC
+ALIAS fmt.notify_signon RETURN $0 is on IRC
+ALIAS fmt.notify_signon_uh RETURN $0 \($1\) is on IRC
+ALIAS fmt.public	RETURN ${temp[MCOL][NORMAL]}<$0> $2-
+ALIAS fmt.public_msg	RETURN ${temp[MCOL][NORMAL]}*$0:$1* $2-
+ALIAS fmt.public_other	RETURN ${temp[MCOL][NORMAL]}<$0:$1> $2-
+ALIAS fmt.public_notice RETURN ${temp[MCOL][NOTICE]}-$0:$1\- $2-
+ALIAS -fmt.sc_max
+ALIAS fmt.send_action	RETURN ${temp[MCOL][NORMAL]}* $N${([$0]==C)?[]:[\:$0]} $1-
+ALIAS fmt.send_action_me   RETURN ${temp[MCOL][NORMAL]}* $N $1-
+ALIAS fmt.send_dcc_chat	RETURN ${temp[MCOL][NORMAL]}-> =$0= $1-
+ALIAS fmt.send_msg	RETURN ${temp[MCOL][NORMAL]}-> *$0* $1-
+ALIAS fmt.send_notice	RETURN ${temp[MCOL][NOTICE]}-> -$0\- $1-
+ALIAS fmt.send_public	RETURN ${temp[MCOL][OWN]}${(!temp.mopt.prefix)?[> $1-]:[<$N${([$0]==C)?[]:[\:$0]}\> $1-]}
+ALIAS fmt.server_notice	RETURN ${temp[MCOL][NORMAL]}#$0# $2-
+ALIAS fmt.topic		RETURN ${temp[MCOL][TOPIC]}$0 changes topic on $1 to '$2-'
+ALIAS fmt.topic_set	RETURN ${temp[MCOL][TOPIC]}Topic on $0 is: '$1-'
+ALIAS fmt.wallop	RETURN ${temp[MCOL][WALLOPS]}Wallop: <$0> $3-
+ALIAS fmt.wallop_me	RETURN ${temp[MCOL][NOTICE]}-$N- WallOp:$0\\($1\) $2-
+ALIAS fmt.whois_bot	RETURN ${temp[MCOL][NORMAL]}* End of /$toupper($0) list $_wing()
+ALIAS fmt.whois_mid	RETURN ${temp[MCOL][WHOIS]}$temp.wing $*
+ALIAS fmt.whois_top	RETURN ${temp[MCOL][WHOIS]}$1 \($2@$3\) $_wing($1)
+
+# Banner for this theme
+^SET BANNER ***
+
+# Event banner colors
+ALIAS fmt.banner_info	RETURN ${temp[MCOL][INFO2]}$G
+ALIAS fmt.banner_party	RETURN ${temp[MCOL][INFO]}$G
+ALIAS fmt.banner_join	RETURN ${temp[MCOL][JOIN]}$G
+ALIAS fmt.banner_leave	RETURN ${temp[MCOL][PART]}$G
+ALIAS fmt.banner_signon	RETURN ${temp[MCOL][NOTIFY]}$G
+ALIAS fmt.banner_signoff	fmt.banner_signon
+ALIAS fmt.banner_invite	RETURN ${temp[MCOL][INVITE]}$G
+ALIAS fmt.banner_mode	RETURN ${temp[MCOL][MODE]}$G
+ALIAS fmt.banner_kick	RETURN ${temp[MCOL][KICK]}$G
+ALIAS fmt.banner_nick	RETURN ${temp[MCOL][NICK]}$G
+ALIAS fmt.banner_ctcp	RETURN ${temp[MCOL][CTCP]}-
+ALIAS fmt.banner_dcc	RETURN ${temp[MCOL][CTCP]}-
+ALIAS fmt.banner_alert	RETURN ${temp[MCOL][INFO]}$G
+ALIAS fmt.banner_userlist	RETURN ${temp[MCOL][INFO]}$G
+ALIAS fmt.banner_server	RETURN ${temp[MCOL][NORMAL]}*
+ALIAS fmt.banner_usage	RETURN ${temp[MCOL][NORMAL]}*
+
+# whois nick grabber
+ALIAS _wing {IF ([$0]) {@ temp.wing = [$0]}{^ASSIGN -temp.wing}}
+
+# aeq/99

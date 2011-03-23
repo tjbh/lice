@@ -1,0 +1,95 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, UNLESS specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;;
+
+### Ban manipulation routines.
+ALIAS ban {
+  UNLESS (@) {
+    uecho Usage: /BAN [-a|-c|-h|-i|-f|-g|-p|-n|-u|-t <secs>] <nick1 nick2 ...>;
+    uecho Usage: /BAN <ban1 ban2 ...>;
+    RETURN;
+  };
+  @ :uban = lice.get(main.auto_unban);
+  IF ([$2]) {^ASSIGN stampa 2};
+  WHILE (option = getopt(optopt optarg "achifgpsnt:u" $*)) {
+    SWITCH ($option) {
+      (a) {@ :type = strip(AU $type) ## [A]};
+      (i) {@ :type = strip(AI $type) ## [I]};
+      (c) {@ :type = strip(CHFPGSN $type) ## [C]};
+      (h) {@ :type = strip(HCFPGSN $type) ## [H]};
+      (f) {@ :type = strip(HFCPGSN $type) ## [F]};
+      (g) {@ :type = strip(HFCPGSN $type) ## [G]};
+      (p) {@ :type = strip(HFCPGSN $type) ## [P]};
+      (s) {@ :type = strip(HFCPGSN $type) ## [S]};
+      (n) {@ :type = strip(NFHCPGS $type) ## [N]};
+      (u) {@ :type = strip(UNA $type) ## [U]};
+      (t) {@ :uban = pass(0123456789 $optarg)};
+    };
+  };
+  UNLESS (strlen($type)) {@ :type = [N]};
+  @ :serv = winserv();
+  @ :old_uban = lice.get(main.auto_unban);
+  @lice.set(main.auto_unban $uban);
+  FE ($optarg) whom {
+    IF (pass(!@. $whom)) {
+      _proc.ban $C $serv $whom %;
+      CONTINUE;
+    };
+    @ :uh = get_uh($whom);
+    UNLESS (strlen($uh)) {
+      XECHO -B $whom: No such nick;
+      CONTINUE;
+    };
+    FEC ($type) opt {
+      @ :ban = makeban(B$opt $whom!$uh);
+      _proc.ban $C $serv $ban $whom;
+    };
+  };
+  @lice.set(main.auto_unban $old_uban);
+};
+
+# $0 = channel, $1 = serverindex, $2 = pattern, $3 = nick, [$4 = hash]
+ALIAS _proc.ban (chan,serv,opat,nick,phash) {
+  @ :patt = uhc($opat);
+  IF (patt == [*!*@*.*]) {RETURN};
+  XEVAL -S $serv {
+    get_user_match $chan $patt temp_list;
+    FE ($remw($servernick($serv) $temp_list)) ban {
+      IF (ischanop($ban $chan)) {_proc.mode_add $serv $chan -o $ban};
+    };
+  };
+  #getmatches(<array> <pattern>)
+  #getrmatches(<array> <string>)
+  ^ASSIGN -temp_list;
+  @ :hash = phash ? phash : hash_32bit($chan);
+  @ :list = [B] ## serv ## [-] ## hash;
+  @ :banx = getrmatches($list $patt);
+  @ :bany = getmatches($list $patt*);
+  @ :bans = uniq($banx $bany);
+  @ :lame = 0;
+  FE ($bans) ban {
+    @ :str = word(0 $getitem($list $ban));
+    IF (str == patt) {@ :lame = 1}{_proc.mode_add $serv $chan -b $str};
+  };
+  UNLESS (lame) {_proc.mode_add $serv $chan +b $patt};
+  IF (stampa) {
+     ^TIMER $stampa _proc.mode_flush $serv $chan;
+     ^TIMER $stampa ^ASSIGN -stampa;
+  }{_proc.mode_flush $serv $chan};
+  IF (lice.get(main.auto_unban) > 0) {
+     @ setitem(AUTOUNBAN $numitems(AUTOUNBAN) ${time() + lice.get(main.auto_unban)} $serv $chan $patt);
+  };
+};
+#tjh/10

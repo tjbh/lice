@@ -1,0 +1,16 @@
+Starting with LiCe 5.2.0, LiCe can now be installed globally by
+system admins easily.
+
+Regardless of where LiCe is installed, it will dynamically figure
+out where it is and will be able to load all other files including
+help system files automatically, once the main lice.irc file is
+loaded.
+
+Because system wide installs are often going to be owned by root,
+there is no point having the /UPDATE function working.  You can now
+easily disable the update functionality of LiCe by creating a file
+in the LiCe root directory called disable_update.  If this file
+exists on load, the /UPDATE function will be removed and the main
+toggle of U (/TOG U) will be removed from /TOG.  This removes the
+/update functionality.  You may wish to also delete the update text
+from the help directory.

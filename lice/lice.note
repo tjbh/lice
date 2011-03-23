@@ -1,0 +1,119 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+@ mkdir(~/.irc/notes);
+
+# help
+ALIAS _proc.note_help {
+  uecho Usage: /NOTE -dup <from> <to>;
+  uecho Usage: /NOTE -get <nick1 [nick2 ... nicks]>;
+  uecho Usage: /NOTE -get <channel1 [channel2 ... channels]>;
+  uecho Usage: /NOTE -set <nick|channel> <notes...>;
+  uecho Usage: /NOTE -rem <nick|channel [...] | *>;
+};
+
+# this sets a note in our file.
+ALIAS _proc.note_set {
+  IF (strlen($1)) {
+    @ :ns.fn = [~/.irc/notes/] ## encode($tolower($0));
+    @ :ns.fd = open($ns.fn W);
+    IF (write($ns.fd $1-) > 0) { XECHO -B Note: "$0" $1- };
+    @ close($ns.fd);
+  }{
+    _proc.note_help;
+  };
+};
+
+# duplicate a note
+ALIAS _proc.note_dup {
+  IF (strlen($1)) {
+    @ :nd.f = [~/.irc/notes/] ## encode($tolower($0));
+    IF (fexist($nd.f) == 1) {
+      @ :nd.t = [~/.irc/notes/] ## encode($tolower($1));
+      ^EXEC -name note_dup cp $nd.f $nd.t;
+      WAIT %note_dup;
+      XECHO -B Duplicated notes for '$0' to '$1';
+    }{
+      XECHO -B No notes found for '$0';
+    };
+  }{
+    _proc.note_help;
+  };
+};
+
+# this gets a previous note
+ALIAS _proc.note_get {
+  FE ($*) ng.1 {
+    @ :ng.fn = [~/.irc/notes/] ## encode($tolower($ng.1));
+    IF (fexist($ng.fn) == 1) {
+      @ :ng.fd = open($ng.fn R);
+      @ :ng.str = read($ng.fd);
+      WHILE (ng.str) {
+        iecho Note $ng.1\: $ng.str;
+        @ :ng.str = read($ng.fd);
+      };
+      @ close($ng.fd);
+    };
+  };
+};
+ALIAS _proc.note_wget {
+  FE ($*) ng.1 {
+    @ :ng.fn = [~/.irc/notes/] ## encode($tolower($ng.1));
+    IF (fexist($ng.fn) == 1) {
+      @ :ng.fd = open($ng.fn R);
+      @ :ng.str = read($ng.fd);
+      WHILE (ng.str) {
+        ECHO $fmt.whois_mid(Notes $ng.str);
+        @ :ng.str = read($ng.fd);
+      };
+      @ close($ng.fd);
+    };
+  };
+};
+
+# remove note
+ALIAS _proc.note_rem {
+  IF ([$0]==[*]) {
+    @ :nr.fn = glob(~/.irc/notes/*);
+    @ unlink($nr.fn);
+    XECHO -B Removed all notes;
+  }{
+    FE ($*) nr.1 {
+      @ :nr.fn = [~/.irc/notes/] ## encode($tolower($nr.1));
+      UNLESS (unlink($nr.fn)) {
+        XECHO -B Failed to remove notes for \"$nr.1\";
+      }{
+        XECHO -B Removed notes for \"$nr.1\";
+      };
+    };
+  };
+};
+
+# user command
+ALIAS note {
+  @ :opt = getopt(optopt optarg d:g:r:s:h $*);
+  SWITCH ($opt) {
+    (d) { _proc.note_dup $1 $2 };
+    (g) { _proc.note_get $1- };
+    (r) { _proc.note_rem $1- };
+    (s) { _proc.note_set $1- };
+    (h) { _proc.note_help };
+    (!) { XECHO -B Invalid option \"$optopt\" };
+    (-) { XECHO -B Missing argument for \"$optopt\" };
+  };
+  UNLESS (@) { _proc.note_help };
+};
+#tjh/09

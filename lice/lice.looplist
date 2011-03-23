@@ -1,0 +1,63 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# $0 = server, $1 = channel, $2 = nick list, $3 = kick reason.
+# this routine cleans up after itself
+ALIAS _proc.loop_kick {
+  ^LOCAL kick.l $($2);
+  ^LOCAL kick.m $($3);
+  FE ($kick.l) kick.1 {
+    _proc.quote_add $0 KICK $1 $kick.1 :$kick.m;
+  };
+  _proc.quote_flush $0;
+  ^ASSIGN -$2;
+  ^ASSIGN -$3;
+};
+# $0 = server, $1 = mode, $2 = type, $3 = channel, $4 = nicks
+# this routine cleans up after itself
+ALIAS _proc.loop_mode {
+  ^LOCAL lm.str;
+  ^LOCAL lm.lst $($4);
+  FE ($lm.lst) lm.1 {
+    PUSH lm.str $lm.1;
+    IF (#lm.str == lice.get(main.mnm)) {
+      _proc.quote_add $0 MODE $3 $1$repeat($lice.get(main.mnm) $2) $lm.str;
+      @ :lm.str = [];
+    };
+  };
+  IF (strlen($lm.str)) {_proc.quote_add $0 MODE $3 $1$repeat($#lm.str $2) $lm.str};
+  _proc.quote_flush $0;
+  ^ASSIGN -$4;
+};
+# $0 = server, $1 = NOTICE/PRIVMSG, $2 = nicks, $3 = msg
+# this routine cleans up after itself
+ALIAS _proc.loop_send {
+  ^LOCAL msg.nicks $($2);
+  ^LOCAL msg.msg $($3);
+  ^LOCAL msg.send;
+  FE ($msg.nicks) msg.1 {
+    @ :msg.send #= msg.1 ## [,];
+    IF (#msg.send == lice.get(main.mns)) {
+      _proc.quote_add $0 $1 $msg.send :$msg.msg $chr(18)$rand(999);
+      @ :msg.send = [];
+    };
+  };
+  IF (strlen($msg.send)) {_proc.quote_add $0 $1 $msg.send :$msg.msg};
+  _proc.quote_flush $0;
+  ^ASSIGN -$2;
+  ^ASSIGN -$3;
+};
+#tjh/10

@@ -1,0 +1,34 @@
+## Easy trace interface...
+## Based on skuld3 (asmodean)
+
+ALIAS trace {
+  UNLESS (@) {uecho Usage: /TRACE -lmosuz [server];RETURN}
+  @ :trace.foo = getopt()
+  @ :serv = strlen($1) ? [$1] : [$0]
+  WHILE (option = getopt(optopt optarg lmosuz $*)) {
+    SWITCH ($option) {
+      (l) {@ trace.mask #= [L]}
+      (m) {@ trace.mask #= [M]}
+      (o) {@ trace.mask #= [O]}
+      (s) {@ trace.mask #= [S]}
+      (u) {@ trace.mask #= [U]}
+      (z) {@ trace.mask #= [Z]}
+      (!) {uecho Usage: /TRACE -lmosuz [server];RETURN}
+    }
+  }
+  UNLESS (strlen($trace.mask)) {/TRACE -lmosuz $serv}{//TRACE $serv}
+}
+
+ON ^200 * {IF (pass(L $trace.mask)) {echo [ $[4]1 ] through $4 \($2\)}}
+ON ^201 * {IF (pass(Z $trace.mask)) {echo [ $[4]1 ] trying... $3 \(class $2\)}}
+ON ^202 * {IF (pass(Z $trace.mask)) {echo [ $[4]1 ] handshake $3 \(class $2\)}}
+ON ^203 * {IF (pass(Z $trace.mask)) {echo [ $[4]1 ] *unknown* $3 \(class $2\)}}
+ON ^204 * {IF (pass(O $trace.mask)) {echo [ $[4]1 ] $before(\[ $3)\[$after(\[ $3) \(class $2\)}}
+ON ^205 * {IF (pass(U $trace.mask)) {echo [ $[4]1 ] $3 \(class $2\)}}
+ON ^206 * {IF (pass(S $trace.mask)) {echo [ $[4]1 ] $stu($before(\[ $5)) connected by ${left(1 $6) == [*] ? [UNKNOWN] ## [@] ## before(\[ $5) : [${left(8 $6) == [AutoConn] ? left(8 $6) ## [@] ## after(@ $6) : [${ismset(V) ? [$6] : before(! $6)}]}]}}}
+ON ^207 * {IF (pass(Z $trace.mask)) {echo [ $[4]1 ] service $3-}}
+ON ^208 * {IF (pass(Z $trace.mask)) {echo [ $[4]1 ] newtype $3-}}
+ON ^209 * {IF (pass(M $trace.mask)) {echo [ Misc ] \($1 $2\)\: $3}}
+ON ^262 * {^ASSIGN -trace.mask}
+
+#HS'00

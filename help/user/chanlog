@@ -1,0 +1,10 @@
+Usage: CHANLOG -a <channel>
+Usage: CHANLOG -d <channel>
+Usage: CHANLOG -l [channel]
+
+Options and Operation:
+	-a	Starts logging on the specified channel.
+	-d	Stops logging on the specified channel.
+	-l	Lists the channels being logged or gives log information
+		about the channel specified.
+

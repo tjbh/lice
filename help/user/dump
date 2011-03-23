@@ -1,0 +1,6 @@
+Usage: DUMP <command [args ... ]> 
+   Dumps the output of an ircii command into a file called 'IRCDUMP' on
+   your HOME directory.
+
+  See also: [PAGER]
+

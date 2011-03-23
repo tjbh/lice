@@ -1,0 +1,15 @@
+
+    All about LiCe commands and internals:
+
+3    11@3..11@      [ user  ]       General user commands.
+3   (\--/)     [ oper  ]       Channel operator commands.
+3  (.>__<.)    [ party ]       Partyline module.
+3  ^^^  ^^^    [ binds ]       Some special key binds included.
+
+    Other topics:
+
+3    11@3..11@      [CREDITS]       Who made this?
+3   (\--/)     [COPYING]       GNU GENERAL PUBLIC LICENSE
+3  (.>__<.)    [LICENSE]       LiCe Public License
+3  ^^^  ^^^    [ChangeLog]     Changes from previous versions
+              [QuickStart]    A guide to using LiCe

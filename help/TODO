@@ -1,0 +1,17 @@
+This is a list of random bits and pieces I'll be working on for
+LiCe5 in the future. Feel free to email me, tim@muppetz.com
+with any thing else you'd like to see!
+
+2) Remove all compatability stuff in lice.epic5, or at least use only what we need.
+   I have started on this. Moving to serverctl and windowctl...
+3) Fix save routine to not rely on lice.epic5 (as above)
+5) Fix help! - DONE! Needs cleanup work.
+8) Update /ctog to support server+channel instead of just channel. [Hard]
+9) Fix broken /adcc - Nearly. - DONE(?)
+10) Update /noig to not display /ctog Q channels.
+12) Fix BWord.
+13) Remove dependancy on .irc -> move LiCe to .lice HARD
+14) Look at the ONJOIN notify stuff.
+15) Make tab complete work for HELP
+15) Move everything into dbmctl (in progress!)
+16) Add NOTE into dbmctl

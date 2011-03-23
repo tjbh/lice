@@ -1,0 +1,36 @@
+#
+#   LICE.FKEYS v0.2 ircii script module for use with EPIC5
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ----------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# default binding for the f1-f12 keys
+BIND -SYMBOLIC key_f1 PARSE_COMMAND {//WINDOW SWAP 1};
+BIND -SYMBOLIC key_f2 PARSE_COMMAND {//WINDOW SWAP 2};
+BIND -SYMBOLIC key_f3 PARSE_COMMAND {//WINDOW SWAP 3};
+BIND -SYMBOLIC key_f4 PARSE_COMMAND {//WINDOW SWAP 4};
+BIND -SYMBOLIC key_f5 PARSE_COMMAND {//WINDOW SWAP 5};
+BIND -SYMBOLIC key_f6 PARSE_COMMAND {//WINDOW SWAP 6};
+BIND -SYMBOLIC key_f7 PARSE_COMMAND {//WINDOW SWAP 7};
+BIND -SYMBOLIC key_f8 PARSE_COMMAND {//WINDOW SWAP 8};
+BIND -SYMBOLIC key_f9 PARSE_COMMAND {//WINDOW SWAP 9};
+BIND -SYMBOLIC key_f10 PARSE_COMMAND {//WINDOW SWAP 10};
+BIND -SYMBOLIC key_f11 PARSE_COMMAND {//WINDOW SWAP 11};
+BIND -SYMBOLIC key_f12 PARSE_COMMAND {//WINDOW SWAP 12};
+
+# These were HSOC's I suspect. I hope to add a user changeable feature for FKEYS.
+# You can always uncomment if you'd rather these!
+#BIND -SYMBOLIC key_f9 PARSE_COMMAND { CHANST };
+#BIND -SYMBOLIC key_f10 PARSE_COMMAND { SC };
+#BIND -SYMBOLIC key_f11 PARSE_COMMAND { SB };
+#BIND -SYMBOLIC key_f12 PARSE_COMMAND { NOIG };

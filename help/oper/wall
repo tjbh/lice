@@ -1,0 +1,7 @@
+Usage: WALL [channel] <message> 
+   Sends a messages to channel operators on one of your channels.
+   The channel name is optional, defaults to your current channel.
+   You must be a channel operator in order to send WALLs.
+
+See also: [MSAY] [MME] [WLM] [WLN]
+

@@ -1,0 +1,237 @@
+#
+#   LICE.BINDS v1.5.6 ircii script module for use with EPIC5
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#   refurbished by UNKNOWN and HSOC to work with latest EPIC.4
+#   refurbished by tjh to work with latest EPIC5
+#
+# ----------------------------------------------------------------------
+# Filename   : LICE.BINDS
+# Description: emulate unix screen via ircii and some external commands.
+# Author     : SrfRoG (cag@codehack.com)
+# Notes      : This module was made specifically for LiCe v4.x
+#            : tjh updated it to work specifically for LiCe v5.x
+# ----------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.muppetz.com
+# ---------------------------------------------------------------------------
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# the various control commands.
+# we use ^W instead of ^A (screen) so we dont have conflicts
+
+# last win
+BIND ^Wa PARSE_COMMAND {//^WINDOW SWAP LAST};
+BIND ^W^w PARSE_COMMAND {//^WINDOW SWAP LAST};
+# balance (shared)
+BIND ^Wb PARSE_COMMAND {
+  //WINDOW SHOW ${winnum()+1};
+  //WINDOW LAST;
+};
+# create win
+BIND ^Wc PARSE_COMMAND {win_new};
+BIND ^W^c PARSE_COMMAND {win_new};
+# clear win
+BIND ^Wf {CLEAR_SCREEN};
+# grow size (shared)
+BIND ^Wg PARSE_COMMAND {//WINDOW GROW 1};
+# hide win (shared)
+BIND ^Wh PARSE_COMMAND {//WINDOW HIDE};
+# info
+BIND ^Wi PARSE_COMMAND {
+  IF (C) {
+    echo.status \($geom()\)+$curpos() Channel: %C, Sets: $chan[$hash_32bit($C)][S], PID: $pid();
+  }{
+    echo.status \($geom()\)+$curpos() <No channel> - PID: $pid();
+  };
+};
+# change win's channel
+BIND ^Wj PARSE_COMMAND {
+  INPUT "Join channel [key, if needed]: " IF (@) {
+    @ :chan = ischannel($0) ? [$0] : [#$0];
+    //JOIN $chan ${streln($1) ? [$1-] : []};
+    #win_new CHANNEL $chan BIND $chan NAME $chan;
+    win_new CHANNEL $chan NAME $chan;
+    ^ON -WINDOW_KILL "$winnum($chan) %" {
+      ^ASSIGN -chan_topic[$chanwin($1)$hash_32bit($1)];
+      IF (onchannel($servernick() $1)) {//PART $1};
+      ^ON -WINDOW_KILL -"$0 %";
+    };
+  };
+};
+# kill current win
+BIND ^Wk PARSE_COMMAND {//WINDOW KILLSWAP};
+# kill current win (shared)
+BIND ^WK PARSE_COMMAND {//WINDOW KILL};
+# refresh win
+BIND ^Wl REFRESH_SCREEN;
+# next win
+BIND ^Wn PARSE_COMMAND {//WINDOW NEXT};
+BIND "^W " PARSE_COMMAND {//WINDOW NEXT};
+# lastmsg
+BIND ^Wm PARSE_COMMAND {echo.status};
+# next win (shared)
+BIND ^WN NEXT_WINDOW;
+# previous win
+BIND ^Wp PARSE_COMMAND {//WINDOW PREVIOUS};
+# previous win (shared)
+BIND ^WP PREVIOUS_WINDOW;
+# create query win
+BIND ^Wq PARSE_COMMAND {INPUT "Nick to query, =<nick> for CHAT: " IF (@) {win_new ADD $0 NAME $0 QUERY $0 DOUBLE OFF LEVEL NONE}};
+# shrink size (shared)
+BIND ^Wr PARSE_COMMAND {//WINDOW SHRINK 1};
+# server
+BIND ^Ws PARSE_COMMAND {INPUT "Server[:port[:password[:nick[:network[:IRC/IRC-SSL]]]]]: " IF (@) {win_new SERVER $0;_lice.saveserversl}};
+# time :)
+BIND ^Wt PARSE_COMMAND {echo.status Current time: $strftime($time() %a, %d \(%H:%M\) %b %Y [%Z])};
+#$strftime($time() %c %Z) - http://lice.muppetz.com}
+# uptime / away time
+BIND ^Wu PARSE_COMMAND {echo.status Uptime: $tdiff2(${time() - F}) - Started: $strftime($F %c %Z)};
+# list windows
+BIND ^Ww PARSE_COMMAND {//WINDOW LIST};
+# prog version
+BIND ^Wv PARSE_COMMAND {echo.status LiCe v$id.v for EPIC5 - http://lice.muppetz.com  };
+# change win's name
+BIND ^Wy PARSE_COMMAND {INPUT "Set window's name to: " IF (@) {//^WINDOW NAME $0}};
+# suspend
+BIND ^Wz STOP_IRC;
+# exec
+BIND ^W! PARSE_COMMAND {INPUT "Shell command (ENTER to cancel): " IF (@) {EXEC $*}};
+# switch to another win
+BIND ^W' PARSE_COMMAND {INPUT "Switch to window [curr = $winnum()]: " IF (isdigit($0)) {//^WINDOW SWAP $0}};
+# help
+BIND ^W? PARSE_COMMAND {HELP binds screen};
+# opervision
+BIND ^Wo PARSE_COMMAND {_proc.screen_ov};
+# lice partyline
+BIND ^WL PARSE_COMMAND {_proc.screen_pl};
+# paste buffer
+BIND ^W> YANK_FROM_CUTBUFFER;
+# cut input buffer
+BIND ^W< ERASE_LINE;
+# quit
+BIND ^W\\\\ QUIT_IRC;
+# log win
+BIND ^WH PARSE_COMMAND {//WINDOW LOG TOGGLE};
+# monitor win progress
+BIND ^WM PARSE_COMMAND {//WINDOW HOLD_MODE TOGGLE};
+# next
+BIND ^W^` PARSE_COMMAND {//WINDOW NEXT};
+# toggle beeping
+BIND ^W^G PARSE_COMMAND {//WINDOW BEEP_ALWAYS TOGGLE};
+# licence
+BIND ^W, PARSE_COMMAND {HELP LICENSE};
+# last win
+BIND ^W^X PARSE_COMMAND {//^WINDOW SWAP LAST};
+# toggle double status for a single window
+BIND ^Wd PARSE_COMMAND {//^WINDOW DOUBLE TOGGLE};
+# toggle double status for all windows
+BIND ^WD PARSE_COMMAND {FOR win in ($windowctl(REFNUMS)) {//^WINDOW $win DOUBLE TOGGLE};};
+# jump to other windows
+BIND ^W1 PARSE_COMMAND {//^WINDOW SWAP 1};
+BIND ^W2 PARSE_COMMAND {//^WINDOW SWAP 2};
+BIND ^W3 PARSE_COMMAND {//^WINDOW SWAP 3};
+BIND ^W4 PARSE_COMMAND {//^WINDOW SWAP 4};
+BIND ^W5 PARSE_COMMAND {//^WINDOW SWAP 5};
+BIND ^W6 PARSE_COMMAND {//^WINDOW SWAP 6};
+BIND ^W7 PARSE_COMMAND {//^WINDOW SWAP 7};
+BIND ^W8 PARSE_COMMAND {//^WINDOW SWAP 8};
+BIND ^W9 PARSE_COMMAND {//^WINDOW SWAP 9};
+BIND ^W0 PARSE_COMMAND {//^WINDOW SWAP 10};
+# creates a window dedicated to shell
+ALIAS echo.status {
+  ^TIMER 5 {^STACK POP SET STATUS_FORMAT2};
+  ^STACK PUSH SET STATUS_FORMAT2;
+  ^SET STATUS_FORMAT2 [%R] ${@ ? [$*] : temp.last_msg};
+  ^ASSIGN temp.last_msg $*;
+};
+ALIAS _proc.screen_pl {
+  IF (winnam(PL) == [PL]) {
+    XECHO -B There is already a Partyline window \($winnum(PL)\).;
+    RETURN;
+  };
+  win_new PL;
+  //^WINDOW DOUBLE OFF STATUS_FORMAT "%T LiCe Partyline %>%F";
+  echo.status Partyline (PL) window activated. Kill window to quit.;
+};
+ALIAS opervision {_proc.screen_ov};
+ALIAS _proc.screen_ov {
+  @ :serv = winserv();
+  @ :name = [OV] ## serv;
+  IF (winnam($name) == name) {
+    XECHO -B There is already an OperView window \($name\) for this server.;
+    RETURN;
+  };
+  win_new $name;
+  //^WINDOW DOUBLE OFF SKIP ON LEVEL NONE STATUS_FORMAT "%T OperView on $servername($serv) %>%F";
+  ^ON ^WINDOW_KILL "$winnum($name) %" {
+    //^WINDOW SWAP $rest(2 $1);
+    @ :serv = mid(2 256 $0);
+    echo.status OperVision (OV) on $servername($winserv()) window closed.;
+    ^ON ^WINDOW_KILL -"$0 %";
+  };
+  echo.status OperVision (OV) window activated. Kill window to quit.;
+};
+# to correctly swap our windows
+# SWITCH_WINDOWS: old screen, old window, new screen, new window
+ON ^SWITCH_WINDOWS * {
+  //^WINDOW $3 LEVEL ALL;
+  @ :chan = chanwin($3);
+  IF (ischannel($chan)) {fmt.titlebar ${STATUS_DOES_EXPANDOS == [ON] ? [$$chan_topic[$3$hash_32bit($chan)]] : [$chan_topic[$3$hash_32bit($chan)]]}};
+  ^RLAG;
+};
+ON ^SWITCH_CHANNELS * {
+  @ :win = chanwin($2);
+  UNLESS (isnumber($win)) {RETURN};
+  UNLESS (!(iswset(T)) || win == -1) {
+    @ :hash = hash_32bit($2);
+    IF ([$chan_topic[$win$hash]] == []) {
+      //WINDOW $win TOPLINE 1 " -- LiCe Titlebar [tm] --";
+    }{
+      //WINDOW $win TOPLINE 1 "$fmt.titlebar($chan_topic[$win$hash])";
+    };
+  };
+};
+# to create new windows
+ON ^WINDOW_CREATE * {
+  IF (iswset(T)) {WINDOW $0 TOPLINES 1};
+  //^WINDOW DOUBLE ${iswset(D)?[ON]:[OFF]} BEEP_ALWAYS ${iswset(B)?[ON]:[OFF]};
+};
+ALIAS win_new {
+  //^WINDOW NEW ${@ ? (strlen($1) ? [$*] : [NAME $0]) : []} HIDE;
+  //^WINDOW SWAP LAST;
+};
+# Binds that make our lives easier.
+BIND ^[f PARSE_COMMAND {_proc.split_info};
+BIND ^[e PARSE_COMMAND {_proc.split_jump 1};
+BIND ^[1 PARSE_COMMAND {_proc.split_jump 1};
+BIND ^[2 PARSE_COMMAND {_proc.split_jump 2};
+BIND ^[3 PARSE_COMMAND {_proc.split_jump 3};
+BIND ^[4 PARSE_COMMAND {_proc.split_jump 4};
+BIND ^[5 PARSE_COMMAND {_proc.split_jump 5};
+BIND ^X SWITCH_CHANNELS;
+BIND ^I PARSE_COMMAND {tab_completion};
+BIND ^O PARSE_COMMAND {msg_completion /IGNORE};
+BIND ^R PARSE_COMMAND {msg_completion /INVITE};
+BIND ^[k PARSE_COMMAND {join $pop(temp.invite)};
+
+#Old Skuld binds!
+BIND ^[l PARSE_COMMAND ppl;
+BIND ^[c PARSE_COMMAND CLEAR;
+
+## it's good (HSOC wrote it) :p
+# I never doubted it's goodness for a second - tjh
+BIND ^[r PARSE_COMMAND {msg_completion /RTAB};
+BIND ^[` PARSE_COMMAND {protect};
+
+# Shortened Commands
+ALIAS ig {ignore $*};
+ALIAS win {//WINDOW $*};
+ALIAS fri {friend $*};
+
+#HS/03
+#tjh/11

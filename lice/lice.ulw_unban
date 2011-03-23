@@ -1,0 +1,50 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# !UNBAN command
+ALIAS _proc.ulw_unban (nick,uh,serv,pass,chan) {
+  @ :myhand = find_in_list(User $nick!$uh);
+  UNLESS (myhand) {RETURN};
+  FE ($myhand) hand {
+  UNLESS (lice.get(main_PL$hand)) {
+    XQUOTE -S $serv NOTICE $nick :You don't have a password set. Type: /MSG $servernick($serv) !HELP PASS;
+    RETURN;
+  };
+  IF (pass != lice.get(main_PL$hand)) {
+    XQUOTE -S $serv NOTICE $nick :Invalid password. $randread($main.reason_error);
+    RETURN;
+  };
+  @ :uip = before(@ $uh) ## [@] ## nametoip($after(@ $uh));
+  @ :chan_list = strlen($chan) ? chan : mychannels($serv);
+  XEVAL -S $serv {
+    FE ($chan_list) cn {
+      @ :hash = hash_32bit($cn);
+      IF (!ischanop($N $cn) || !iscset(P $hash)) {CONTINUE};
+      @ :test = (word(0 $getitem(ChanUser$hand 0)) == [#*]) ? 0 : matchitem(ChanUser$hand $cn *);
+      IF (test < 0) {CONTINUE};
+      @ :mode = word(1 $getitem(ChanUser$hand $test));
+      UNLESS (mode & 256) {CONTINUE};
+      @ :test1 = getrmatches(B$serv\-$hash $nick!$uh);
+      @ :test2 = getrmatches(B$serv\-$hash $nick!$uip);
+      @ :test = uniq($test1 $test2);
+      FE ($test) cb {PUSH ban_list $getitem(B$serv\-$hash $cb)};
+      _proc.loop_mode $serv - b $cn ban_list;
+    };
+  };
+  };
+  _proc.quote_flush $serv;
+};
+#tjh/09

@@ -1,0 +1,43 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# Wallop Command.
+ALIAS wall {
+  IF (@) {
+    IF (ischannel($0) && onchannel($N $0)) {
+      ^LOCAL wall.chan $0;
+      ^LOCAL wall.msg $1-;
+    }{
+      ^LOCAL wall.chan $C;
+      ^LOCAL wall.msg $*;
+    }
+    UNLESS (ischanop($N $wall.chan)) {ECHO $fmt.banner_alert() Warning: You are not channel operator on $ch($wall.chan)};
+    IF (left(1 $R) == [u]) {
+      @ :wall.many = numwords($chops($wall.chan));
+      QUOTE NOTICE @$wall.chan :WallOp:$wall.chan\\($wall.many\) $wall.msg;
+    }{
+      @ wall_list = chops($wall.chan);
+      @ :wall.many = numwords($chops($wall.chan));
+      @ wall_list = remw($N $wall_list);
+      ^ASSIGN wall_send WallOp:$wall.chan\\($wall.many\) $wall.msg;
+      _proc.loop_send $winserv() NOTICE wall_list wall_send;
+    };
+    mecho $fmt.wallop_me($wall.chan $wall.many $wall.msg);
+  }{
+    uecho Usage: /WALL [channel] <message>;
+  };
+};
+#tjh/09

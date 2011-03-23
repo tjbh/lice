@@ -1,0 +1,11 @@
+Usage: BOOK -[a|d|l] <nick email> 
+
+  Creates/lists an addressbook fot instant emailing in combination
+  with /IMAIL.
+
+   Examples:
+   /BOOK -a hsoc hsoc@irc.gr     adds handle hsoc
+   /BOOK -d hsoc                 deletes hsoc from your address book
+   /BOOK -l                      lists all entries in address book
+
+See also: [IMAIL]

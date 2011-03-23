@@ -1,0 +1,7 @@
+Usage: SV [nick|channel] 
+   Displays your current LiCe version to others. You must specify to
+   whom or where to display this. If no arguments are given, then the
+   version information will be shown in your current channel.
+
+See also: [SC] [SB]
+

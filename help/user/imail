@@ -1,0 +1,8 @@
+Usage: IMAIL [nicks ... | emails ...] 
+
+  Sends email(s) to the addresses or nicks that you specify,
+  without leaving your current IRC session.
+
+  It relies heavily on the availability of "sendmail", the
+  BSD email server.
+

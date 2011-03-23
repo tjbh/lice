@@ -1,0 +1,41 @@
+Usage: K  <nick or nick!user@host pattern> [reason] 
+Usage: KA <nick or nick!user@host pattern> [reason] 
+Usage: KB <nick or nick!user@host pattern> [reason] 
+Usage: KI <nick or nick!user@host pattern> [reason] 
+Usage: KF <nick or nick!user@host pattern> [reason] 
+Usage: KH <nick or nick!user@host pattern> [reason] 
+Usage: KU <nick or nick!user@host pattern> [reason] 
+Usage: MK <nick1 nick2 ... > [:reason] 
+ 
+   These commands perform different type of kicks to a nick or group of
+   nicks on your current channel. When "nick" is specified, a fast kick is 
+   done to that given nick. If a nick!user@host pattern is specified, then 
+   all matched nicks are kicked. Reasons are optional, the program will
+   pick one, if none are provided.
+
+   K   - Kick. Plain kick, matching users.
+   KA  - Kick + IP Ban. Like a normal "/BAN".
+   KB  - Kick + Ban. Like a normal "/BAN".
+   KF  - Kick + Fuck-off-and-go-to-Hell ban (drastic host ban).
+   KH  - Kick + Host ban. People from that host are out.
+   KU  - Kick + User ban. Bans all users with same userhost.
+   MK  - Multiple kicks. Kick one or more users at once.
+   KBI - Kick + Ban + Ignore. Ignores the users you are kicking.
+   KI  - Same as "/KBI".
+
+   Edit the file "~/.epic/kick.reasons" to customize the default reason.
+ 
+Examples:
+
+/K mikh you momo!
+   kicks mikh from current channel
+
+/KB *@*.edu school sucks!
+   kick and bans all users on the *.edu domain.
+
+/KI *osek* you lamer!!
+   kick ban ignores all users with the word "osek" contained in their
+   address.
+
+See also: [BAN] [RBAN] [USER] [BWORD] [RK] [BOOT]
+

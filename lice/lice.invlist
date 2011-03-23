@@ -1,0 +1,52 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, UNLESS specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+### Ban-Invite manipulation routines.
+ALIAS binv {
+  UNLESS (@) {
+    uecho Usage: /BINV <nick [a|c|h|f|n|u] | pattern1 pattern2 ... patterns>;
+    RETURN;
+  };
+  ^LOCAL opt $1;
+  UNLESS (rmatch($0 *!* *@* *.*)) {
+    @ :uh = get_uh($0);
+    UNLESS (strlen($uh)) {
+      XECHO -B $0: No such nick;
+      RETURN;
+    };
+    _proc.inv $C $winserv() $makeban(B$toupper($opt) $uh) $0;
+  }{
+    FE ($*) inv {_proc.inv $C $winserv() $inv %};
+  };
+};
+
+# $0 = channel, $1 = serverindex, $2 = pattern, $3 = nick, [$4 = hash]
+# this routine wont clean after itself. the calling procedure must do it.
+ALIAS _proc.inv (chan,serv,opat,nick,phash) {
+  @ :patt = (pass(!@ $opat) == [!]) ? opat : uhc($opat);
+  @ :hash = phash ? phash : hash_32bit($chan);
+  @ :list = [I] ## serv ## [-] ## hash;
+  @ :invx = getrmatches($list $patt);
+  @ :invy = getmatches($list $patt);
+  @ :invs = uniq($invx $invy);
+  FE ($invs) inv {
+    @ :str = getitem($list $inv);
+    _proc.mode_add $serv $chan -I $str;
+  };
+  _proc.mode_add $serv $chan +I $patt;
+  _proc.mode_flush $serv $chan;
+};
+#tjh/09

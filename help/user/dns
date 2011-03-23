@@ -1,0 +1,7 @@
+Usage: DNS < nick | [host | ip address] >
+  Attempts to translate the specified IP address to a hostname
+  and viceversa. If a nickname is given, the user's hostname
+  or IP address is looked up.
+
+See also: [WI] [TOG] [CTOG] [DOM]
+

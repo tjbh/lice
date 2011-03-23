@@ -1,0 +1,4 @@
+!UNBAN <password> <channel>
+   This will make me unban you from a channel (if I'm on
+   that channel and have ops).
+   You must have UNBAN access to this channel, of course.

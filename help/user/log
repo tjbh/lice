@@ -1,0 +1,8 @@
+Usage: LOG [ON|OFF]
+
+   This commands toggles on/off all logging for the current window.
+   If no aguments are given, the contents in your logfile (if any)
+   will be displayed.
+
+See also: [MEMO]
+

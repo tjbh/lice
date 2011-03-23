@@ -1,0 +1,9 @@
+
+Usage: ADCC <subcommand [arguments]> 
+   aDCC is the LiCe enhancement to the DCC command. aDCC is a file
+   transfer protocol, which manages all DCC GET/SEND transactions.
+   The main structure of aDCC comprehends a single queue for all 
+   SENDs and AutoCLOSE of SENDs that dont make connection.
+
+See also: [commands]
+

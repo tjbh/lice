@@ -1,0 +1,127 @@
+# lime, by trey
+
+PACKAGE LiCeTheme
+
+EVAL XECHO -r $chr(27)\(U
+
+SET status_no_repeat off
+SET status_does_expandos on
+SET status_away 50[32away50]Ä
+SET status_channel %C
+SET status_chanop @
+SET status_clock 50[32time50/37$tolower(%T)50]
+SET -status_format
+SET status_format1 50ÚÄ[37%@%=32%N%#50]Ä[32$servername($winserv())50/37%250]Ä%>50[32%150/37$tolower(%0)50]Ä%Q%F50[32win50/37%R50]%W50ÄÄ¿
+SET status_format2 50ÀÄÄ[32%C%+50]Ä%9Ä%>%H%M%A%T50ÄÙ
+SET status_hold 50[32more50]Ä
+SET status_insert 50[32ins50]Ä
+SET status_mail 50[32mail50/37%M50]Ä
+SET status_mode 50/37+%+
+SET status_nickname %N
+SET status_notify 50[32act50/37%F50]Ä
+SET status_oper *
+SET status_overwrite 50[32ovr50]Ä
+SET status_query 50[32query50/37%Q50]Ä
+SET status_scrollback 50[37buf50]Ä
+SET status_server %S
+SET status_umode 50/37+%#
+SET status_user9 ${C ? [50[32o50/37$#chops() 32n50/37$#nochops() 32t50/37$numonchannel()50]] : []}
+SET status_voice +
+SET status_window 50Ä[32+50]
+
+SET -INPUT_PROMPT
+
+^WINDOW DOUBLE ON
+
+ALIAS fmt.playmsg (num,tot,mtime,mnick,muh,mtext) {
+  ECHO [Num: $num/$tot - $stime($mtime) \($tdiff2(${time() - mtime}) ago\)]
+  ECHO 10From: $mnick \($muh\)
+  @ :width = word(0 $geom()) - 2
+  @ :fix = (strlen($mtext) > width) ? CONTINUED_LINE ## mtext : mtext
+  ECHO $fix
+} 
+ALIAS fmt.playmsg_prompt        RETURN [$0/$1] Enter option (ENTER to continue, ? for help):
+ALIAS fmt.back_msg      RETURN is back. $0-
+ALIAS fmt.gone_msg      RETURN is gone. $0-
+ALIAS fmt.action	RETURN $G 37$0${iscurchan($1)?[]:[50\/37]##[$1]}37 $2-
+ALIAS fmt.action_me	RETURN $G 37$050/37$N $2-
+ALIAS fmt.auto_reply	RETURN 50<57$050> $2-
+ALIAS fmt.auto_reply_other RETURN 50<57$050/57$150> $2-
+ALIAS fmt.cant_join	RETURN 50[37$050]32 $tolower($1-)
+ALIAS fmt.channel_nick	RETURN 37nick50/32$0 $1 50-> 32$2
+ALIAS fmt.channel_signoff  RETURN 37signoff50/32$0 37$150[32$2-50]
+ALIAS fmt.ctcp_channel	RETURN 37ctcp50/32$1 37$050[32$userhost()50] $tolower($2-)
+ALIAS fmt.ctcp_me	RETURN 37ctcp50/32$1 37$050[32$userhost()50] $tolower($2-)
+ALIAS fmt.ctcp_server	RETURN 37ctcp50/32$1 37$050[32$userhost()50] $tolower($2-)
+ALIAS fmt.dcc_chat	RETURN 50[32$050\(37dcc50\)] $1-
+ALIAS fmt.invite	RETURN 37invite50/32$1 37$050[32$250]
+ALIAS fmt.join		RETURN 37join50/32$1 37$050[32$250]
+ALIAS fmt.kick		RETURN 37kick50/32$2 37$1 50-> 32$0[$3-50]
+ALIAS fmt.kick_me	RETURN 37kick50/32$2 37$1 50-> 32$N50[$3-50]
+ALIAS fmt.leave		RETURN 37leave50/32$1 37$050[32$250]
+ALIAS fmt.mode		RETURN 37mode50/32$1 37$050[32$2-50]
+ALIAS fmt.mode_bans	RETURN 37mode50/32$1 37$050[32$2-50]
+ALIAS fmt.mode_me	RETURN 37mode50/32$1 37$050[32$2-50]
+ALIAS fmt.mode_server	RETURN $fmt.mode($*)
+ALIAS fmt.msg		RETURN 50[37$050\(32$userhost()50\)] $1-
+ALIAS fmt.msg_group	RETURN 50[37$050\(32$userhost()50\)] $2- 50[37$150/32$S50]
+ALIAS fmt.notice	RETURN 50-37$050\(32$userhost()50\)- $1-
+ALIAS fmt.notify_signoff   RETURN 37signoff50/32$0 50[37$tolower($Z)50]
+ALIAS fmt.notify_signon RETURN 37signon50/32$0 50[37$tolower($Z)50]
+ALIAS fmt.notify_signon_uh RETURN 37signon50/32$0 32$150[37$tolower($Z)50]
+ALIAS fmt.public	RETURN 50<37$050> $2-
+ALIAS fmt.public_msg	RETURN 50<37$050/37$150> $2-
+ALIAS fmt.public_other	RETURN 50<37$050/37$150> $2-
+ALIAS fmt.public_notice RETURN 50-37$050/37$150- $2-
+ALIAS fmt.sc_top	RETURN $G Names on $0
+ALIAS -fmt.sc_max
+ALIAS fmt.sc_mid (list) {
+  FE ($list) xx {
+    @ :mod = pass(@+ $xx)
+    @ :spc = mod ? mod : [ ]
+    @ :nic = strip(@+ $xx)
+    @ :ret #= [3] ## spc ## [] ## [$[9]nic] ## [ ]
+  }
+  RETURN $ret
+}
+ALIAS fmt.sc_bot	RETURN $G Channel stats: ops/$1 non/$3 voc/$2 total/$4
+ALIAS fmt.send_action	RETURN $G 32$N${iscurchan($0)?[]:[50\/32]##[$0]} $1-
+ALIAS fmt.send_action_me   RETURN $G 32$N50/32$0 $1-
+ALIAS fmt.send_dcc_chat	RETURN 50[37dcc50/32$050] $1-
+ALIAS fmt.send_msg	RETURN 50[37msg50/32$050] $1-
+ALIAS fmt.send_notice	RETURN 50[37notice50/32$050] $1-
+ALIAS fmt.send_public	RETURN 50<32$N${iscurchan($0)?[]:[50\/32]##[$0]}50> $1-
+ALIAS fmt.server_notice	RETURN 50-37$050\(32***50\)- $2-
+ALIAS fmt.talk_reply	RETURN $0:
+ALIAS fmt.titlebar	RETURN 50Ä[32$050]ÄÄ[37$1-50]Ä
+ALIAS fmt.topic		RETURN 37topic50/32$1 32$050[37$2-50]
+ALIAS fmt.topic_set	RETURN 37topic50/32$0 50[37$1-50]
+ALIAS fmt.usercmd	RETURN 37friend50/32$tolower($1) 32$050[37$after(! $uh($0))50]
+ALIAS fmt.usergreet	RETURN [$0] $1-
+ALIAS fmt.wallop	RETURN 50[32wallop50] <37$050/37$servername()50> $4-
+ALIAS fmt.wallop_me	RETURN 50[32wall50] <32$N50/32$050> $2-
+ALIAS fmt.wallop_server	RETURN 37wallop50/32$0 $2-
+ALIAS fmt.whois_bot	RETURN 50ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ$100
+ALIAS fmt.whois_mid	RETURN 50³ [32$tolower($[9]0)50] $msar(g%@%32@37%+%32+37%[%50[37%]%50]37%$tolower($1-))
+ALIAS fmt.whois_top	RETURN 50ÚÄÄ[32$150\(37$232@37$350\)]
+
+^SET BANNER 50+32+52+
+
+ALIAS fmt.banner_info		RETURN $G
+ALIAS fmt.banner_party		RETURN $G
+ALIAS fmt.banner_join		RETURN $G
+ALIAS fmt.banner_leave		RETURN $G
+ALIAS fmt.banner_signon		RETURN $G
+ALIAS fmt.banner_signoff	RETURN $G
+ALIAS fmt.banner_invite		RETURN $G
+ALIAS fmt.banner_mode		RETURN $G
+ALIAS fmt.banner_kick		RETURN $G
+ALIAS fmt.banner_nick		RETURN $G
+ALIAS fmt.banner_ctcp		RETURN $G
+ALIAS fmt.banner_dcc		RETURN $G
+ALIAS fmt.banner_alert		RETURN $G
+ALIAS fmt.banner_userlist	RETURN $G
+ALIAS fmt.banner_server		RETURN $G
+ALIAS fmt.banner_chan		RETURN $G
+ALIAS fmt.banner_usage		RETURN $G
+ALIAS fmt.banner_tip		RETURN $G

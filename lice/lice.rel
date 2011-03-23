@@ -1,0 +1,50 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS _proc.redirect_last {
+  UNLESS (strlen($2)) {
+    SEND $getitem($0 ${numitems($0) - 1});
+    RETURN;
+  };
+  IF (left(2 $2) == [-l]) {
+    IF (numitems($0) <= 0) {
+      XECHO -B Nothing in $0\-buffer.;
+      RETURN;
+    };
+    iecho ---- Context ------------------------;
+    FOR (@ :gg=0, numitems($0) > gg, @gg++) {
+      iecho [$[2]{gg+1}] $getitem($0 $gg);
+    };
+  }{
+    IF (isnumber($2)) {
+      $1 ${strlen($3)?[$3]:C} $getitem($0 ${[$2] - 1});
+    }{
+      $1 $2 $getitem($0 ${numitems($0) - 1});
+    };
+  };
+};
+ALIAS relm {_proc.redirect_last ML MSG $*};
+ALIAS reln {_proc.redirect_last NL MSG $*};
+ALIAS relw {_proc.redirect_last WL MSG $*};
+ALIAS relmk {_proc.redirect_last ML K $*};
+ALIAS relnk {_proc.redirect_last NL K $*};
+ALIAS relwk {_proc.redirect_last WL K $*};
+ALIAS tlm {_proc.redirect_last ML T ${@?[$*]:C}};
+ALIAS tln {_proc.redirect_last NL T ${@?[$*]:C}};
+ALIAS tlw {_proc.redirect_last WL T ${@?[$*]:C}};
+ALIAS wlm {_proc.redirect_last ML WALL ${@?[$*]:C}};
+ALIAS wln {_proc.redirect_last NL WALL ${@?[$*]:C}};
+#tjh/09

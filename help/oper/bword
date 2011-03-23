@@ -1,0 +1,17 @@
+Usage: BWORD [-fslr] <#channel> [list of words]
+   Kickbans nicks that say the words specified with /BWORD for that channel.
+   To BAN a word in all channels, use #* as the channel.
+
+   Examples:
+
+   "/BWORD -f #LiCe phoenix kewl"  -  Bans 'phoenix' and 'kewl' from '#LiCe'.
+   "/BWORD -s &hut op me"          -  Bans string 'op me' from '&hut'.
+   "/BWORD #* osek"                -  Bans 'osek' from all your channels.
+   "/BWORD -l #Linux"              -  Shows banned words in #Linux
+   "/BWORD -l"                     -  Shows banned words in current channel.
+   "/BWORD -r #LiCe"               -  Removes all banned words from '#LiCe'.
+   "/BWORD -r"                     -  Removes banned words from current #.
+   "/BWORD -a"                     -  Removes all banned words.
+
+See also: [KICK] [BAN] [USER]
+

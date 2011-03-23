@@ -1,0 +1,11 @@
+Usage: RELM [<num> nick|channel] [-list] 
+   Redirect Last 8 Rec'v MSGs to a given nick or channel, or to current
+   channel if no arguments specified. Use '-list' to display you current
+   stored MSGs.
+ie.
+	/RELM 3 SrfRoG  - Displays your third MSG to 'SrfRoG'.
+	/RELM -list     - Shows your current MSG list.
+        /RELM SrfRoG    - Displays the last MSG you received to 'SrfRoG'.
+
+See also: [WLM] [TLM] [RELN]
+

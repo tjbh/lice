@@ -1,0 +1,29 @@
+Usage: RBAN <nick/pattern> 
+Usage: RBAN -<flag> 
+Usage: RBAN <#ban number> 
+   Removes ban(s) for a certain nick or ban(s) for user@host mask that
+   matches with pattern(s).
+ 
+Flags:
+	a	ALL. Removes all the bans in your channel.
+	s	SELECTIVE. Removes only the bans you select.
+	l	DURATION. Removes bans older than minutes specified.
+	n	NICK. Removes all bans made by nick specified.
+Only one flag can be used at a time.
+ie. /RBAN SrfRoG		unbans "SrfRoG", if online.
+    /RBAN *.edu			unbans all *.edu hosts banned.
+    /RBAN *root@*		unbans all root users banned.
+    /RBAN *anon?????@*.fi	unbans host matching mask.
+    /RBAN *@*			removes all bans.
+    /RBAN #2			removes ban number 2.
+    /RBAN -a			removes all bans.
+    /RBAN -s			prompts you before unban.
+    /RBAN -n evilfrog		removes all evilfrog's bans.
+    /RBAN -l 30			removes bans older than 30 minutes.
+
+Note: pattern "*@*" and flag "-a" have the same effect.
+   The third form of the command lets you specify bans to remove single
+   bans by number or multiple bans if more than one number are selected.
+
+See also: [BAN] [KICK] [C] [REXC] [RINV]
+

@@ -1,0 +1,13 @@
+Usage: RLAG [server]
+   Resets your server lag counter. Or if specified, checks
+   the latency (lag) to "server".
+
+   Q: What is lag, you ask?
+   A: The term "Lag" is loosely used to determine how long your it
+      takes for your data to reach the server or other users.  Compared
+      to the theory of some 19th century physicists about
+      'luminiferous ether', we find that ether and lag are basically
+      the same :)
+
+See also: [VERSION] [P] [PING] [EPIC 2]
+

@@ -1,0 +1,142 @@
+#
+# Description: bitchx color theme.
+# Author: whitefang (tyler@ionise.org)
+#
+
+PACKAGE LiCeTheme
+
+EVAL XECHO -RAW $chr(27)\(U
+SET NOTIFY_USERHOST_AUTOMATIC ON
+SET STATUS_DOES_EXPANDOS ON
+# Event formats
+ALIAS fmt.action    RETURN 14ð 8$0/$1 $2-
+ALIAS fmt.action_me RETURN 14ð 16$0 $2-
+ALIAS fmt.auto_reply    RETURN 12<8$012> $2-
+ALIAS fmt.auto_reply_other RETURN 2<5$014:$12> $2-
+ALIAS fmt.channel_nick  RETURN 16$1 is now known as 10$2
+ALIAS fmt.channel_signoff  RETURN SignOff 16$1: $0 14\($2-\14)
+ALIAS fmt.ctcp_channel  RETURN 9$0 14\[3$userhost()14\] 3requested $toupper($2)  from $1
+ALIAS fmt.ctcp_me   RETURN 9$0 14\[3$userhost()14\] 3requested $toupper($2)  from $N
+ALIAS fmt.ctcp_server   RETURN 9$0 14\[3$userhost()14\] 3requested $toupper($2)  from $N
+ALIAS fmt.dcc_chat  RETURN 14\[9$014\(3dcc14\)\] $1-
+ALIAS fmt.invite    RETURN 16$0 Invites You to $1
+ALIAS fmt.join      RETURN 11$0 14\[10$214\] has joined $1
+ALIAS fmt.kick      RETURN $0 was kicked off $2 by 10$1 14\($3-14\)
+ALIAS fmt.kick_me       RETURN You have been kicked off 10$2 by 10$1 14\($3-14\) 
+ALIAS fmt.leave     RETURN $0 14\[$userhost()14\] has left $1 14\[$3-14\]
+ALIAS fmt.mode      RETURN mode14/10$1 14\[$2-14\] by 16$0
+ALIAS fmt.mode_bans RETURN stack14/10$1 14\[$214\] by 16$0
+ALIAS fmt.mode_me   RETURN Mode change 14\[$2-14\] for user 10$N
+ALIAS fmt.mode_server   RETURN 4ServerMode14/10$1 14[16$2-14] 16$0
+ALIAS fmt.msg           RETURN 14\[13$014\(6$userhost()14\)\] $1-
+ALIAS fmt.msg_group RETURN 12[ 10$uh($0)\ 12] \($1:$S\) $2-
+ALIAS fmt.msg_group     RETURN 14-13$014:6$114- $2-
+ALIAS fmt.notice        RETURN 14-13$014\(6$userhost()14\)- $1-
+ALIAS fmt.notify_signoff   RETURN 9Signoff by 5$0 at $tolower($Z)
+ALIAS fmt.notify_signon RETURN 9Signon by 4$014!4$1 at $tolower($Z)
+ALIAS fmt.notify_signon_uh RETURN 9Signon by 4$014!4$1 at $tolower($Z)
+ALIAS fmt.public    RETURN 12<$012> $2-
+ALIAS fmt.public_msg    RETURN 2\($014/$12\) $2-
+ALIAS fmt.public_other  RETURN 2<$014:$12> $2-
+ALIAS fmt.public_notice RETURN 14-13$014:6$114- $2-
+ALIAS -fmt.sc_bot
+ALIAS fmt.sc_max	RETURN 5
+ALIAS fmt.sc_mid (list) {
+  FE ($list) xx {
+    @ :mod = pass(@+ $xx)
+    @ :spc = mod ? mod : [ ]
+    @ :nic = strip(@+ $xx)
+    @ :ret #= [14\[] ## [11] ## spc ## [12] ## [$[10]nic] ## [14\]] ## [ ]
+  }
+			RETURN $ret
+}
+ALIAS fmt.sc_top 	RETURN $G 14[9Users14\(03$014:03$numonchannel($0)14\)]
+ALIAS fmt.send_action   RETURN 14ð 16$N $1-
+ALIAS fmt.send_action_me   RETURN 14ð -> 16$0/10$N $1-
+ALIAS fmt.send_dcc_chat RETURN 14\[5dcc14\(4$014\)\] $1-
+ALIAS fmt.send_msg  RETURN 14\[5msg14\(4$014\)\] $1-
+ALIAS fmt.send_notice   RETURN 14\[5notice14\(4$014\)\] $1-
+ALIAS fmt.send_public   RETURN 13<$N\13> $1-
+ALIAS fmt.server_notice RETURN 9\[$0\] $4-
+ALIAS fmt.topic     RETURN Topic 14\(10$114\): changed by 10$014: $2-
+ALIAS fmt.topic_set {
+    IF ([$1-] == [<No Topic Set>]) {RETURN $0  No topic is set}
+    IF ([$1]==[Set]&&[$2]==[by]&&[$4]==[on]) {RETURN Topic 14\(10$014\): set by 10$3 at 10$strip($5-)}
+    {RETURN Topic 14\(10$014\): $1-}
+}
+ALIAS fmt.titlebar  RETURN 10,12[16,12$010,12] 16,12:: 10,12[16,12$1-10,12]
+ALIAS fmt.usercmd   RETURN Friend: 9$0 14\[3$userhost()14\] 3requested $1  from $N
+ALIAS fmt.wallop    RETURN 9!3$0:$19! $2-
+ALIAS fmt.wallop_me RETURN \[9Wall/16$0:$1\] $2-
+ALIAS -fmt.whois_bot
+ALIAS fmt.whois_mid {
+  IF (temp.bx.whois_nick) {
+    ECHO 9|16 $temp.bx.whois_nick 14\($temp.bx.whois_uh14\)
+    ^ASSIGN -temp.bx.whois_nick
+    ^ASSIGN -temp.bx.whois_uh
+  }
+  SWITCH ($0) {
+    (Ircname)   {RETURN 9³ ircname  : $1-}
+    (Domain)    {RETURN 9³ domain   : $1-}
+    (Shitlist)  {RETURN 3| shit     : $1-}
+    (Userlist)  {RETURN 3| friend   : $1-}   
+    (Channels)  {RETURN 3| channels : $1-}
+    (Server)    {RETURN 14³ server   : $1-}
+    (Away)      {RETURN 14| away     : $1-}
+    (Operator)  {RETURN 14| operator : $1  (is NOT an IRC warrior)}
+    (Signon)    {RETURN 14| signon   : $1-}
+    (Idle)      {RETURN 14: idle     : $1-}
+    (Services)  {RETURN 14: services : $1-}
+    (Spoof)     {RETURN 14: spoof    : $1-}
+  }
+}
+ALIAS fmt.whois_top {
+  ^ASSIGN temp.bx.whois_nick $1 
+  ^ASSIGN temp.bx.whois_uh $2@$3
+  RETURN 9ÚÄÄÄÄÄ---Ä--ÄÄ-ÄÄÄÄÄÄ---14Ä9--14ÄÄ9-14ÄÄÄÄÄÄÄÄÄ--- --  -
+}
+# Banner for this theme
+SET BANNER 4ù16í4ù
+
+# Event banner colors
+ALIAS fmt.banner_info   RETURN $G
+ALIAS fmt.banner_party  RETURN $G
+ALIAS fmt.banner_join   RETURN $G
+ALIAS fmt.banner_leave  RETURN $G
+ALIAS fmt.banner_signon RETURN $G
+ALIAS fmt.banner_signoff    RETURN $G
+ALIAS fmt.banner_invite RETURN 14>15>16>
+ALIAS fmt.banner_mode   RETURN $G
+ALIAS fmt.banner_kick   RETURN $G
+ALIAS fmt.banner_nick   RETURN $G
+ALIAS fmt.banner_ctcp   RETURN 14>15>16>
+ALIAS fmt.banner_dcc    RETURN $G
+ALIAS fmt.banner_alert  RETURN $G
+ALIAS fmt.banner_userlist   RETURN 14>15>16>
+ALIAS -fmt.banner_server
+ALIAS fmt.banner_usage  RETURN $G
+
+SET STATUS_AWAY  10,12\(9,12zZzZ16$sar(/:// $status_user1)10\)
+SET STATUS_CHANNEL 15,12%C
+SET STATUS_CHANOP @
+SET STATUS_CLOCK %T
+SET STATUS_CPU_SAVER  (%J)
+SET STATUS_FORMAT 10,12 [16,12$tolower(%T)10,12][%@%=15,12%N%#%A10,12]%M [%C10,12%+10,12%W] %Q %H%B%F %>%S
+SET STATUS_FORMAT1 10,12 [16$tolower(%T)10][16%@9%=15%N%#%A10]%M [%C10%+10%W] %Q %H%B%F %>%S
+SET STATUS_FORMAT2 15,12 10[15Lag 16%210] %> [16%010]
+SET STATUS_HOLD  -- more --
+SET STATUS_HOLD_LINES  10,12(16%B10)
+SET STATUS_MAIL 10,12[15Mail: 16%M10]
+SET STATUS_MODE 16(10,12+15,12%+16,12)
+SET STATUS_NICK %N
+SET STATUS_NOTIFY  10,12[15Act: 16%F10]
+SET STATUS_OPER 7*
+SET STATUS_OVERWRITE (overtype)
+SET STATUS_QUERY  10,12[15Query: 16%Q10]
+SET STATUS_SCROLLBACK  (Scroll)
+SET STATUS_SERVER  on 15%S10
+SET STATUS_UMODE 16(10,12+15,12%#16,12)
+SET STATUS_VOICE
+SET STATUS_WINDOW 8,12^^^^^^^^
+SET INPUT_PROMPT ${winchan() ? [[$winchan()] ] :[[0] ]}
+#tjbh/10

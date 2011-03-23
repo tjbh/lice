@@ -1,0 +1,27 @@
+Usage: BINV <nick [flag] | pattern1 pattern2 ... patterns> 
+   Channel mode (+I) that makes possible for the specified nick
+   to JOIN your current channel even if channel is invite-only.
+Flags:
+	a	invites the IP address, eg. *!*@207.240.167.*
+	c	invites the country or inet organization, eg. *!*@*.net
+	h	invites the nick's host, eg. *!*@ppp-80.mistik.net
+	f	invites the nick's host with a pattern *!*@*mistik.net
+	n	Simple *!*user@*host inv mask (default)
+	u	invites only the username used by a nick, eg. *!*srfrog@*
+
+Exception types: c=country e=eleet n=normal s=site f=freebie u=username
+
+ie. /BINV SrfRoG			if SrfRoG is online. 
+    /BINV cag@* srfrog@* lice@*		multiple on usernames.
+    /BINV srfrog@*.mistik.net *@*.com	specific hosts
+    /BINV SrfRoG!*@*.ed			SrfRoG's under *.edu.
+
+Note: IP addresses and hacked usernames are appropiately masked and
+      marked. Only one flag can be specified for a given nick. When
+      pattern(s) are used, flags are ignored.
+
+Our BINV procedure is smart enough to remove any conflicting invites before
+doing the actual marking.
+
+See also: [user] [KICK] [BWORD] [BOOT] [BAN] [BEXC]
+

@@ -1,0 +1,35 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS k {
+  UNLESS (@) {
+    uecho Usage: /K <nick or nick!user@host pattern> [reason];
+    RETURN;
+  };
+  UNLESS (ischanop($N $C)) {
+    XECHO -B $ch($C)\: You're not channel operator.;
+    RETURN;
+  };
+  IF (rmatch($0 *.* *!* *@* %\\* \\*%)) {
+    get_user_match $C $uhc($0) kick_list;
+    @ kick_list = remw($N $kick_list);
+  }{
+    ^ASSIGN kick_list $0;
+  };
+  @ kick_msg = strlen($1) ? [$1-] : randread($main.reason_kick);
+  _proc.loop_kick $winserv() $C kick_list kick_msg;
+};
+#tjh/09

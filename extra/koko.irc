@@ -1,0 +1,29 @@
+# MaSS-Deop protection for LiCe4
+
+PACKAGE LiCe
+
+ON #-MODE -99 "% % *-o* *" {
+  IF (match($0 $servernick($servernum())) || pass(. $0) || !ischanop($servernick($servernum()) $1)) {RETURN}
+  IF (rmatch($2 *-oo* *-o*-o*)) {
+     @ :serv = servernum()
+     @ :bmask = mask(11 $0!$userhost($0))
+     @ :chan_hash = hash_32bit($1)
+     @ :mode = get_cookie(User $1 $0 $chan_hash)
+     #IF ((mode & 10) == 10) {RETURN}
+     IF (mode & 4) {RETURN}
+     IF (iscset(C $chan_hash)) {
+       _proc.quote_add $serv KICK $1 $0 :[DEOP FLOOD] - kicking after $count(o $2) modes.
+       IF (iscset(F $chan_hash)) {
+          _proc.ban $1 $serv $bmask $0 $chan_hash
+       }{_proc.quote_flush $serv}
+     }{
+       #IF (!iscset(C $chan_hash) && !iscset(F $chan_hash)) {
+       _proc.mode_add $serv $1 -o $0
+       _proc.mode_flush $serv $1
+     }
+     IF (ismset(U)) {_proc.away_save LiCe licelogd [$1] FAST DEOP FLOOD from $0 \($userhost($0)\)}
+     UNLESS (isset(Q)) {_proc.quote_add $serv NOTICE $0 :[DEOP FLOOD]: $randread($main.reason_revenge)}
+  }
+}
+
+#HS/00

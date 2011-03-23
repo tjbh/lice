@@ -1,0 +1,6 @@
+Usage: WLN [channel]
+   Sends a wall of your last rec'v notice.
+   The channel is optional, defaults to your current channel.
+
+See also: [WALL] [WLM]
+

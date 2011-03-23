@@ -1,0 +1,11 @@
+Usage: THEME
+Usage: THEME <name>
+
+Changes your current color and event formats to a different
+display. The themes are loaded from ~/.epic/themes directory.
+
+The command without arguments, displays all the available
+themes.
+
+See also: [SV] [SB] [PIC]
+

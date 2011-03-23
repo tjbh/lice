@@ -1,0 +1,44 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS redcc {
+  SWITCH ($0) {
+    () {
+        IF (temp.redirect_dcc) {
+           XECHO -B Redirecting all DCC GET's to $temp.redirect_dcc via DCC CHAT.;
+        }{uecho Usage: /REDCC [-q | <nick>]};
+       };
+    (-q) {
+      ^ON ^RAW_IRC -'*!*@* PRIVMSG $servernick() :$chr(1)DCC SEND *$chr(1)';
+       XECHO -B No longer redirecting DCC GET's${temp.redirect_dcc ? [ to $temp.redirect_dcc\.] : [.]};
+      ^ASSIGN -temp.redirect_dcc;
+    };
+    (*) {
+      ^ASSIGN temp.redirect_dcc $0;
+      ^ON ^RAW_IRC '*!*@* PRIVMSG $servernick() :$chr(1)DCC SEND *$chr(1)' {
+        @ :str = chop(1 $rest(2 $3-));
+        ECHO $fmt.banner_dcc() Redirecting DCC GET [$5 $rightw(1 $str)] from $before(! $0) to $temp.redirect_dcc ...;
+        STACK PUSH ON SEND_DCC_CHAT;
+        ^ON ^SEND_DCC_CHAT * #;
+        ^MSG =$temp.redirect_dcc REDIRECT $0 $str;
+        ^ON ^SEND_DCC_CHAT -;
+        STACK POP ON SEND_DCC_CHAT;
+      };
+      XECHO -B Now redirecting all DCC GET's to $temp.redirect_dcc\ via DCC CHAT.;
+    };
+  };
+};
+#tjh/09

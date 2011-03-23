@@ -1,0 +1,136 @@
+#
+# Description: clice color theme
+# Author: whitefang (thall@magenet.com)
+#
+
+PACKAGE LiCeTheme
+EVAL XECHO -r $chr(27)\(U
+# status sets
+SET CLOCK ON
+SET CLOCK_24HOUR OFF
+SET STATUS_AWAY [Away: $STATUS_USER1]
+SET STATUS_CHANNEL 2,4%C2,9
+SET STATUS_CHANOP 2,7@2,9
+SET STATUS_CLOCK %T
+SET -STATUS_CPU_SAVER
+SET STATUS_DOES_EXPANDOS ON
+SET STATUS_FORMAT 2,9[$tolower($Z)] %*%N%# %C%+ %M%Q %H%B %F %W%O%>[%R%I]
+SET STATUS_FORMAT1 2,9[$tolower($Z)] %*%N%# %@%=%C%+ %M%Q %H%B %F %W%O%>[%R%I]
+SET STATUS_FORMAT2 2,13%D%>%A[Up: $tdiff2(${time() - F})][Lag: %2]
+SET STATUS_HOLD More
+SET STATUS_HOLD_LINES :%B
+SET STATUS_INSERT +
+SET STATUS_MAIL [Mail: %M]
+SET STATUS_MODE 2,11[2+%+2,11]2,9
+SET STATUS_NICKNAME 2,11%N2,9
+SET STATUS_NOTIFY (%F)
+SET STATUS_NO_REPEAT ON
+SET STATUS_OPER *
+SET STATUS_OVERWRITE ~O
+SET STATUS_QUERY [Query: %Q]
+SET STATUS_SERVER [%S]
+SET STATUS_TRUNCATE_RHS ON
+SET STATUS_UMODE (+%#)
+SET STATUS_VOICE +
+SET STATUS_WINDOW +
+
+# event formats
+ALIAS fmt.action		RETURN ${iscurchan($1)?[12* $0 $2-]:[2* $0:$1 $2-]}i
+ALIAS fmt.action_me		RETURN -> \($N\) 12* $0 $2-
+ALIAS fmt.auto_reply		RETURN <$0> $2-
+ALIAS fmt.auto_reply_other 	RETURN <$0:$1\> $2-
+ALIAS fmt.channel_nick		RETURN Nick $0: $1 -> ${iscurchan($0)?[12$2]:[2$2]}
+ALIAS fmt.channel_signoff  	RETURN Quit $0: ${iscurchan($0)?[12$1]:[2$1]} \($2-\)
+ALIAS fmt.ctcp_channel		RETURN CTCP $toupper($2) request: 12$0 \($userhost()\) to $1
+ALIAS fmt.ctcp_me		RETURN CTCP $toupper($2) request: 12$0 \($userhost()\) to You
+ALIAS fmt.ctcp_server		RETURN CTCP $toupper($2) request: 12$0 \($userhost()\) to $1
+ALIAS fmt.dcc_chat		RETURN ð13$0ð $1-
+ALIAS fmt.invite		RETURN $0 \($2\) invites you to $1
+ALIAS fmt.join			RETURN Join $1: ${iscurchan($1)?[12$0]:[2$0]} \($2\) at $tolower($Z)
+ALIAS fmt.kick			^ASSIGN temp.kick_me 0;RETURN Kick $2: ${iscurchan($2)?[12$0]:[2$0]} \($3-\)
+ALIAS fmt.kick_me		^ASSIGN temp.kick_me 1;RETURN You were kicked off $2 by 11$1 \($3-\)
+ALIAS fmt.leave			RETURN Part $1: ${iscurchan($1)?[12$0]:[2$0]} \($2\) at $tolower($Z)
+ALIAS fmt.mode			RETURN Mode $1: \"$2-\" by ${iscurchan($1)?[12$0]:[2$0]}
+ALIAS fmt.mode_bans		RETURN Mode $1: \"$2\" by ${iscurchan($1)?[12$0]:[2$0]}
+ALIAS fmt.mode_me		RETURN Mode change \"$2-\" on 3$N
+#ALIAS fmt.mode_server		RETURN Mode hack \"$2-\" on $1 \($0\)
+ALIAS fmt.msg			RETURN 4,16 $uh($0)  $1-
+#ALIAS fmt.msg_group		RETURN [$1:$S\]  $0!$userhost()\]  $2-
+ALIAS fmt.notice		RETURN [8 $uh($0) ] $1-
+ALIAS fmt.notify_signoff	RETURN Signoff: 13$0 at $tolower($Z) 
+ALIAS fmt.notify_signon		RETURN Signon: 13$0 at $tolower($Z) 
+ALIAS fmt.notify_signon_uh 	RETURN Signon: 13$0 \($1\) at $Z
+ALIAS fmt.public		RETURN 12<$0> $2-
+#ALIAS fmt.public_msg		RETURN \($0\/$1\) $2-
+ALIAS fmt.public_other		RETURN 2<$0:$1\> $2-
+ALIAS fmt.public_notice 	RETURN [ ${iscurchan($1)?[12$0]:[2$0]}\:$1 \] $2-
+ALIAS fmt.sc_max		RETURN 6
+ALIAS fmt.sc_top 		RETURN $G Names ${iscurchan($0)?[12$0]:[2$0]}\: 
+ALIAS fmt.sc_mid {
+  FE ($*) nick {@ :ret #= [$[11]nick]}
+  				RETURN $ret
+}
+ALIAS fmt.sc_bot {
+  @ :ch.h = hash_32bit($0)
+  RETURN $G Ministats $0 $1o $3n $numitems(B$winserv()\-$ch.h)b $2v ${chan[$ch.h][S]?[\(Sets\: +$chan[$ch.h][S]\)]:[]}
+}
+ALIAS fmt.send_action		RETURN 3* $N${iscurchan($0)?[]:[\:$0]} $1-
+ALIAS fmt.send_action_me 	RETURN -> \($N\) 9$0 $1-
+ALIAS fmt.send_dcc_chat		RETURN 3ð$0ð $1-
+ALIAS fmt.send_msg		RETURN 3*$0* $1-
+ALIAS fmt.send_notice		RETURN 3[$0] $1-
+ALIAS fmt.send_public		RETURN 3<$N${iscurchan($0)?[]:[\:$0]}\> $1-
+ALIAS fmt.server_notice		RETURN *** $2-
+ALIAS fmt.talk_reply		RETURN $0:
+ALIAS fmt.topic			RETURN Topic $1: changed by ${iscurchan($1)?[12$0]:[2$0]}\: $2-
+ALIAS fmt.topic_set		RETURN Topic ${iscurchan($0)?[12$0]:[$0]}\: $1-
+ALIAS fmt.titlebar		RETURN 2,9$0 - $1- 
+ALIAS fmt.usercmd		RETURN Friend 5$1: $0 \($userhost()\)
+ALIAS fmt.wallop		RETURN Wallop: <$0> $2-
+ALIAS fmt.wallop_me		RETURN [WallOp:$0\\($1\)] 12,11 $N  $2-
+ALIAS fmt.whois_top             {
+ 				ECHO 16Ú7ÄÄÄ4ÄÄÄÄÄÄÄÄÄ--ÄÄÄ--ÄÄÄÄÄÄ14ÄÄÄÄÄ4ÄÄÄÄ14Ä4Ä--Ä14ÄÄ Ä  Ä
+			       RETURN 7³ $[8]0 4ù 12$1 14\($214@$314\)
+}
+ALIAS fmt.whois_mid {
+  SWITCH ($0) {
+    (Ircname)  {RETURN 4³ 7Ircname  4ù $1-}
+    (Domain)   {RETURN 4³ 7Domain   4ù $strip(." $1 14\(12$3-14\))}
+    (Shitlist) {RETURN 4³ 7Shitlist 5ù $1-}
+    (Userlist) {RETURN 4³ 7Userlist 5ù $1-}
+    (Channels) {RETURN 4³ 7Channels 4ù $1-}
+    (Server)   {RETURN 4³ 7Server   4ù $1 14\[$after([ $2) $sar(g/]/14]/$3-)}
+    (Services) {RETURN 4³ 7Services 4ù $1-}     
+    (Away)     {RETURN 4³ 7Away     4ù $1-}
+    (Operator) {RETURN 4³ 7Operator 4ù $1-}
+    (Signon)   {RETURN 4³ 7Signon   4ù at $1-}
+    (Spoof)    {RETURN 4³ 7Spoof    4ù $1-}
+    (Idle)     {RETURN 4³ 7Idletime 4ù $1-}
+  }
+}
+ALIAS -fmt.whois_bot
+
+# banner
+^SET BANNER :::
+
+# banner colors
+ALIAS fmt.banner_info		RETURN $G
+ALIAS fmt.banner_party		RETURN $G
+ALIAS fmt.banner_join		RETURN $G
+ALIAS fmt.banner_leave		RETURN $G
+ALIAS fmt.banner_signon		RETURN $G
+ALIAS fmt.banner_signoff	RETURN $G
+ALIAS fmt.banner_invite		RETURN :9::
+ALIAS fmt.banner_mode		RETURN $G
+ALIAS fmt.banner_kick           RETURN ${temp.kick_me?[\:9\:\:]:G}
+ALIAS fmt.banner_nick		RETURN $G 
+ALIAS fmt.banner_ctcp		RETURN $G
+ALIAS fmt.banner_dcc		RETURN $G
+ALIAS fmt.banner_alert		RETURN $G
+ALIAS fmt.banner_userlist	RETURN $G
+ALIAS fmt.banner_server		RETURN $G
+ALIAS fmt.banner_chan		RETURN $G
+ALIAS fmt.banner_usage		RETURN $G
+ALIAS fmt.banner_tip		RETURN +++
+
+# tjbh/99

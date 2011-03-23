@@ -1,0 +1,88 @@
+Usage: CTOG [channel toggle letter(s)] 
+   Control certain channel routines carried out by the program. The code
+   now can act channel-oriented given the status of these toggles.
+
+1
+   When set, channel flooders are banned with the worse ban
+   possible. "CTOG F" must be enabled also, unless a JOIN flood
+   was triggered.
+
+A
+   Makes the toggles permanent on /SAVE.
+
+B
+   Shit actions: AutoDEOP, AutoKICK, AutoIGNORE, AutoBAN.
+
+C
+   Channel protection: AutoKICK channel flooders
+
+D
+   AutoKICK users matching channel bans and shitlist. Makes sure that
+   users that are banned stay out, this includes nethackers. The program
+   will AutoKICK users that match a ban placed.
+
+E
+   Activates nickname-note reminders on JOIN.
+
+F
+   AutoBAN channel flooders. Adds extra action to channel protection,
+   users are also banned when this option is set to ON. This option,
+   combined with "B" make a great combination for channel anti-flooding.
+
+G
+   Bitch mode. When set, LiCe will only allow friends with the +O mode
+   flag get opped. Everyone else will be deopped if given ops, unless the
+   person giving ops if a friend with moode flag +E - are we confused yet? 
+   :)
+
+H
+   Automatic IP address lookups on JOIN.
+
+I
+   AutoJOIN channel on INVITE. Always, if set.
+
+J
+   Auto clone bot detection. Will notify if multiple nicks are from
+   a same hostname, at join time.
+
+K
+   Disallow channel keys - NON GLOBAL TOGGLE.
+
+L
+   Mode lock. This will enforce the channel modes you specify on the
+   channel.
+
+M
+   AutoKICK users that place bogus channel keys. Users that place channel
+   keys with escape or control characters (keybombs) are automatically
+   kicked.
+
+N
+   NetHack protection: AutoDEOP nethackers.
+
+O
+   Don't kick channel operators that flood. When an op (+o) floods
+   the channel, you'll get the warning but the user won't be kicked.
+
+P
+   Friend CTCP commands, Protection, AutoOP and AutoGREET.
+
+Q
+   Make channel quiet. Ignore CTCPs, JOINs and NICK changes
+   sent to the channel.
+
+S
+   AutoSHIT of flooders. When enabled, it will add users that flood your
+   channels with SHIT mode +F (KICKBAN). Users that attempt to flood You,
+   are added with mode +I (IGNORE). This AutoSHIT will not be save
+   automatically, you need to use /SAVE for that.
+
+T
+   Topic lock. This will enforce your topic for that channel.
+
+V
+   Don't kick channel voices that flood. When a voice (+v) floods
+   the channel, you'll get the warning but the user won't be kicked.
+
+See also: [SENSORS] [TOG]
+

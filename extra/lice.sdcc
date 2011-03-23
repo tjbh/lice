@@ -1,0 +1,40 @@
+## a decent dcc interface!
+
+PACKAGE LiCe
+
+ALIAS my.dots @FUNCTION_RETURN = left($0 $1$repeat($0 .))
+ALIAS sdcc {
+  ^ON ^DCC_LIST * {
+    IF (([$0]==[GET] || [$0]==[SEND]) && [$3]==[Active]) {
+     ^SET FLOATING_POINT_MATH ON
+     @ :per.real = [${100 * [$6] / [$5]}]
+     @ :per.total = [${32 * [$6] / [$5]}]
+     ^SET FLOATING_POINT_MATH OFF
+     @ :per.so = repeat($before(. $per.total) #)
+     XECHO -W SDCC 10$[-4]0 12$[9]2\: 7${pass(/ $7) ? [$[25]after(-1 / $7)] : [$[25]7]} 12[10$my.dots(31 $per.so)11$[2]per.real\%12]
+     IF (iswset(E)) {^TIMER 10 CLEAR;${K}DCCST}
+    }
+  }
+  //DCC LIST
+  ^ON ^DCC_LIST -
+}
+
+# ripped from skuld...
+ALIAS gdcc {
+  IF ([$0]) {
+     @ _gd.n = [$0]
+     @ _gd.p = strlen($1) ? [$1] : [*]
+     ^ON ^DCC_LIST * {
+        IF ([$0]==[GET] && [$3]==[Offered] && match(*$_gd.n* $2) && match(*$_gd.p* $7)) {
+           WAIT -CMD //^DCC GET $2 $7
+           @ _gd.t++
+        }
+     }
+     //DCC LIST
+     UNLESS (_gd.t) {iecho No files matching $_gd.p offered in SEND mode by $_gd.n}
+     ^ON ^DCC_LIST -
+     purge _gd
+  }{iecho Usage: ${K}GDCC <nick/pattern> [filename pattern]}
+}
+
+##HS/00

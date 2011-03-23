@@ -1,0 +1,32 @@
+   LiCe (Ircii Overlay Script Program)
+   Copyright (C) 1993-2000 SrfRoG (cag@codehack.com)
+ 
+   This program is free software; you can redistribute it and/or modify it 
+   under the terms of the GNU General Public License as published by the
+   Free Software Foundation; either version 2 of the License, or (at your
+   option) any later version.
+ 
+   This program is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+   General Public License for more details.
+ 
+   You should have received a copy of the GNU General Public License along 
+   with this program; if not, write to:
+                Free Software Foundation, Inc.
+                675 Mass Ave, Cambridge, MA 02139, USA.
+ 
+   Ircii is Copyright (c) 1991 by Michael Sandrof. Versions 2.11 to
+   2.2pre7 Copyright (c) 1991 by Troy Rollo. Versions 2.2pre8 and beyond
+   (currently 2.9) copyright (c) 1992-96 Matthew Green.
+
+   Some modifications made to the original ("stock") client:
+   Copyright (C) 1993, 1996 Jeremy Nelson,
+   Copyright (C) 1994       Jake Khuon,
+   Copyright (C) 1995, 2000 Jeremy Nelson and others ("EPIC software labs"),
+   the rights to which are granted non-exclusively to matthew green and are
+   provided to you under the terms of this license.
+ 
+   Screen is Copyright (c) 1993 Juergen Weigert, Michael Schroeder,
+   Copyright (c) 1987 Oliver Laumann
+

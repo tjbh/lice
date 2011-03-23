@@ -1,0 +1,695 @@
+#
+#   LICE.PARTY v3.3 ircii-EPIC5 script module for use with LiCe v5.x
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ----------------------------------------------------------------------
+# Filename   : LICE.PARTY
+# Description: Use of DCC CHAT/RAW to connect to partylines.
+# Author     : SrfRoG (cag@codehack.com) -- one and only!
+# Edited by  : HSOC (hsoc@irc.gr) -- there are many of us :p
+# EPIC5'd by : tjh (tim@muppetz.com) -- The lowest of the low!
+# ----------------------------------------------------------------------
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+EVAL UNLESS (main.pset) {
+# Name of our partyline
+@ main.pnme = [LiCe Partyline];
+
+# Maximum users to be connected to your hub
+@ main.pmaxu = 12;
+
+# Partyline settable options.
+# Sets:
+#	C - Console status.
+#       F - Continuous lines to consider flood
+#	I - Remote invites.
+#	J - Remote jupes (disconnects).
+#	P - Password-protected remote links
+#	B - Allow remote boots.
+#	W - Receive WALLOPs.
+#
+@ main.pset = [CFIBPW];
+@ main.chat = [8];
+
+# Listening port for incoming hub connections
+@ main.pport = rand(59999);
+WHILE (main.pport < 2048) {@ main.pport = rand(59999)};
+
+# Local hub password
+^ASSIGN main.ppass party$rand(999);
+
+# Ping timeout for remote links
+^ASSIGN main.pping 60;
+};
+
+# Current people connected / invited
+# Connected
+@ chat.curr = 0;
+# Invited
+@ chat.invites = [];
+
+# Remote password
+@ chat.rpass = [ ];
+
+# Partyline's topic
+^ASSIGN chat.tnick SrfRoG;
+^ASSIGN chat.ttext Visit http://lice.muppetz.com;
+@ chat.ttime = time();
+
+# Internal routines.
+
+# DCC CHAT Section
+EVAL UNLESS (winnam(PL)) {
+  XECHO -C $fmt.banner_tip() Tip: Use a dedicated Partyline window to reduce window noise.;
+  XECHO -C $fmt.banner_tip()      See "/HELP BINDS" for details.;
+};
+
+ON ^DCC_CHAT * {
+  IF (c_user[$hash_32bit($0)]) {
+    chat.cmd.parse $*;
+  }{
+    #mecho =$0= $1-;
+    dmecho $fmt.dcc_chat($*);
+  };
+};
+ON ^DCC_CHAT "% .CHAT" {
+  UNLESS (c_user[$hash_32bit($0)]) {
+    IF (main.pmaxu > chat.curr) {
+      chat.init $0;
+    }{
+      ^MSG =$0 *** Sorry, the partyline is full \($chat.curr users\);
+    };
+  }{
+    ^MSG =$0 *** You are already connected! $randread($main.reason_error);
+  };
+};
+ON #-DCC_LOST 26 "% CHAT *" {
+  @ :hash = hash_32bit($0);
+  IF (c_user[$hash]) {
+    ^ASSIGN -c_user[$hash];
+    @ chat.curr--;
+    chat.say *** $0 lost connection \($2-\);
+    chat.net.say dummy STATUS $N $0 lost connection \($2-\);
+  };
+  ^ASSIGN -c_chat[$hash];
+};
+ON #-DCC_CONNECT 26 "% CHAT *" {
+  @ :idx = findw($0 $chat.invites);
+  IF (idx != -1) {
+    @ chat.invites = notw($idx $chat.invites);
+    chat.init $0;
+  };
+};
+ON #-DCC_REQUEST 13 -"% CHAT *";
+ON #^DCC_REQUEST 26 "% CHAT *" {
+  @ n_user[$hash_32bit($0)] = userhost() ## [ ] ## time();
+  IF (findw($0 $chat.invites) != -1) {
+      WAIT -CMD //^DCC CHAT $0;
+  }{
+    IF (finditem(DQCHAT $0) < 0) {queue.add DQCHAT 10 $0};
+    IF (L || A || chat.test) {
+       XECHO -C $fmt.banner_dcc() DCC CHAT request from $0 ${servername($winserv()) != S ? [\($servername($servernum())\)] : []};
+       ECHO $fmt.banner_dcc() Type "/CHAT" to connect to $0.;
+    }{
+      @ chat.test = 1;
+      INPUT_CHAR "Connect DCC CHAT from $0 ? " {
+       IF ([$0]==[Y]) {CHAT}{^DCC CLOSE CHAT $queue.tail(DQCHAT)};
+       ^ASSIGN -chat.test;
+    };};
+  };
+};
+
+# DCC RAW Section
+ON ^DCC_RAW "% % D SYN" {
+  IF (chat.set(C)) {pecho #$1# SYN received, sending ACK...};
+  //^DCC RAW $0 $1 ACK $encode(${chat.rpass});
+};
+ON ^DCC_RAW "% % D ACK %" {
+  IF (decode($4) == main.ppass || !chat.set(P)) {
+    IF (chat.set(C)) {pecho #$1# ACK received, checking ident...};
+    //^DCC RAW $0 $1 IDENT;
+  }{
+    //^DCC CLOSE RAW $0;
+    IF (chat.set(C)) {pecho #$1# Wrong ACK password. Closed connection.};
+  };
+};
+ON ^DCC_RAW "% % D IDENT" {
+  IF (chat.set(C)) {pecho #$1# Ident requested...};
+  //^DCC RAW $0 $1 IDENT $N;
+};
+ON ^DCC_RAW "% % D IDENT %" {
+  IF (chat.set(C)) {pecho #$1# Ident received, connecting hub...};
+  //^DCC RAW $0 $1 RLINK $N ${main.pnme};
+  ^ASSIGN c_link[$0] $1 $4;
+};
+ON ^DCC_RAW "% % D RLINK % *" {
+  ^ASSIGN c_link[$0] $1 $4;
+  //^DCC RAW $0 $1 LLINK $N ${main.pnme};
+  chat.say *** Remote connection \($4\) : $5-;
+  chat.net.say $0 STATUS $N Remote connection \($4\) : $5-;
+};
+ON ^DCC_RAW "% % D LLINK % *" {
+  chat.say *** Remote connection \($4\) : $5-;
+  chat.net.say $0 STATUS $N Remote connection \($4\) : $5-;
+};
+ON ^DCC_RAW "% % D JUPE % % %" {
+  IF ([$5] == N) {
+    IF (chat.set(J)) {
+      @ :jupe = [];
+      FOREACH c_link fd {
+        IF (word(1 $c_link[$fd]) == [$6]) {
+          @ :jupe = fd;
+          BREAK;
+        };
+      };
+      IF (jupe) {
+        ^ASSIGN -c_link[$jupe];
+        //^DCC CLOSE RAW $jupe;
+        chat.say *** Remote link to $word(1 $c_link[$jupe]) juped by $4;
+        chat.net.say dummy STATUS $N Remote link to $word(1 $c_link[$jupe]) juped by $4;
+      }{
+        IF (chat.set(C)) {pecho #$4# Failed remote jupe for $6 (not linked)};
+      };
+    }{
+      IF (chat.set(C)) {pecho #$4# Failed remote jupe for $6\, remote jupes are disabled.};
+    };
+  }{
+    chat.net.say $0 $3-;
+  };
+};
+ON ^DCC_RAW "% % D RBOOT % %@%" {
+  @ :bhub = after(@ $5);
+  IF (bhub == N) {
+    @ :busr = before(@ $5);
+    IF (chat.set(B)) {
+      @ :who = hash_32bit($busr);
+      IF (c_user[$who]) {
+        chat.say *** $word(0 $c_user[$who]) was booted off by $4 ${strlen($6) ? [\($6-\)] : []};
+        chat.kill $busr;
+        chat.net.say dummy STATUS $N $busr was booted off by $4 ${strlen($6) ? [\($6-\)] : []};
+
+      }{
+        IF (chat.set(C)) {pecho #$4# Failed boot for $busr (not connected)};
+      };
+    }{
+      IF (chat.set(C)) {pecho #$4# Attempted remote boot of $busr\, but remote boots are disabled};
+    };
+  }{
+    chat.net.say $0 $3-;
+  };
+};
+ON ^DCC_RAW "% % D RWALL % *" {
+  IF (chat.set(W)) {pecho [WallOp: $4] $5-};
+  chat.net.say $0 $3-;
+};
+ON ^DCC_RAW "% % D RINV % % % %" {
+  IF ([$7] == N) {
+    IF (chat.set(I)) {
+      chat.cmd.invite $5@$4 $6;
+      IF (chat.set(C)) {pecho #$4# Remote invite $6 from $5};
+    }{
+      IF (chat.set(C)) {pecho #$4# Attempted remote invite of $6 by $5, but remote invites are disabled};
+    };
+  }{
+    chat.net.say $0 $3-;
+  };
+};
+ON ^DCC_RAW "% % D RMSG %@% %@% *" {
+  @ :mhub = after(@ $5);
+  IF (mhub == N) {
+    @ :musr = before(@ $5);
+    IF (musr == N) {
+        pecho [Msg: $4] $6-;
+    }{
+      @ :who = hash_32bit($musr);
+      IF (c_user[$who]) {
+        ^MSG =$word(0 $c_user[$who]) [Msg: $4] $6-;
+      }{
+        IF (chat.set(C)) {pecho #$4# Failed msg for $musr (not connected)};
+      };
+    };
+  }{chat.net.say $0 $3-};
+};
+ON ^DCC_RAW "% % D PUB *" {
+  chat.say <$5@$4> $6-;
+  chat.net.say $0 $3-;
+};
+ON ^DCC_RAW "% % D ACT *" {
+  chat.say * $5@$4 $6-;
+  chat.net.say $0 $3-;
+};
+ON ^DCC_RAW "% % D STATUS *" {
+  chat.say *** \($4\) $5-;
+  chat.net.say $0 $3-;
+};
+ON ^DCC_RAW "% % D RWHO % %" {
+  //^DCC RAW $0 $1 who $N $5@$4 [LinkHub] $after(@ $X);
+  FOREACH c_user idx {
+    //^DCC RAW $0 $1 WHO $N $5@$4 $[9]word(0 $c_user[$idx]) $word(1 $c_user[$idx]) \(Idle\: $tdiff2(${time() - word(3 $c_user[$idx])})\);
+  };
+  chat.net.say $0 $3-;
+};
+ON ^DCC_RAW "% % D RTOP % % *" {
+  ^ASSIGN chat.tnick $5@$4;
+  ^ASSIGN chat.ttext $6-;
+  @ chat.ttime = time();
+  chat.say *** $5@$4 changed the topic: $6-;
+  chat.net.say $0 $3-;
+};
+ON ^DCC_RAW "% % D RPING % %" {
+  //^DCC RAW $0 $1 PING $N $5;
+};
+ON ^DCC_RAW "% % D PING % %" {
+  @ :rping = time() - [$5];
+  IF (rping >= main.pping) {
+    @ :dup2 = word(1 $c_link[$0]);
+    ^ASSIGN -c_link[$0];
+    //^DCC CLOSE RAW $0;
+    chat.say *** Remote link to $dup2 timed out.;
+    chat.net.say dummy STATUS $N Remote link to $dup2 time out.;
+  };
+};
+ON ^DCC_RAW "% % D WHO % %@% *" {
+  @ :hub = after(@ $5);
+  IF (hub == N) {
+    @ :usr = before(@ $5);
+    IF (c_user[$hash_32bit($usr)]) {
+      ^MSG =$usr $[9]4 $6-;
+    }{
+      IF (usr == N) {
+        pecho $[9]4 $6-;
+      };
+    };
+  }{
+    chat.net.say $0 $3-;
+  };
+};
+ON ^DCC_RAW "% % C" {
+  IF (c_link[$0]) {
+    @ :who = word(1 $c_link[$0]);
+    ^ASSIGN -c_link[$0];
+    chat.say Closing connection: $who;
+    chat.net.say $0 STATUS $N Closing connection: $who;
+  };
+};
+ON ^DCC_RAW "% % N %" {
+  IF ([$3] == main.pport) {
+    IF (chat.set(C)) {pecho #$1# SYN sent...};
+    //^DCC RAW $0 $1 SYN;
+  };
+};
+#ON ^DCC_RAW "% % E %"
+
+# Server/Internal routines.
+ON #-TIMER 26 * {chat.net.say dummy RPING $N $time()};
+
+ALIAS pecho {if (winnum(PL) != -1) {XECHO -W PL $fmt.banner_party() $*} {XECHO -V $fmt.banner_party() $*}};
+ALIAS chat.set @ function_return = (pass($0 $main.pset) != []);
+ALIAS chat.kill {
+  ^ASSIGN -c_user[$hash_32bit($0)];
+  @ chat.curr--;
+  //^DCC CLOSE CHAT $0;
+};
+ALIAS chat.init {
+  @ chat.curr++;
+  @ :hash = hash_32bit($0);
+  IF (c_chat[$hash]) {
+    @ c_user[$hash] = c_chat[$hash];
+    ^ASSIGN -c_chat[$hash];
+  }{
+    @ c_user[$hash] = [$0 ] ## n_user[$hash] ## [ ] ## time();
+    ^ASSIGN -n_user[$hash];
+  };
+  chat.cmd.motd $0;
+  chat.say *** $0 has joined ${main.pnme};
+  chat.cmd.topic $0;
+  chat.net.say dummy STATUS $N $0 has joined ${main.pnme};
+};
+ALIAS chat.cmd.parse {
+    @ :line = [$1-];
+    @ :cmd = rest(1 $word(0 $line));
+    IF (left(1 $line) == [.] && aliasctl(ALIAS EXISTS chat.cmd.$cmd)) {
+       chat.cmd.$cmd $0 $restw(1 $line);
+    }{
+      UNLESS (flood_check == flood_check.[$0]) {^ASSIGN -flood_check};
+      IF (flood_check < main.chat) {
+       @ flood_check.[$0] = flood_check.[$0] ? flood_check.[$0] : 0;
+       @ flood_check.[$0]++;
+       @ c_user[$hash_32bit($0)] = notw(3 $c_user[$hash_32bit($0)]) ## [ ] ## time();
+       chat.say <$0> $line;
+       chat.net.say dummy PUB $N $0 $line;
+       @ flood_check = flood_check.[$0];
+       ^TIMER 4 @ flood_check.[$0]--;
+      }{
+       ^ASSIGN -flood_check.[$0];
+       chat.say *** $0 was booted off for flooding.;
+       chat.net.say dummy STATUS $N $0 was booted off for flooding.;
+       chat.kill $0;
+     };};
+};
+ALIAS chat.cmd.help {
+^MSG =$0 : ${main.pnme} Commands:;
+^MSG =$0 : .INVITE [nick [hub]] : invite someone, view invites.;
+^MSG =$0 : .ME <action> : do an action on the partyline.;
+^MSG =$0 : .NAMES : shows who's connected to your hub.;
+^MSG =$0 : .QUIT : detach from partyline, stay in DCC CHAT.;
+^MSG =$0 : .CHAT : retach back to partyline, from DCC CHAT.;
+^MSG =$0 : .TOPIC [topic] : set or view current topic.;
+^MSG =$0 : .WHO : shows who's connected thru all hubs.;
+^MSG =$0 : .MSG <nick|nick@hub> <text> : sends a msg to <nick>.;
+^MSG =$0 : .WALL <text> : send a msg to only the people on $N\.;
+};
+ALIAS chat.cmd.motd {
+^MSG =$0 : :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::;
+^MSG =$0 : :     @..@   \( Welcome to the LiCe partyline on $[9]N \)   :;
+^MSG =$0 : :    (\--/) /                                                 :;
+^MSG =$0 : :   (.>__<.)   Use '.HELP' for command help.                  :;
+^MSG =$0 : :   ^^^  ^^^   Send all comments to SrfRoG (cag@codehack.com)   :;
+^MSG =$0 : :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::;
+};
+ALIAS chat.cmd.quit {
+  chat.say *** $0 has left ${main.pnme};
+  @ :hash = hash_32bit($0);
+  @ c_chat[$hash] = c_user[$hash];
+  @ chat.curr--;
+  ^ASSIGN -c_user[$hash];
+  chat.net.say dummy STATUS $N $0 has left ${main.pnme};
+};
+ALIAS chat.cmd.me {
+  @ c_user[$hash_32bit($0)] = notw(3 $c_user[$hash_32bit($0)]) ## [ ] ## time();
+  chat.say * $0 $1-;
+  chat.net.say dummy ACT $N $0-;
+};
+ALIAS chat.cmd.topic {
+  IF (strlen($1)) {
+    ^ASSIGN chat.tnick $0;
+    ^ASSIGN chat.ttext $1-;
+    @ chat.ttime = time();
+    chat.say *** $0 changed the topic: $chat.ttext;
+    chat.net.say dummy RTOP $N $0 $chat.ttext;
+  }{
+    IF (chat.ttime > 0) {
+      ^MSG =$0 *** Topic: $chat.ttext;
+      ^MSG =$0 *** Topic set by $chat.tnick\ on $strftime($chat.ttime %c %Z);
+    }{
+      ^MSG =$0 *** No topic set.;
+    };
+  };
+};
+ALIAS chat.cmd.invite {
+  IF (strlen($1)) {
+    IF (strlen($2) && [$2] != N) {
+      chat.net.say dummy RINV $N $0 $1 $2;
+      IF (chat.set(C)) {pecho #$0# INVITE $1@$2};
+    }{
+      IF (!c_user[$hash_32bit($1)] && [$1] != N) {
+        IF (main.pmaxu > (chat.curr + 1)) {
+          IF (findw($1 $chat.invites) == -1) {
+            PUSH chat.invites $1;
+            chat.say *** $0 Invited $1 to ${main.pnme};
+            chat.net.say dummy STATUS $N $0 Invited $1 to ${main.pnme};
+          }{
+            IF ([$0] == N) {
+               pecho *** Already inviting $1! $main.dem;
+            }{^MSG =$0 *** Already inviting $1! $main.dem};
+          };
+          QUOTE NOTICE $1 :$0 invites you to ${main.pnme};
+          QUOTE NOTICE $1 :Type: /DCC CHAT $N\ to connect.;
+        }{
+          IF ([$0] == N) {
+             pecho *** Sorry, the partyline is full \($chat.curr\);
+          }{^MSG =$0 *** Sorry, the partyline is full \($chat.curr\)};
+        };
+      }{
+        IF ([$0] == N) {
+           pecho *** $1 is already here!;
+        }{^MSG =$0 *** $1 is already here!};
+      };
+    };
+  }{
+    ^MSG =$0 *** Usage: .INVITE [nick [hub]];
+    IF (chat.invites) {^MSG =$0 *** Invites pending: [$#chat.invites] $chat.invites};
+  };
+};
+ALIAS chat.cmd.wall {
+  IF (strlen($1)) {
+    chat.say [Wall: $0] $1-;
+  }{
+    ^MSG =$0 *** Usage: .WALL <text>;
+  };
+};
+ALIAS chat.cmd.msg {
+  IF (strlen($2)) {
+    @ :who = hash_32bit($1);
+    IF (c_user[$who]) {
+      ^MSG =$word(0 $c_user[$who]) [Msg: $0] $2-;
+      IF ([$0] == N) {
+         pecho [Msg->$word(0 $c_user[$who])] $2-;
+      }{^MSG =$0 [Msg->$word(0 $c_user[$who])] $2-};
+      IF (chat.set(C)) {pecho #$0# MSG $1};
+    }{
+      IF ([$1] == N) {
+         IF ([$0] == N) {
+            pecho [Msg->$word(0 $1)] $2-;
+         }{^MSG =$0 [Msg->$word(0 $1)] $2-};
+         pecho [Msg: $0] $2-;
+      }{
+        chat.net.say dummy RMSG $0@$N $1-;
+        IF (chat.set(C)) {pecho #$0# MSG $1};
+      };
+    };
+  }{
+    ^MSG =$0 *** Usage: .MSG <nick|nick@hub> <text>;
+  };
+};
+ALIAS chat.cmd.names {
+  ^MSG =$0 *** Names on $N: ${main.pnme};
+  @ :cnt = 1;
+  FOREACH c_user id {
+    ^MSG =$0 [$[2]cnt] $[9]word(0 $c_user[$id]) $word(1 $c_user[$id]) \(online $tdiff2(${time() - word(2 $c_user[$id])})\);
+    @ cnt++;
+  };
+  IF (chat.set(C)) {pecho #$0# NAMES};
+};
+ALIAS chat.cmd.who {
+  ^MSG =$0 Hub       Nick      Remote Address;
+  ^MSG =$0 $[9]N [LinkHub] $after(@ $X);
+  FOREACH c_user id {
+    ^MSG =$0 $[9]N $[9]word(0 $c_user[$id]) $word(1 $c_user[$id]) \(Idle\: $tdiff2(${time() - word(3 $c_user[$id])})\);
+  };
+  chat.net.say dummy RWHO $N $0;
+  IF (chat.set(C)) {pecho #$0# WHO};
+};
+ALIAS chat.say (out) {
+  FOREACH c_user id {
+    @ :who = word(0 $c_user[$id]);
+    ^MSG =$who $out;
+  };
+  pecho $out;
+};
+ALIAS chat.net.say (sock,out) {
+  FOREACH c_link fd {
+    IF (fd == sock) {CONTINUE};
+    //^DCC RAW $fd $word(0 $c_link[$fd]) $out;
+  };
+};
+
+# Root routines/commands.
+
+ALIAS . {
+  chat.say <$N\> $*;
+  chat.net.say dummy PUB $N $N $*;
+};
+ALIAS .me {
+  chat.say * $N $*;
+  chat.net.say dummy ACT $N $N $*;
+};
+ALIAS .names {
+  pecho Names on $N: ${main.pnme};
+  @ :cnt = 1;
+  FOREACH c_user id {
+    pecho [$[2]cnt] $[9]word(0 $c_user[$id]) $word(1 $c_user[$id]) \(online $tdiff2(${time() - word(2 $c_user[$id])})\);
+    @ cnt++;
+  };
+};
+ALIAS .who {
+  pecho Nick      Remote Address;
+  pecho $[9]N LocalHost $after(@ $X) \(port\: $main.pport\);
+  FOREACH c_user id {
+    pecho $[9]word(0 $c_user[$id]) $word(1 $c_user[$id]) \(Idle\: $tdiff2(${time() - word(3 $c_user[$id])})\);
+  };
+  chat.net.say dummy RWHO $N $N;
+};
+ALIAS .msg {
+  IF (strlen($1)) {
+    chat.cmd.msg $N $*;
+  }{
+    uecho Usage: /.MSG <nick | nick@hub> <text>;
+  };
+};
+ALIAS .invite {
+  IF (@) {
+    chat.cmd.invite $N $*;
+  }{
+    uecho Usage: /.INVITE [nick [hub]];
+    IF (chat.invites) {pecho Invites pending: [$#chat.invites] $chat.invites};
+  };
+};
+ALIAS .link {
+  IF (isnumber($1) && strlen($2)) {
+    ^ASSIGN chat.rpass $2;
+    @ :r_conn = connect($0 $1);
+    WAIT =$r_conn;
+    IF (chat.set(C)) {
+      IF (r_conn > 0) {
+        pecho Connected to $0:$1;
+      }{
+        pecho Remote connect to $0:$1 failed;
+      };
+    };
+  }{
+    uecho Usage: /.LINK <host> <port> <password>;
+  };
+};
+ALIAS .unlink {
+  IF (@) {
+    FOREACH c_link kfd {
+      @ :old = word(1 $c_link[$kfd]);
+      IF (old == [$0] || old == [*]) {
+        ^ASSIGN -c_link[$kfd];
+        //^DCC CLOSE RAW $kfd;
+        chat.say *** Closed remote connection to $old;
+        chat.net.say dummy STATUS $N Closed remote connection to $old;
+      };
+    };
+  }{
+    uecho Usage: /.UNLINK <hub | *>;
+  };
+};
+ALIAS .listen {
+  @ listen($main.pport);
+  IF (chat.set(C)) {pecho Listening TCP connection to port ${main.pport}};
+};
+ALIAS .close {
+  //DCC CLOSE RAW_LISTEN $main.pport;
+  IF (chat.set(C)) {pecho No longer listening to port ${main.pport}};
+};
+ALIAS .jupe {
+  IF (strlen($1)) {
+    chat.net.say dummy JUPE $N $0 $1;
+  }{
+    uecho Usage: /.JUPE <host hub> <link hub>;
+  };
+};
+ALIAS .boot {
+  IF (@) {
+    IF (c_user[$hash_32bit($0)]) {
+      chat.say *** $0 was booted off by $N ${strlen($1) ? [\($1-\)] : []};
+      chat.kill $0;
+      chat.net.say dummy STATUS $N $0 was booted off by $N ${strlen($1) ? [\($1-\)] : []};
+    }{
+      chat.net.say dummy RBOOT $N $0 ${strlen($1) ? [\($1-\)] : []};
+    };
+  }{
+    uecho Usage: /.BOOT <nick | nick@hub> <reason>;
+  };
+};
+ALIAS .wallop {
+  IF (@) {
+    chat.say [WallOp: $N] $*;
+    chat.net.say dummy RWALL $N $*;
+  }{
+    uecho Usage: /.WALLOP <text>;
+  };
+};
+ALIAS .wall {
+  IF (@) {
+    chat.say [Wall: $N] $*;
+  }{
+    uecho Usage: /.WALL <text>;
+  };
+};
+ALIAS .topic {
+  IF (@) {
+    chat.cmd.topic $N $*;
+  }{
+    IF (chat.ttime > 0) {
+      pecho Topic: $chat.ttext;
+      pecho Topic set by $chat.tnick\ on $strftime($chat.ttime %c %Z);
+    }{
+      pecho No topic set.;
+    };
+  };
+};
+ALIAS .commands {.help};
+ALIAS .help {
+pecho Commands valid on the partyline to you:;
+pecho    . <text>           - Talk on the partyline;
+pecho    .ME <action>       - Do an action.;
+pecho    .NAMES             - List of nicks connected to you.;
+pecho    .WHO               - Extended list of all nicks connected,;
+pecho                         on all hubs.;
+pecho    .INVITE <nick>     - Invite an outside nick to the partyline.;
+pecho    .LINK <host> <port> <password>;
+pecho                       - Link to a remote hub. Password might not be;
+pecho                         necessary unless the remote hub requires it.;
+pecho    .UNLINK <hub>      - Unlink a hub by name, or '*' to unlink all.;
+pecho    .LISTEN            - Allow remote hub connections to you.;
+pecho    .CLOSE             - Close remote hub connection access.;
+pecho    .BOOT <nick> <reason>;
+pecho                       - Boot (kick equiv.) a nick from the partyline.;
+pecho                         Will be booted off any other hubs that allow;
+pecho                         remote boots.;
+pecho    .JUPE <hub> <link> - Disconnect a linked hub on <hub> remotely.;
+pecho    .TOPIC [topic]     - Change or view the hub's current topic.;
+pecho                         Topics are local, not shared remotely.;
+pecho    .SETUP             - Change internal settings to the partyline.;
+pecho    .STATUS            - View partyline's information.;
+pecho    .WALL <text>       - Send a message only to local clients.;
+pecho    .WALLOP <text>     - Send a message to local clients and hubs.;
+};
+ALIAS .setup {
+  INPUT "Partyline's name [curr $main.pnme]: " IF (@) {^ASSIGN main.pnme $0-};
+  INPUT "Max users allowed [curr $main.pmaxu]: " IF (isnumber($0) && [$0] > 0) {^ASSIGN main.pmaxu $0};
+  INPUT "How many continuous lines will constitute flood [curr $main.chat]: " IF (isnumber($0) && [$0] > 0) {^ASSIGN main.chat $0};
+  INPUT "Port to use for remote links [curr $main.pport]: " IF (isnumber($0) && [$0] > 1025) {^ASSIGN main.pport $0};
+  INPUT "Ping timeout for remote links [curr $main.pping]: " IF (isnumber($0) && [$0] > 10) {^ASSIGN main.pping $0};
+  INPUT "Password for remote links [curr $main.ppass]: " IF (@) {@ main.ppass = left(7 $0)};
+  INPUT "Partyline settings [curr $main.pset]: " IF (@) {
+    FEC ($toupper($0)) xx {
+      IF (pass($xx $main.pset)) {
+        @ main.pset = strip($xx $main.pset);
+      }{
+        IF (pass($xx CFIJPBW)) {@ main.pset = main.pset ## xx};
+      };
+    };
+  };
+  XECHO -B Partyline settings:;
+  XECHO -B    C - Console status.;
+  XECHO -B    F - Continuous lines to consider flood;
+  XECHO -B    I - Remote invites.;
+  XECHO -B    J - Remote jupes.;
+  XECHO -B    B - Remote boots.;
+  XECHO -B    P - Password protected links.;
+  XECHO -B    W - Receive WALLOPs.;
+};
+ALIAS .status {
+  IF (chat.ttime > 0) {
+    pecho Topic: $chat.ttext;
+    pecho Topic set by $chat.tnick\ on $strftime($chat.ttime %c %Z);
+  }{
+    pecho No topic set.;
+  };
+  pecho Current people connected: $chat.curr \(max $main.pmaxu\);
+  pecho Current people invited: $#chat.invites;
+  pecho Remote link port $main.pport\, password $main.ppass;
+  pecho Active settings: $main.pset;
+};
+ALIAS party .status;
+#tjh/09

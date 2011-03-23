@@ -1,0 +1,52 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+ALIAS _proc.kick_ban {
+  UNLESS (ischanop($N $C)) {
+    XECHO -B $ch($C)\: You're not channel operator.;
+    RETURN;
+  };
+  UNLESS (strlen($1)) {
+    //KICK;
+    RETURN;
+  };
+  IF (rmatch($1 *.* *!* *@* %\\* \\*%)) {
+    ^LOCAL nick %;
+    @ :pat = uhc($1);
+    get_user_match $C $pat kick_list;
+    @ kick_list = remw($N $kick_list);
+  }{
+    @ :pat = onchannel($1 $C) ? makeban(B$0 $userhost($1)) : [$1!*@*];
+    ^ASSIGN kick_list $1;
+    ^LOCAL nick $1;
+  };
+  @ kick_msg = strlen($2) ? [$2-] : randread($main.reason_kick);
+  @ :serv = winserv();
+  _proc.ban $C $serv $pat $nick;
+  _proc.loop_kick $serv $C kick_list kick_msg;
+  IF ([$0]==[I]) {
+    ECHO $fmt.banner_kick() Ignoring all crap from $pat;
+    //^IGNORE $pat ALL CRAP -PUBLIC;
+  };
+};
+ALIAS kb {_proc.kick_ban N $*};
+ALIAS ka {_proc.kick_ban A $*};
+ALIAS kh {_proc.kick_ban H $*};
+ALIAS kf {_proc.kick_ban F $*};
+ALIAS ku {_proc.kick_ban U $*};
+ALIAS ki {_proc.kick_ban I $*};
+ALIAS kbi {k};
+#tjh/09

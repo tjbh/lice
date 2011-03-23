@@ -1,0 +1,8 @@
+Usage: DOM <top-level domain | hostname>
+
+  If a top-level domain or hostname is specified, it is
+  looked up in the top-level table for a definition. Top
+  level domains include: .com, .net, .fr, .org, etc...
+
+See also: [DNS] [WI]
+ 

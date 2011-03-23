@@ -1,0 +1,11 @@
+Usage: RELN [<num> nick|channel] [-list] 
+   Redirect Last 8 Rec'v NOTICEs to a given nick or channel, or to current 
+   channel if no arguments specified. Use '-list' to display your current
+   stored NOTICEs.
+ie.
+     /RELN 7 SrfRoG  - Displays your seventh NOTICE to 'SrfRoG'.
+     /RELN -list     - Shows your NOTICE list.
+     /RELN SrfRoG    - Displays the last received NOTICE to 'SrfRoG'.
+
+See also: [WLN] [TLN] [RELM]
+

@@ -1,0 +1,9 @@
+Usage: REX <nick|channel> <shell command> [arguments] 
+   Redirects the output of a Unix command to a nick or channel. The Unix
+   command must be given; if the Unix command doesnt exists, the Unix
+   Shell error will be displayed (if any).
+ie.     /REX #LiCe uname -a\n
+	shows #LiCe the output of the Unix command "uname".
+
+See also: [RE] [epic 5 EXEC]
+

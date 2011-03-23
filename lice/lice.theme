@@ -1,0 +1,65 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# ---------------------------------------------------------------------------
+# Updated for EPIC5 by tjh - http://lice.muppetz.com
+# Updated so that theme change will redraw toplines correctly. 11/06/10 - tjh
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+PACKAGE LiCe;
+
+# XXX - lame hack added to protect the innocent
+ALIAS THEME {
+  IF (@) {
+    @ :theme = which($LiCePath/themes/$0);
+    UNLESS (strlen($theme)) {RETURN};
+    @ lice.set(main.theme $0);
+    # reset term translation (just in case)
+    XECHO -RAW $chr(27)\(B;
+    ^UNLOAD LiCeTheme;
+    ^LOAD $LiCePath/themes/default $theme;
+    IF (iswset(T)) {$_proc.redraw_tl(0)}
+    iecho Default color theme now: $0;
+  }{
+    iecho Current Theme: $lice.get(main.theme);
+    IF (fexist($LiCePath/themes) == 1) {
+      ^CD $LiCePath/themes;
+      @ :theme.list = glob(*);
+      ^CD ~;
+      IF (strlen($theme.list)) {
+        iecho Your theme collection:;
+        echo.recursive $theme.list;
+        uecho Usage: /THEME [name];
+      }{
+        XECHO -B No themes found!;
+      };
+    }{
+      XECHO -B Path not found: $twiddle($LiCePath/themes);
+      IF (mkdir($LiCePath/themes)) {
+        XECHO -B Failed to create: $twiddle($LiCePath/themes);
+      };
+      XECHO -B No themes found!;
+    };
+  };
+};
+
+# Redraw the toplines. If activate is set, also redisplay (called from lice.wtog for /wtog t)
+ALIAS _proc.redraw_tl (activate) {
+  FOR win in ($windowctl(REFNUMS)) {
+    IF (activate) {WINDOW $win TOPLINES 1};
+    @ :hash = hash_32bit($winchan($win));
+    IF ([$chan_topic[$win$hash]] == []) {
+      //WINDOW $win TOPLINE 1 " -- LiCe Titlebar [tm] --";
+    }{
+      //WINDOW $win TOPLINE 1 "$fmt.titlebar($chan_topic[$win$hash])";
+    };
+  };
+};
+#tjh/11

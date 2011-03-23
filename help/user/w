@@ -1,0 +1,29 @@
+Usage: W <channel> [flag [arguments]] 
+Usage: W <flag> [arguments] 
+   Requests the server WHO information about a channel or users. If a
+   channel is given, information about that channel is obtained. In the
+   case no channel is given, and no arguments are given, WHO information
+   about your current channel is obtained; if a flag is given, information 
+   about your current channel that corresponds to the flags is obtained.
+   If no flag but arguments are given, all IRC is used to collect the
+   information.
+ 
+Meaning of the flags:
+	-ch	who are the channel operators.
+	-no	who are the channel non-operators (lamers).
+	-op	IRC operators in your channel.
+	-aw	people who are AWAY in your channel.
+	-he	people who are not AWAY (here).
+	-ho	lists users matching the host provided,
+		must supply a host mask as an argument.
+	-na	lists users matching the username mask
+		provided; must supply a mask as argument.
+	-ni	lists users matching the nickname mask
+		provided; must supply a mask as argument.
+	-r	lists users matching the realname mask
+		provided; must supply a mask as argument.
+	-s	lists users using a server in your channel;
+		must provide the server in the arguments.
+
+See also: [WI] [WII] [WW]
+

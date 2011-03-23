@@ -1,0 +1,72 @@
+   Key bindings that make LiCe the easiest script to use :)
+   Options:
+
+Ctrl-a
+   jumps the cursor to the beggning of the line.
+
+Esc-f
+   lists people that are netsplit.
+
+Esc-k
+   to JOIN the last channel you were invited to.
+
+Esc-r
+   to remove nicks from your current server tablist.
+
+Ctrl-l
+   will refresh all your screens.
+
+Ctrl-o
+   to IGNORE last nick that sent you a message.
+
+Ctrl-r
+   to INVITE last nick that send you a message.
+
+Ctrl-s
+   freezes your irc screen (Scroll Lock)
+
+Ctrl-q
+   returns your irc screen (No Scroll)
+
+Ctrl-u
+   erases everything in your input prompt.
+
+Ctrl-x
+   to switch between channels in the same window.
+
+Ctrl-z
+   to suspend current IRC session and go to shell.
+
+TAB
+   flips thru last nicks that sent you a message/notice.
+
+   nickname completion. matches the contents of your input to
+   the list of nicks in your current channel, and fixes the
+   input for the best match. it will display a list of all
+   matches, if more than one.
+
+   filename completion (same as nick completion, but for files).
+
+   Uses a very simple logic to determine wether to complete filenames
+   or nicks.
+
+Arrow-UP
+   command backward history (last command typed).
+
+Arrow-DOWN
+   command forward history.
+
+Arrow-LEFT
+   moves to the leftmost character.
+
+Arrow-RIGHT
+   moves to the rightmost character.
+
+PgUp
+   display last screenful of text.
+
+PgDn
+   display next screenful of text (after a PgUp).
+
+See also: [screen] [user TOG] [user CTOG] [user SENSORS]
+

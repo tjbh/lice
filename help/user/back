@@ -1,0 +1,14 @@
+Usage: BACK [-q] [message]
+   Marks yourself HERE from a previous AWAY.
+
+   It tells the last channel/nick you were in contact with that you're
+   "back", if not in "QUIET MODE".
+
+   The message is used to describe why you are HERE now :) if no message
+   is provided, the default one is used. The "-q" is used to cancel the
+   announcing even if "QUIET MODE" is not set.
+
+   Edit the file "~/.irc/back.reasons" to customize the default message.
+ 
+See also: [GONE] [PLAY] [ERASE]
+

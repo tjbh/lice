@@ -1,0 +1,67 @@
+                        <<< LiCe QuickStart Guide >>>
+
+This guide will help you quickly get started using the LiCe script for
+EPIC.
+
+                               - Settings -
+LiCe has a number of commands to change the settings in use.  
+Each command will bring up a menu with a short explaination of what
+they do. You can change more than one setting at once.
+
+  3/SENSORS - Change LiCe sensor settings.  Unless you understand what
+             you're doing, it's only recommended to change the AutoNick
+             and the AutoAWAY settings.
+
+  3/TOG     - Change main LiCe toggles.  Most users these days prefer to
+             turn off Flood Protection, which is on by default.
+             Also note that automatically checking for updates is on by
+             default. This connects to the LiCe webserver when you load
+             LiCe so you may wish to turn this off.
+             Your main toggles are show on the status bar (if you're 
+             using the default theme)
+
+  3/MTOG    - Change settings relating to messaging in LiCe.  Setting 
+             save to disk is recommended to ensure if your client crashes
+             or disconnects you won't lose your messages.
+
+  3/WTOG    - Change settings relating to windows in LiCe.  Windows are
+             an advanced topic.  Setting global status titlebar will show
+             the topic of each channel at the top of the screen which
+             many users find useful.
+
+  3/DTOG    - Settings relating to DCC file transfers.
+
+  3/SAVE    - Save all the changes you've made to the settings.  This will
+             write all changes to disk so they're used on next LiCe load.
+
+                                - Messages -
+LiCe will log message when you're set away, as long as /MTOG U is enabled.
+
+  4/GONE    - This will set you away on the server.  If you don't specify a
+             message after the command, LiCe will use a random message from
+             the gone.reasons file.
+
+  4/BACK    - This will set you as back on the server. You can specify a
+             message to tell people why you're back.
+
+  4/PLAY    - This will show you all messages logged while you were away.
+             It has a small built in menu to help you use it.
+
+  4/ERASE   - Delete all messages from your away log.
+
+                             - Useful Commands -
+List of commands that will be helpful.
+
+  5/AR      - Set a word (or words) that will be highlighted when said in a
+             channel you're in. Makes it easy to see your nickname when
+             in a busy channel and also will log any mention of it when you
+             are set away.
+
+  5/THEME   - Change the appearance of LiCe!  There are many different themes
+             to choose from.
+
+  5/NOIG    - You can use this command to remove any ignores that are
+             currently active.
+
+  5/SC      - List all the nicks on the current channel.
+

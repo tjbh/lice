@@ -1,0 +1,20 @@
+Usage: ALARM [LIST|KILL|POP <id>|PUSH <minutes> <command>] 
+   It performs one or many commands when their triggers are matched
+   every X minutes. eg.
+
+   To execute "/SAY hi" every 5 minutes:
+                               /ALARM PUSH 5 hi
+
+   To execute "/ECHO *wake up*" every minute:
+                        /ALARM PUSH 1 /ECHO *wake up*
+
+   To list all the scheduled alarms:
+                                 /ALARM LIST
+
+   This will display all the active alarms with their proper id.
+   To remove the first example alarm:
+                            /ALARM POP <alarm id>
+
+   To kill all alarm events:
+                                 /ALARM KILL
+

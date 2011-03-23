@@ -1,0 +1,1725 @@
+# LiCe5 - srfrog's LiCe4 ported and enhanced for epic5 by tjh [tim@muppetz.com]
+# Version: 5.2.0
+# Website: http://lice.muppetz.com/
+# Released: 25/03/2011
+#
+#   IRCII Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 1993-2000 SrfRoG (cag@codehack.com)
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, UNLESS specified. Visit http://lice.muppetz.com
+# ---------------------------------------------------------------------------
+#
+#   Lots of code change and modifications by tjh.
+#   Most routines are all SrfRoG original though, just updated/slightly
+#   modified to work with epic5.
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+# warning to people who dare use lame clients.
+EVAL IF (word(0 $info(v)) != [epic5] || V < 20100430 || info(i) < 1638) {
+     CLEAR;
+     ECHO;
+     ECHO;
+     ECHO;
+     ECHO The LiCe5 script needs the latest ircii-EPIC5 client, else it won't;
+     ECHO work as intended. Tell your administrator to upgrade your client, or;
+     ECHO you can obtain a copy of the source and compile it for yourself from:;
+     ECHO;
+     ECHO   ftp://epicsol.org/pub/epic (tarball);
+     ECHO;
+     ECHO EPIC5 1.1.2 is the minimum recommended version for LiCe5, though any;
+     ECHO version of EPIC5 will work. Bugs reported on earlier versions will;
+     ECHO be ignored though!  You've been warned....;
+     ECHO;
+     ECHO;
+     IF (word(0 $info(v)) == [epic5] || word(0 $info(v)) == [epic5]) {
+         ECHO You are using $word(0 $info(v)) release:$V commit_id:#$info(i);
+         ECHO You should have EPIC5 release:20100430 commit_id:#1638 [EPIC5-1.1.2] or greater;
+     };
+     IF (word(0 $info(v)) != [epic5]) {
+       ECHO You need EPIC5! You have $word(0 $info(v)) ! Bye...;
+       QUIT;
+     }; 
+     ECHO Pausing 10 seconds...;
+     PAUSE 10;
+};
+
+# Make sure there's nothing else loaded.
+//^DUMP ALL;
+
+PACKAGE LiCe;
+
+# idea by anduril (wd)
+^ASSIGN bench.stime $utime();
+
+# savefile location
+^ASSIGN lice.save_path $getenv(IRCSAVE);
+UNLESS (strlen($lice.save_path)) {^ASSIGN lice.save_path $twiddle(~/.lice)};
+
+# global defaults
+@ temp.nrm = numitems(AM);
+^ASSIGN temp.dcc_active 0;
+^ASSIGN temp.mode_list.User AFEGIOPRUV;
+^ASSIGN temp.mode_list.Shit ABCDEFHKNU;
+
+# locate install path
+^ASSIGN LiCePath $before(-1 / $word(1 $loadinfo()));
+
+# lice.epic5 imports builtins from epic4 for epic5 - backwards compatability
+LOAD -pf $LiCePath/lice/lice.epic5; 
+
+# database storage
+LOAD -pf $LiCePath/lice/lice.dbmctl;
+
+# check to disable update
+IF (fexist($(LiCePath)/disable_update) == 1) {@ dlu = 1};
+
+# setup some sane defaults.
+LOAD -pf $LiCePath/lice/lice.defaults;
+
+# load the default theme. 
+LOAD $LiCePath/themes/default;
+
+# program information
+^ASSIGN id.v $decode(DFCODCCODA);
+
+ALIAS lice (addon) {
+  @ :ret = [];
+  SWITCH ($addon) {
+    () {
+      @ :ret = decode(ACEMGJEDGFAC) ## [ v] ## id.v;
+      @ :ret #= strlen($id.m) ? [ ] ## id.m : [];
+    };
+    (+sv) {
+      @ :ret = decode(ACEMGJEDGFAC) ## [ v] ## id.v;
+      @ :ret #= (lice.get(main.theme) == [default]) ? [] : [ \(] ## lice.get(main.theme) ## [\)];
+      @ :ret #= strlen($id.m) ? [ ] ## id.m : [];
+    };
+    (-sv) {
+      ^ASSIGN -id.m;
+      UNLESS (isset(Q)) {^SET CLIENT_INFORMATION $lice()};
+    };
+    (*) {
+      PUSH id.m ${(substr("${addon}" $id.m) == -1) ? [+ ] ## addon : []};
+      UNLESS (isset(Q)) {^SET CLIENT_INFORMATION $lice()};
+    };
+  };
+  @ FUNCTION_RETURN = ret;
+};
+
+# display random LiCe logo
+EVAL load $LiCePath/logos/lice.logo${rand(2)+1};
+
+### ONs
+ON ^DCC_RAW * #;
+ON ^301 * {
+  IF (temp.whois_away > 0) {
+    ECHO $fmt.whois_mid(Away $1-);
+  }{
+    IF (findw($0 $servernick($servernum()) $tabnick[$servernum()]) == -1) {XECHO -B $0 is away: $1-};
+  };
+};
+ON #-305 13 * {
+  @ :serv = serverctl(FROM_SERVER);
+  IF (gone_away[$serv] > 0) {
+    iecho You were gone for $tdiff(${time() - gone_away[$serv]});
+  };
+  IF (temp.nrm > 0) {
+    iecho You have $temp.nrm message$plural($temp.nrm) waiting;
+  };
+  ^ASSIGN -gone_away[$serv];
+};
+ON #-306 13 * {
+  @ :serv = serverctl(FROM_SERVER);
+  UNLESS (gone_away[$serv]) {
+    @ gone_away[$serv] = time()
+  };
+  IF (ismset(M)) {
+    iecho Saving all incoming messages...;
+  };
+  ^SET STATUS_USER1 $temp.nrm;
+  IF (!quiet.test && !ismset(Q) && servername($winserv()) == S) {
+     DESCRIBE ${C?C:T?T:N} is gone. $A;
+  };
+  ^ASSIGN -quiet.test;
+};
+ON ^275 * {ECHO $fmt.whois_mid(Security $1-)};
+ON ^276 * {ECHO $fmt.whois_mid(Notice $1-)};
+ON ^307 * {ECHO $fmt.whois_mid(Services $1-)};
+ON ^308 * {ECHO $fmt.whois_mid(Server $1-)};
+ON ^309 * {ECHO $fmt.whois_mid(Services $1-)};
+ON ^310 * {ECHO $fmt.whois_mid(Helper $1-)};
+ON ^338 * {ECHO $fmt.whois_mid(Spoof Real Host for $1 is $2)};
+ON ^311 * {_proc.on_whois Whois $1-};
+ON ^312 * {
+  IF (pattern([*.*] $2)) {
+    IF (strlen($3)) {
+      ECHO $fmt.whois_mid(Server $2 [$3-]);
+      ECHO $fmt.whois_mid(Server Uplink $1 -> $strip([] $2));
+    }{
+      ECHO $fmt.whois_mid(Server $1 [Uplink $strip([] $2)]);
+    };
+  }{
+    ECHO $fmt.whois_mid(Server $2 [$3-]);
+  };
+};
+ON ^313 * {ECHO $fmt.whois_mid(Operator $1-)};
+ON ^314 * {_proc.on_whois Whowas $1-};
+ON ^317 * {
+  IF (isnumber($3)) {ECHO $fmt.whois_mid(Signon $strftime($3 %c))};
+  ECHO $fmt.whois_mid(Idle $tdiff($2));
+};
+ON ^318 * {
+  IF (temp.whois_away > 0) {
+    @temp.whois_away--;
+    IF (ismset(O)) {_proc.note_wget $1};
+    IF (fmt.whois_bot()) {ECHO $fmt.whois_bot(Whois $*);}
+  };
+};
+ON ^319 * {ECHO $fmt.whois_mid(Channels $2-)};
+ON ^328 * {XECHO -W $chanwin($1) $fmt.banner_chan() URL for $1\: $2-};
+ON ^330 * {ECHO $fmt.whois_mid(Identity $1 $3- $2)};
+ON ^331 * {
+  @ :win = chanwin($1);
+  XECHO -W $win $fmt.banner_chan() $fmt.topic_set($1 No Topic Set);
+  UNLESS (win == -1) {
+    @ :hash = hash_32bit($1);
+    @ chan_topic[$win$hash] = [$1 No Topic Set];
+    IF (iscurchan($1) && iswset(T)) {//WINDOW $win TOPLINE 1 " -- LiCe Titlebar [tm] --"};
+  };
+};
+ON ^332 * {
+  @ :win = chanwin($1);
+  XECHO -W $win $fmt.banner_chan() $fmt.topic_set($1-);
+  UNLESS (win == -1) {
+    @ :hash = hash_32bit($1);
+    @ chan_topic[$win$hash] = [$1-];
+    IF (iscurchan($1) && iswset(T)) {
+      //WINDOW $win TOPLINE 1 "$fmt.titlebar($chan_topic[$win$hash])";
+    };
+  };
+};
+ON ^333 * {XECHO -W $chanwin($1) $fmt.banner_chan() $fmt.topic_set($1 Set by $2 on $strftime($3 %c))};
+ON #-351 13 * {
+  XECHO -B $info(C);
+  XECHO -B System: $uname(%a);
+  XECHO -B Script: $decode(BPFDHCGGFCGPEHBPCHHDCAACEMGJEDGFAC) v$id.v : cag@codehack.com / hsoc@irc.gr / tim@muppetz.com;
+  IF (strlen($id.m)) {XECHO -B Add-Ons: $rest(2 $id.m)};
+  XECHO -B Uptime: $tdiff(${time() - F}) \(PID $pid()\);
+};
+ON ^364 * {
+  UNLESS (temp.link) {
+    @ temp.link = 1;
+     ECHO $fmt.banner_server() ----- Hops Server ------------------------- Uplink ----------------------;
+  };
+  ECHO $fmt.banner_server() $pad(3 " " $temp.link) [$[-2]3] [$pad(27 " " $1)] -> [$pad(27 " " $2)];
+  @ temp.link++;
+};
+ON ^365 * {^ASSIGN -temp.link};
+ON ^366 * #;
+ALIAS _proc.display_list (name,chan,item,who,when) {
+  @ :serv = servernum();
+  IF (onchannel($servernick() $chan)) {
+    @ :list = left(1 $name) ## serv;
+    @ :hash = hash_32bit($chan);
+    IF (matchitem($list\-$hash *$item*) < 0) {
+       @ setitem($list\-$hash $numitems($list\-$hash) $item); 
+    };
+    IF (list_mutex[$list$hash]) {RETURN};
+  };
+  UNLESS (temp[$name]) {
+    @ temp[$name] = 1;
+    cecho ---------- Channel $ch($chan) ${name}list ----------;
+  };
+  IF (strlen($who)) {
+    cecho $pad(2 " " $temp[$name]) $strftime($when %b%d %X) $item \(by ${ismset(V) ? who : pass(! $who) ? before(! $who) : who}\);
+  }{
+    cecho $pad(2 " " $temp[$name]) $item;
+  };
+  @ temp[$name]++;
+};
+ON ^346 * {_proc.display_list Inv $1-};
+ON ^347 * {
+  ^ASSIGN -temp.Inv;
+  ^ASSIGN -list_mutex[I$servernum()$hash_32bit($1)];
+};
+ON ^348 * {_proc.display_list Exc $1-};
+ON ^349 * {
+  ^ASSIGN -temp.Exc;
+  ^ASSIGN -list_mutex[E$servernum()$hash_32bit($1)];
+};
+ON ^367 * {_proc.display_list Ban $1-};
+ON ^368 * {
+  ^ASSIGN -temp.Ban;
+  ^ASSIGN -list_mutex[B$servernum()$hash_32bit($2)];
+};
+ON ^369 * {
+  IF (temp.whois_away > 0) {
+    @temp.whois_away--;
+    IF (ismset(O)) {_proc.note_wget $1};
+    IF (fmt.whois_bot()) {ECHO $fmt.whois_bot(Whowas $*);};  
+  };
+};
+ON ^378 * {ECHO $fmt.whois_mid(Security $1 is really $5 [$6])};
+ON ^671 * {ECHO $fmt.whois_mid(Security $1-)};
+ON #-TOPIC -13 * {
+  @ :hash = hash_32bit($1);
+  @ :nick = servernick($servernum());
+  UNLESS ([$0] == nick) {
+    @ :mode = ischanop($nick $1) ? get_cookie(User $1 $0 $hash) : 0;
+    IF (iscset(T $hash) && !(mode & 4) && strlen($lice.get(chan[$hash][T])) && [$2-] != lice.get(chan[$hash][T])) {QUOTE TOPIC $1 :$lice.get(chan[$hash][T])};
+  }{
+    IF (iscset(T $hash)) {@lice.set(chan[$hash][T] $2-)};
+  };
+};
+ON #-SEND_MSG 13 * {_proc.tab_add $winserv() $0};
+ON #-SEND_NOTICE 13 * {_proc.tab_add $winserv() $0};
+ON #-SEND_DCC_CHAT 13 * {_proc.tab_add $winserv() =$0};
+ON #-ACTION 13 * {
+  UNLESS (ischannel($1)) {
+    IF (ismset(A)) {_proc.away_save $0 $userhost() [action:$1] * $0 $2-};
+    _proc.tab_add $servernum() $0;
+  };
+};
+ON #-DCC_CHAT 13 * {
+  _proc.tab_add $winserv() =$0;
+  IF (ismset(C)) {_proc.away_save $0 licelogd [CHAT] $1-};
+};
+ON #-CONNECT 13 * {
+  IF (ismset(V)) {_proc.away_save LiCe licelogd Connected to $0 [$2]};
+  IF (strlen($lice.get(main.umode))) {^TIMER 1 {MODE $servernick() $lice.get(main.umode)}};
+};
+ON #-DISCONNECT 13 * {
+  IF (ismset(U)) {_proc.away_save LiCe licelogd $0-};
+  UNLESS ([$0]==[Killed]) {//SERVER +};
+  UNLESS ([$0]!=[Killed] || [$1]!=[Connection]) {//RECONNECT}
+};
+
+# handle userlist msg commands here.
+ON ^MSG "% !HELP*" {
+  @ :host = userhost();
+  IF (!isset(P) || !find_in_list(User $0!$host)) {
+    mecho $fmt.msg($*);
+    RETURN;
+  };
+  ECHO $fmt.banner_userlist() $fmt.usercmd($0 HELP);
+  ^_proc.ulw_help $0 $host $servernum() $2;
+};
+ON ^MSG "% !IDENT *" {
+  UNLESS (isset(P)) {RETURN};
+  ECHO $fmt.banner_userlist() $fmt.usercmd($0 IDENT);
+  ^_proc.ulw_ident $0 $userhost() $servernum() $2-;
+};
+ON ^MSG "% !% %*" {
+  @ :host = userhost();
+  IF (!isset(P) || !find_in_list(User $0!$host)) {
+    mecho $fmt.msg($*);
+    RETURN;
+  };
+  @ :cmd = toupper($rest(1 $1));
+  ECHO $fmt.banner_userlist() $fmt.usercmd($0 $cmd);
+  UNLESS (aliasctl(ALIAS EXIST _PROC.ULW_$cmd)) {
+    @ :test = which($LiCePath/lice/lice.ulw_$tolower($cmd));
+    UNLESS (strlen($test)) {RETURN};
+    ^LOAD -pf $test;
+  };
+  ^_proc.ulw_$cmd $0 $host $servernum() $2 $3;
+};
+## lame /ON NAMES display
+ALIAS _proc.names_mode (nick) {
+  @ :nic = mid(1 9 $nick);
+  @ :mod = left(1 $nick);
+  IF (mod == [@]) {
+    @ names.o++;
+  } ELSIF (mod == [+]) {
+    @ names.v++;
+  } ELSE {
+    @ :mod = [];
+    @ :nic = nick;
+    IF (strlen($nick)) {@ names.l++};
+  };
+  @ :ret = mod ## nic;
+  RETURN $ret;
+};
+ON -366 * {
+  IF (names.max) {
+    @ :names.t = names.v + names.o + names.l;
+    if (fmt.sc_bot()) {ECHO $fmt.sc_bot($2 $names.o $names.v $names.l $names.t);};
+    purge names;
+  };
+};
+ON ^353 * {
+  UNLESS (names.max) {
+    @ :max = fmt.sc_max() ? fmt.sc_max() : (word(0 $geom()) - 1) / 11;
+    @ :min = ismset(T) ? ((strlen($strftime($lice.get(main.tsfmt))) + 2) / 11) + 1 : 0;
+    @ names.max = max - min;
+    @ names.v = names.o = names.l = 0;
+    IF (ismset(V)) {ECHO $fmt.sc_top($2);};
+  };
+  ^LOCAL list $3-;
+  @ :names.list = [];
+  FE ($list) nick {
+    PUSH names.list $_proc.names_mode($nick);
+    IF (numwords($names.list) != names.max) {CONTINUE};
+    ECHO $fmt.sc_mid($names.list);
+    @ :names.list = [];
+  };
+  IF (!ismset(V) || iscset(Q $hash_32bit($2))) {RETURN};
+  IF (strlen($names.list)) {ECHO $fmt.sc_mid($names.list)};
+};
+##
+ON #-IDLE 13 '\$lice.get(main.agn)' {
+  FE ($myservers()) server {
+    @ :serv = servernum($server);
+    XEVAL -S $serv {
+      IF (A || !lice.get(main.agn) || isset(X) || !isconnected($serv)) {RETURN};
+      @ quiet.test = quiet.test ? quiet.test : 1;
+      AWAY Gone since $strftime(${time() - (lice.get(main.agn) * 60)} %c);
+      IF (ismset(U)) {_proc.away_save LiCe licelogd [$server] Changed to AWAY status after $0 min$plural($0) of inactivity.};
+    };
+  };
+  XECHO -C $fmt.banner_alert() Auto: Away after $0 minute$plural($0) of inactivity.;
+};
+ON #-INVITE 13 * {
+  IF (isset(I) || iscset(I $hash_32bit($1))) {
+    JOIN $1;
+    ECHO $fmt.banner_alert() Auto: Join $ch($1) after invite from $0 \($2\);
+    IF (ismset(U)) {_proc.away_save LiCe licelogd Joined $ch($1) after invite from $0 \($2\)};
+    RETURN;
+  };
+  IF (ismset(U)) {_proc.away_save LiCe licelogd $0 \($2\) invited you to join $ch($1)};
+  IF (findw($1 $temp.invite) == -1) {
+    PUSH temp.invite $1;
+    IF (ismset(V)) {
+       XQUOTE -S $servernum() MODE $1;
+       iecho Press "Esc-k" to join invited channel $ch($1);
+    };
+  };
+};
+ON #-TIMER -13 * {
+  ^SET STATUS_USER2 ??;
+  @ temp.last_ping = time();
+  FE ($myservers(null)) server {
+    @ :serv = serverctl(REFNUM $server);
+    UNLESS (serverctl(GET $serv CONNECTED)) {CONTINUE};
+    @ :nick = serverctl(GET $serv NICKNAME);
+    @ :text = isset(X) ? [PRIVMSG ] ## nick ## [ \:PING ] ## temp.last_ping : [PING ] ## temp.last_ping;
+    XQUOTE -S $serv $text;
+    XEVAL -S $serv {
+       IF ((lice.get(main.auto_nick)) && nick != lice.get(main.auto_nick) && isset(A) && !rmatch($lice.get(main.auto_nick) $notify(on serv $serv))) {
+          ECHO $fmt.banner_alert() Nick $lice.get(main.auto_nick) is now available (AutoNick);  
+          NICK $lice.get(main.auto_nick);
+       };
+       IF (isset(R)) {
+          FE ($mychannels($serv)) chan {
+             IF (!ischanop($nick $chan) && numonchannel($chan) == 1) {
+                //PART $chan;
+                WAIT -CMD WINDOW $winchan($chan) CHANNEL "$chan $key($chan)";
+             };
+          };
+       };
+    };
+    IF (serv == winserv()) {
+      IF (isaway($serv)) {
+        @ :lame = gone_away[$serv] ? tdiff2(${temp.last_ping - gone_away[$serv]}) : [??];
+        ^SET STATUS_USER3 Away: $lame;
+      }{^SET STATUS_USER3 Idle: $tdiff2($E)};
+      IF (numitems(ALARM) > 0) {_proc.alarm_check $mid(${index(\: $0) + 1} 2 $0)};
+      STIME;
+    };
+  };
+  _proc.purge_lists $temp.last_ping;
+};
+ON #-EXIT 13 * {iecho Time wasted on IRC: $tdiff(${time() - F})};
+
+# IrcNet is lame.
+ALIAS _proc.update_lag (sname,then) {
+  IF (winserv() == servernum($sname)) {
+    @ :fix = isnumber($then) ? then : temp.last_ping;
+    @ :lag = time() - fix;
+    ^SET STATUS_USER2 $tdiff2($lag);
+    RETURN;
+  };
+  UNLESS (sname == temp.last_sping_server) {RETURN};
+  @ :lag = isnumber($temp.last_sping) ? time() - temp.last_sping : 0;
+  iecho >> $sname latency: $tdiff($lag);
+  ^ASSIGN -temp.last_sping;
+  ^ASSIGN -temp.last_sping_server;
+};
+ON ^PONG * {_proc.update_lag $0 $2};
+# major hack...
+ON ^RAW_IRC '\$servernick($servernum())!% PRIVMSG \$servernick($servernum()) :PING %' {_proc.update_lag $S $4};
+ON #^CHANNEL_SIGNOFF -13 * {_proc.cookies_remove $0 $1};
+ON #^CHANNEL_NICK -13 * {_proc.cookies_remove $0 $1};
+
+#
+# Custom Formats
+#
+ALIAS rtab {
+ IF ([$0]) {
+    UNLESS (tabnick[$winserv()]) {
+       uecho Tablist\: Currently Empty;
+       RETURN;
+    };
+    IF ([$0]==[*] || [$0]==[-a]) {
+       uecho Tablist\: Removing \"$tabnick[$winserv()]\";
+       ^ASSIGN -tabnick[$winserv()];
+    }{
+     IF (match($0 $tabnick[$winserv()])) {
+        @ tabnick[$winserv()] = remw($0 $tabnick[$winserv()]);
+        uecho Tablist\: Removed \"$0\";
+     };
+    };
+ }{uecho Usage\: /RTAB <nick> [esc+r to cycle current server tablist]};
+};
+ON ^ACTION * {
+  IF (ischannel($1)) {
+    XECHO -W $chanwin($1) $fmt.action($*);
+  }{
+    ECHO $fmt.action_me($*);
+  };
+};
+ON ^CHANNEL_NICK * {
+  XECHO -W $chanwin($0) $fmt.banner_nick() $fmt.channel_nick($*);
+  IF (winnam($1)) {
+     XEVAL -W $1 WINDOW NAME $2 QUERY $2;
+     XECHO -C $fmt.banner_alert() Auto: Switching query nickname $1 to $2;
+  };
+  IF (match($1 $tabnick[$winserv()]) && ismset(V)) {
+     @ tabnick[$winserv()] = remw($1 $tabnick[$winserv()]);
+     _proc.tab_add $servernum() $2;
+  };
+  IF ([$1] != servernick()) {
+     @ :hash = hash_32bit($0);
+     IF ((!iscset(C $hash) && !iscset(F $hash)) || (iscset(O $hash) && ischanop($1 $0)) || (iscset(V $hash) && ischanvoice($1 $0))) {RETURN};
+     @ :mode = get_cookie(User $0 $1 $hash);
+     @ :test = _proc.mass_check($userhost($1) $hash);
+     IF (test && !(mode & 2)) {_proc.flood_chan NICK $2 $userhost($1) $servernum() $0 $hash};
+  };
+};
+ON ^CHANNEL_SIGNOFF * {
+    IF (!ismset(V) && iscset(Q $hash_32bit($0))) {RETURN};
+    XECHO -W $chanwin($0) $fmt.banner_signoff() $fmt.channel_signoff($*);
+};
+ON ^CTCP * {
+  IF (ischannel($1)) {
+     @ :hash = hash_32bit($1);
+     XECHO -W $chanwin($1) $fmt.banner_ctcp() $fmt.ctcp_channel($*);
+     IF ((!iscset(C $hash) && !iscset(F $hash)) || (iscset(O $hash) && ischanop($0 $1)) || (iscset(V $hash) && ischanvoice($0 $1))) {RETURN};
+     @ :mode = get_cookie(User $1 $0 $hash);
+     @ :test = _proc.mass_check($userhost($0) $hash);
+     IF (test && !(mode & 2)) {_proc.flood_chan CTCP $0 $userhost($0) $servernum() $1 $hash};
+  }{
+    ECHO $fmt.banner_ctcp() ${([$1] == servernick($servernum())) ? fmt.ctcp_me($*) : fmt.ctcp_server($*)};
+  };
+};
+ON ^DCC_CHAT * {dmecho $fmt.dcc_chat($*)};
+ON -GENERAL_NOTICE '% $servernick() *' #;
+ON ^GENERAL_NOTICE "% @#% *" {mecho $fmt.notice($0 WALLOP:$1 $2-)};
+ON ^GENERAL_NOTICE "% %.% *" {mecho $fmt.notice($0 [$1] $2-)};
+# TODO: Figure out why this is commented out. tjh
+#ON ^GENERAL_NOTICE * {
+#      IF (left(1 $1) == [@] && ischannel($rest(1 $1))) {
+#          mecho $fmt.notice($0 WALLOP:$1 $2-)
+#      }{mecho $fmt.notice($0 [$1] $2-)}
+#    }
+#}
+ON ^INVITE * {ECHO $fmt.banner_invite() $fmt.invite($*)};
+ON ^JOIN * {
+    @ :hash = hash_32bit($1);
+    @ :test = _proc.cyc_check($after(@ $2) $hash);
+    IF (test && iscset(2 $hash) && !match($2 $X %@$temp.my_ip_address) && ischanop($servernick() $1)) {
+       UNLESS (stampa) {^ASSIGN stampa 3};
+       @ :ban = iscset(1 $hash) ? mask(10 $2) : mask(2 $2);
+       _proc.ban $1 $servernum() $ban $0 $hash;
+    };
+    XECHO -W $chanwin($1) $fmt.banner_join() $fmt.join($*);
+};
+ON ^KICK * {
+  XECHO -W $chanwin($2) $fmt.banner_kick() ${([$0] == servernick($servernum())) ? fmt.kick_me($*) : fmt.kick($*)};
+};
+ON ^MODE * {
+  IF (ischannel($1)) {
+    XECHO -W $chanwin($1) $fmt.banner_mode() $fmt.mode($*);
+  }{
+    ECHO $fmt.banner_mode() $fmt.mode_me($*);
+  };
+};
+ON ^PART * {
+    @ :hash = hash_32bit($1);
+    @ :test = _proc.cyc_check($after(@ $userhost()) $hash);
+    IF (test && iscset(2 $hash) && !match($userhost() $X %@$temp.my_ip_address) && ischanop($servernick() $1)) {
+       UNLESS (stampa) {^ASSIGN stampa 3};
+       @ :ban = iscset(1 $hash) ? mask(10 $userhost()) : mask(2 $userhost());
+       _proc.ban $1 $servernum() $ban $0 $hash;
+    };
+    XECHO -W $chanwin($1) $fmt.banner_leave() $fmt.leave($*);
+};
+ON ^MODE "% % %bb *" {XECHO -W $chanwin($1) $fmt.banner_mode() $fmt.mode_bans($*)};
+ON ^MODE "*.* #% *" {XECHO -W $chanwin($1) $fmt.banner_mode() $fmt.mode_server($*)};
+ON ^MSG * {
+  IF (ismset(I)) {
+    UNLESS (findw($0 $servernick($servernum()) $tabnick[$servernum()]) > -1) {
+      XEVAL -S $servernum() WHOIS $0;
+    };
+  };
+  mecho $fmt.msg($*);
+};
+ON ^MSG_GROUP * {mecho $fmt.msg_group($*)};
+ON ^NOTICE * {mecho $fmt.notice($*)};
+ON ^NOTIFY_SIGNON * {
+  IF ([$0] == [$lice.get(main.auto_nick)] && isset(A)) {RETURN;};
+  ECHO $fmt.banner_signon() ${(NOTIFY_USERHOST_AUTOMATIC == [ON]) ? fmt.notify_signon_uh($*) : fmt.notify_signon($*)};
+};
+ON ^NOTIFY_SIGNOFF * {ECHO $fmt.banner_signoff() $fmt.notify_signoff($*)};
+ON ^PUBLIC * {XECHO -W $chanwin($1) $fmt.public($*)};
+ON ^PUBLIC_MSG * {XECHO -W $chanwin($1) $fmt.public_msg($*)};
+ON ^PUBLIC_OTHER * {XECHO -W $chanwin($1) $fmt.public_other($*)};
+ON ^PUBLIC_NOTICE * {
+    UNLESS (findw($1 $mychannels() $servernick()) == -1) {
+      mecho $fmt.public_notice($*);
+    }{mecho $fmt.notice_group($*)};
+};
+ON ^SEND_ACTION * {
+  IF (ischannel($0)) {
+    XECHO -W $chanwin($0) $fmt.send_action($*);
+  }{
+    ECHO $fmt.send_action_me($*);
+  };
+};
+ON ^SEND_DCC_CHAT * {dmecho $fmt.send_dcc_chat($*)};
+ON ^SEND_MSG * {mecho $fmt.send_msg($*)};
+ON ^SEND_NOTICE * {mecho $fmt.send_notice($*)};
+ON ^SEND_PUBLIC * {XECHO -W $chanwin($0) $fmt.send_public($*)};
+ON ^SERVER_NOTICE * {XECHO -W OV$servernum() $fmt.banner_server() $fmt.server_notice($*)};
+ON ^TOPIC * {
+  @ :win = chanwin($1);
+  XECHO -W $win $fmt.banner_chan() $fmt.topic($*);
+  UNLESS (win == -1) {
+    @ :hash = hash_32bit($1);
+    @ chan_topic[$win$hash] = [$1-];
+    IF (iscurchan($1)) {
+      IF ([$2] == []) {
+        //WINDOW $win TOPLINE 1 " -- LiCe Titlebar [tm] --";
+      }{
+        //WINDOW $win TOPLINE 1 "$fmt.titlebar($chan_topic[$win$hash])";
+      };
+    };
+  };
+};
+ON ^WALLOP * {
+  IF ([$1] == [*]) {
+    mecho $fmt.wallop($*);
+  }{
+    XECHO -W OV$servernum() $fmt.banner_server() $fmt.wallop_server($*);
+  };
+};
+
+### Synch check funtion (Orig. by SrfRoG)
+ALIAS _proc_synch {
+  IF ([$0] != S) {
+    uecho Desynch@$0 \- $1-;
+  }{uecho $1\: $2-};
+};
+ON ^404 * {_proc_synch $0-};
+ON ^442 * {_proc_synch $0-};
+ON ^482 * {_proc_synch $0-};
+###
+
+ON ^405 * {ECHO $fmt.banner_alert() $fmt.cant_join($1 You're in too many channels);};
+ON ^432 * {ECHO $fmt.banner_alert() $1-;};
+ON ^437 * {ECHO $fmt.banner_alert() $fmt.cant_join($1 Temporarily unavailable / Banned NICK change);};
+ON ^471 * {ECHO $fmt.banner_alert() $fmt.cant_join($1 It's full);};
+ON ^473 * {ECHO $fmt.banner_alert() $fmt.cant_join($1 An invite is required);};
+ON ^474 * {ECHO $fmt.banner_alert() $fmt.cant_join($1 You're banned);};
+ON ^475 * {ECHO $fmt.banner_alert() $fmt.cant_join($1 A key is required);};
+ON ^476 * {ECHO $fmt.banner_alert() $fmt.cant_join($1 Bad channel name);};
+ON ^477 * {ECHO $fmt.banner_alert() $fmt.cant_join($1 Only registered nicks allowed);};
+ON ^478 * {
+   IF (ischanop($servernick() $1)) {//MODE $1 +i};
+   ECHO $fmt.banner_alert() $toupper($1) $2-;
+};
+### END ONs
+
+### Small commands
+ALIAS sv {//MSG ${@?[$0]:C} $J \($info(r)\) + $lice(+sv)};
+ALIAS umode {//MODE $N $*};
+ALIAS ww {//WHOWAS $*};
+ALIAS wi {//WHOIS $*};
+ALIAS wii {//WHOIS $0 $0};
+ALIAS re {//REDIRECT $*};
+ALIAS rlag {
+  IF (@) {
+    ^ASSIGN temp.last_sping_server $0;
+    @ temp.last_sping = time();
+    QUOTE PING $S $temp.last_sping_server;
+    RETURN;
+  };
+  ^SET STATUS_USER2 ??;
+  @ temp.last_ping = time();
+  XQUOTE -S $winserv() PING $temp.last_ping;
+};
+ALIAS sping {rlag $*};
+ALIAS rex {IF (strlen($1)) {EXEC -msg $*}{uecho Usage: /REX <nick|channel> <shell command> [arguments]}};
+ALIAS ex {EXEC};
+ALIAS c {
+  SWITCH ($0) {
+    (-c) {//MODE $C -$chanmode($C)};
+    (-k) {//MODE $C -k $key($C)};
+    (-1) {//MODE $C +inst-lmpmk $key($C)};
+    (-2) {//MODE $C +nst-ilmkpm $key($C)};
+    (-3) {//MODE $C +nt-ilmkspm $key($C)};
+    () (*) {//MODE $C $*};
+  };
+};
+ALIAS m {//MSG $*};
+ALIAS n {//NOTICE $*};
+ALIAS j {
+  SWITCH ($0) {
+    () {IF (I) {//JOIN -I}{//JOIN};};
+    (-*) {//JOIN $*};
+    (*) {IF (ischannel($0)) {//JOIN $*}{//JOIN #$*};};
+  };
+};
+ALIAS join {j $*};
+ALIAS leave {
+  @ :serv = servernum();
+  SWITCH ($0) {
+    () {
+        _proc.channel_remove $serv $C;
+        //PART *;
+       };
+    (-a) {
+          FE ($mychannels()) chan {_proc.channel_remove $serv $chan};
+          //JOIN 0;
+         };
+    (*) {IF (ischannel($0)) {
+           _proc.channel_remove $serv $0;
+           //PART $*;
+        }{
+          _proc.channel_remove $serv #$0;
+          //PART #$*;
+      };};
+  };
+};
+ALIAS l {//PART};
+ALIAS cycle {
+   @ :c.ch = @ ? (ischannel($0) ? [$0] : [#$0]) : C;
+   UNLESS (rmatch($c.ch $mychannels()) == 0) {
+    //PART $c.ch;
+    WAIT -CMD //JOIN $c.ch $key($c.ch);
+   }{//JOIN $c.ch;};
+};
+ALIAS chg {
+  //PART *;
+  IF (@) {WAIT -CMD JOIN $0-};
+};
+ALIAS w {
+  SWITCH ($0) {
+    () {//WHO *};
+    (-*) {//WHO $0 * $1-};
+    (*) {//WHO $*};
+  };
+};
+ALIAS topic IF (ischannel($0)) {//TOPIC $*;}{//TOPIC $C $*};
+ALIAS t {
+  IF (ischannel($0)) {
+    IF (strlen($1) || !strlen($chan_topic[$chanwin($0)$hash_32bit($0)])) {
+       //TOPIC $*;
+    }{
+       XECHO -W $chanwin($0) $fmt.banner_chan() $fmt.topic_set($chan_topic[$chanwin($0)$hash_32bit($0)])};
+  }{
+    IF (strlen($0) || !strlen($chan_topic[$chanwin($C)$hash_32bit($C)])) {
+      //TOPIC $C $*;
+    }{
+      XECHO -W $chanwin($C) $fmt.banner_chan() $fmt.topic_set($chan_topic[$chanwin($C)$hash_32bit($C)])};
+  };
+};
+ALIAS offers {//CTCP ${@?[$0]:C} XDCC LIST};
+ALIAS ver {//CTCP ${@?[$0]:C} VERSION};
+ALIAS ping {//PING ${@?[$0]:C}};
+ALIAS p {ping $*};
+ALIAS chat {
+  @ :who = @ ? [$0] : queue.head(DQCHAT);
+  IF (strlen($who)) {
+    FE ($myservers()) name {
+      @ :serv = servernum($name);
+      IF (isconnected($serv)) {_proc.tab_add $serv =$who};
+    };
+    DCC CHAT $who;
+  };
+};
+ALIAS nochat {//DCC CLOSE CHAT $0};
+ALIAS dop {
+  ^ASSIGN mode_list $*;
+  _proc.loop_mode $winserv() - o $C mode_list;
+};
+ALIAS op {
+  ^ASSIGN mode_list $*;
+  _proc.loop_mode $winserv() + o $C mode_list;
+};
+ALIAS reop {
+  ^ASSIGN mode_list $remw($N $chops($C)) $*;
+  _proc.loop_mode $winserv() + o $C mode_list;
+};
+ALIAS voice {
+  ^ASSIGN mode_list $*;
+  _proc.loop_mode $winserv() + v $C mode_list;
+};
+ALIAS quiet {
+  ^ASSIGN mode_list $*;
+  _proc.loop_mode $winserv() - v $C mode_list;
+};
+ALIAS ar {
+  IF (@) {@lice.set(main.buf $*)};
+  IF (lice.get(main.buf)) {
+    iecho Auto-reply buffer activates on words matching $lice.get(main.buf);
+  }{
+    iecho Auto-reply buffer is empty;
+  };
+};
+ALIAS rar {
+  IF (lice.get(main.buf)) {
+    iecho Removed $lice.get(main.buf) from your auto-reply buffer;
+    @lice.del(main.buf);
+  }{
+    iecho Auto-reply buffer is already empty;
+  };
+};
+ALIAS stime {
+      @ :it.hr = strftime(%H) - left(3 $strftime(%z)) - 1;
+      @ :it.rhr = (it.hr >= 24) ? it.hr - 24 : (it.hr < 0) ? it.hr + 24 : it.hr;
+      @ :it.ts = (it.rhr * 3600) + (strftime(%M) * 60) + strftime(%S);
+      ^SET FLOATING_POINT_MATH ON;
+      @ :it.tot = (it.ts * 1000) / 86400;
+      ^SET FLOATING_POINT_MATH OFF;
+      @ uni.time = before(. $it.tot\.);
+};
+ALIAS itime {iecho Swatch Internet Time is currently @$uni.time beats.};
+ALIAS sbar {iecho Your current MAIN-togs are set to\: \"$lice.get(main.set)\"};
+ALIAS mbar {iecho Your current MSG-togs are set to\: \"$lice.get(main.mset)\"};
+ALIAS dbar {iecho Your current DCC-togs are set to\: \"$lice.get(main.dset)\"};
+ALIAS wbar {iecho Your current WIN-togs are set to\: \"$lice.get(main.wset)\"};
+ALIAS hold SET HOLD_MODE TOGGLE;
+ALIAS log SET LOG TOGGLE;
+ALIAS beep SET BEEP TOGGLE;
+ALIAS ansi SET DISPLAY_ANSI TOGGLE;
+### END Small commands
+
+# TABREPLY - Fast message replier.
+ALIAS _proc.tab_add (serv,nick) {
+  IF (serv < 0) {RETURN;};
+  @ :text = remw($nick $tabnick[$serv]);
+  @ tabnick[$serv] = nick ## [ ] ## leftw(7 $text);
+};
+
+# Assign purge (Orig. by Daemon)
+ALIAS purge {
+  FOREACH $0 _purge {purge $0.$_purge};
+  ^ASSIGN -$0;
+};
+#
+
+# STACK functions
+ALIAS queue.add {
+  WHILE (numitems($0) >= [$1]) {@ delitem($0 0)};
+  @ FUNCTION_RETURN = setitem($0 $numitems($0) $2-);
+};
+ALIAS queue.head {
+  @ FUNCTION_RETURN = getitem($0 0);
+  @ delitem($0 0);
+};
+ALIAS queue.tail {
+  @ :q_tail = numitems($0) - 1;
+  @ FUNCTION_RETURN = getitem($0 $q_tail);
+  @ delitem($0 $q_tail);
+};
+#
+# TODO replace first two mask 1's with 11, when fixed by EPIC. tjh
+ALIAS makeban {
+  SWITCH ($0) {
+    (BN) (B) {@ :ban = mask(1 $1)};
+    (BA) {@ :ban = mask(1 $before(@ $1)\@$nametoip($after(@ $1)))};
+    (BC) {@ :ban = [*!*@*] ## rest($rindex(. $1) $1)};
+    (BF) {@ :ban = mask(10 $1)};
+    (BG) {@ :ban = mask(3 $1)};
+    (BH) {@ :ban = mask(2 $1)};
+    (BI) {@ :ban = mask(4 $nametoip($after(@ $1)))};
+    (BP) {@ :ban = mask(4 $1)};
+    (BS) {@ :ban = mask(4 $1)};
+    (BU) {
+       @ :uhm = pass(! $1) ? word(1 $split(!@ $1)) ##[@*] : before(@ $1) ##[@*];
+       @ :ban = mask(1 $uhm);
+    };
+# TODO replace with mask 11
+    (*) {@ :ban = mask(1 $0)};
+  };
+  RETURN $ban;
+};
+#
+
+# Whois/Whowas wrapper
+@ temp.whois_away = 0;
+ALIAS _proc.on_whois {
+  @ temp.whois_away++;
+  ECHO $fmt.whois_top($0-3);
+  ECHO $fmt.whois_mid(Ircname $5-);
+  IF (isdigit($right(1 $3))) {
+    IF (isset(H)) {dns $3};
+  }{
+    IF (isset(T)) {whoiz $3;dom $3};
+  };
+  FE ($getarrays()) lista {
+     IF (left(4 $lista) == [USER] || left(4 $lista) == [SHIT]) {
+        @ :hand = (getrmatches($lista $1!$2@$3) >= 0 && isdigit($rest(4 $lista))) ? rest(4 $lista) : [];
+     };
+     IF (strlen($hand)) {
+        @ :ulista = left(4 $lista) == [USER] ? [Userlist] : [Shitlist];
+        #FOR (@:cnt=0, numitems($ulista) > cnt, @ :cnt++) {
+        FE ($jot(0 ${numitems($ulista)-1})) cnt {
+          @ :handle = getitem($ulista $cnt);
+          IF (hash_32bit($handle) == hand) {
+             @ :this #= [$handle ];
+             BREAK;
+          };
+        };      
+     };
+  };
+  IF (strlen($this)) {ECHO $fmt.whois_mid($ulista handle$plural($numwords($this)) \" $this\")};
+};
+# END Whois/Whowas wrapper
+
+### format aliases
+
+ALIAS mecho {
+  IF (winnum(MW) != -1) {
+    XECHO -W MW $*;
+  }{
+    XECHO $*;
+  };
+};
+ALIAS dmecho {
+  IF (winnum(CW) != -1) {
+    XECHO -W CW $*;
+  }{
+    XECHO $*;
+  };
+};
+ALIAS uecho {
+  ECHO $fmt.banner_usage() $*;
+};
+ALIAS iecho {
+  ECHO $fmt.banner_info() $*;
+};
+ALIAS cecho {
+  ECHO $fmt.banner_chan() $*;
+};
+ALIAS echo.recursive {
+  FE ($*) er.1 er.2 er.3 er.4 er.5 er.6 er.7 {
+    ECHO $[10]er.1 $[10]er.2 $[10]er.3 $[10]er.4 $[10]er.5 $[10]er.6 $[10]er.7;
+  };
+};
+ALIAS plural {@ FUNCTION_RETURN = ([$0] == 1) ? [] : [s]};
+ALIAS ch {RETURN $left($CHANNEL_NAME_WIDTH $0)};
+ALIAS uh {@ FUNCTION_RETURN = ismset(V) ? [$0!] ## userhost() : [$0]};
+ALIAS ts {@ FUNCTION_RETURN = ismset(T) ? [\[] ## strftime($lice.get(main.tsfmt)) ## [\] ] : []};
+ALIAS isset {@ FUNCTION_RETURN = !!pass($0 $lice.get(main.set))};
+ALIAS iscset {@ FUNCTION_RETURN = !!pass($0 $lice.get(chan[$1][S]))};
+ALIAS ismset {@ FUNCTION_RETURN = !!pass($0 $lice.get(main.mset))};
+ALIAS iswset {@ FUNCTION_RETURN = !!pass($0 $lice.get(main.wset))};
+ALIAS isdset {@ FUNCTION_RETURN = !!pass($0 $lice.get(main.dset))};
+ALIAS isset.show {@ FUNCTION_RETURN = ([$0]) ? [On] : [Off]};
+
+### END format aliases
+
+### Flood protection
+ON #^FLOOD -13 * {
+  @ :serv = servernum();
+  @ :host = userhost();
+  IF (ischannel($2)) {
+    @ :hash = hash_32bit($2);
+    IF ((!iscset(C $hash) && !iscset(F $hash)) || (iscset(O $hash) && ischanop($0 $2)) || (iscset(V $hash) && ischanvoice($0 $2))) {RETURN};
+    @ :mode = get_cookie(User $2 $0 $hash);
+    IF (mode & 2) {RETURN};
+    _proc.flood_chan $1 $0 $host $serv $2 $hash;
+  }{
+    IF (isset(F) && strlen($host)) {
+      _proc.flood_nick $1 $0 $host $serv;
+    };
+  };
+};
+### END Flood protection
+
+# cleans up expired lists
+ALIAS _proc.purge_lists (now) {
+  FOR (@:x1=0, numitems(NSL) > x1, @:x1++) {
+    @ :x2 = word(2 $getitem(NSL $x1));
+    IF ((now - x2) > (lice.get(main.nst) * 60)) {@ delitem(NSL $x1)};
+  };
+  FOR (@:x1=0, numitems(AUTOUNBAN) > x1, @:x1++) {
+    @ :x2 = getitem(AUTOUNBAN $x1);
+    IF (now > word(0 $x2)) {
+      @ :serv = word(1 $x2);
+      @ :chan = word(2 $x2);
+      @ :hash = hash_32bit($chan);
+      @ :patt = word(3 $x2);
+      IF (ischanop($servernick($serv) $chan) && matchitem(B$serv\-$hash *$patt*) > -1) {
+         XEVAL -S $serv {
+            _proc.mode_add $serv $chan -b $patt;
+            _proc.mode_flush $serv $chan;
+         };
+      };
+      @ delitem(AUTOUNBAN $x1);
+    };
+  };
+  FOREACH mass_lamer x1 {
+    FOREACH mass_lamer.$x1 x2 {
+      @ :x3 = word(0 $mass_lamer[$x1][$x2]);
+      IF ((now - x3) > 60) {^ASSIGN -mass_lamer[$x1][$x2]};
+    };
+  };
+  FOREACH cycle_lamer x1 {
+    FOREACH cycle_lamer.$x1 x2 {
+      @ :x3 = cycle_lamer[$x1][$x2];
+      IF ((now - x3) > 30) {^ASSIGN -cycle_lamer[$x1][$x2]};
+    };
+  };
+};
+#
+
+# gets nicks matching a u@h pattern
+# $0=channel $1=pattern $2=list
+ALIAS get_user_match (chan,mask,list) {
+  @ $list = [];
+  FE ($chanusers($chan)) gm.1 {
+    IF (pattern($mask $gm.1!$userhost($gm.1))) {PUSH $list $gm.1};
+  };
+};
+
+# gets user@host for nick
+ALIAS get_uh (nick) {
+  WAIT FOR {
+    USERHOST $nick -CMD {
+      @ :uh = ([$3] == [<UNKNOWN>]) ? [] : [$3@$4];
+      BLESS;
+      @FUNCTION_RETURN = uh;
+    };
+  };
+};
+#
+
+### Mode parsers.
+ON #-MODE_STRIPPED -13 * {
+  UNLESS (ischannel($1)) {RETURN};
+  @ :m.serv = servernum();
+  @ :m.nick = servernick($m.serv);
+  @ oper.test = ischanop($m.nick $1);
+  @ self.test = ([$0] == m.nick);
+  @ :m.x = hash_32bit($1);
+  IF (strlen($3)) {
+    @ :m.h = pass(. $0) ? [SERVER] : userhost($0);
+    ^HOOK MODE$2 $0 $m.h $1 $m.serv $3 $m.x;
+  }{
+    IF (!self.test && oper.test && iscset(L $m.x)) {
+      @ :mode = get_cookie(User $1 $0 $m.x);
+      UNLESS (mode & 4) {
+        @ :m.m = right(1 $2);
+        IF (left(1 $2) == [+]) {
+          UNLESS (pass($m.m $lice.get(chan[$m.x][L]))) {_proc.mode_add $m.serv $1 -$m.m};
+        }{
+          IF (pass($m.m $lice.get(chan[$m.x][L]))) {_proc.mode_add $m.serv $1 +$m.m};
+        };
+      };
+    };
+  };
+  _proc.mode_flush $m.serv $1;
+};
+ON #^HOOK -13 "MODE-e *" {@ delitem(E$4\-$6 $finditem(E$4\-$6 $5))};
+ON #^HOOK -13 "MODE-I *" {@ delitem(I$4\-$6 $finditem(I$4\-$6 $5))};
+ON #^HOOK -13 "MODE-b *" {
+  @ delitem(B$4\-$6 $matchitem(B$4\-$6 *$5*));
+  IF (!oper.test || self.test || !iscset(B $6)) {RETURN};
+  @ :mode = find_in_chan(Shit $3 $6 $5);
+  IF (mode & 2) {
+    @ :mode = get_cookie(User $3 $1 $6);
+    UNLESS (mode & 2) {
+      _proc.mode_add $4 $3 +b $5;
+      IF (!isset(Q) && [$2]!=[SERVER]) {
+        _proc.quote_add $4 NOTICE $1 :Sorry [$5] is in my permanent banlist. $randread($main.reason_error);
+      };
+    };
+  };
+};
+ON #^HOOK -13 "MODE+e *" {@ setitem(E$4\-$6 $numitems(E$4\-$6) $5)};
+ON #^HOOK -13 "MODE+I *" {@ setitem(I$4\-$6 $numitems(I$4\-$6) $5)};
+ON #^HOOK -13 "MODE+b *" {
+  @ setitem(B$4\-$6 $numitems(B$4\-$6) $5);
+  #${ismset(V)?[$1!$2]:[$1]};
+  IF (!oper.test || self.test || [$2]==[SERVER]) {RETURN};
+  @ :m.nick = servernick($4);
+  IF (match($5 $m.nick!$X $m.nick!%@$temp.my_ip_address)) {
+    _proc.mode_add $4 $3 -ob $1 $5;
+    _proc.quote_add $4 KICK $3 $1 :Hey DONT ban $5 asshole! That's *ME*!;
+    XECHO -W $chanwin($3) $fmt.banner_alert() $1 banned you on $ch($3) with \"$5\";
+    IF (ismset(U)) {_proc.away_save LiCe licelogd [$3] $1 banned you using hostmask $5};
+  }{
+    @ :ban.test = 0;
+    IF (iscset(P $6)) {
+      @ :mode = get_cookie(User $3 $1 $6);
+      UNLESS (mode & 4) {
+        @ :mode = find_in_chan(User $3 $6 $5);
+        IF (mode & 320) {
+          @ :ban.test = 1;
+          _proc.mode_add $4 $3 -b $5;
+        };
+        IF (mode & 128) {
+          @ :ban.test = 1;
+          IF (ischanop($1 $3)) {_proc.mode_add $4 $3 -o $1};
+          _proc.mode_add $4 $3 +b $mask(11 $2);
+          UNLESS (isset(Q)) {
+            _proc.quote_add $4 NOTICE $1 :Ban $5: $randread($main.reason_revenge);
+          };
+        };
+      };
+    };
+    IF (!ban.test && iscset(D $6)) {
+      get_user_match $3 $5 mk_list;
+      IF (strlen($mk_list)) {
+         @ mk_reason = [[Banned] $5];
+         _proc.loop_kick $4 $3 mk_list mk_reason;
+      };
+    };
+    get_user_match $3 $5 ec_list;
+    IF (#ec_list > 1) {
+       XECHO -W $chanwin($3) $fmt.banner_alert() Alert: $5 banned $#ec_list${ismset(V) ? [\: $ec_list] : []};
+    };
+  };
+};
+ON #^HOOK -13 "MODE-v *" {
+  IF (!oper.test || self.test || [$2]==[SERVER]) {RETURN};
+  #flood_check DEOP $2 $1 $3 $m.serv;
+  IF ([$1]!=[$5] && iscset(P $6)) {
+    @ :mode = get_cookie(User $3 $1 $6);
+    UNLESS (mode & 4) {
+      @ :mode = get_cookie(User $3 $5 $6);
+      IF ((mode & 544) == 544) {_proc.mode_add $4 $3 +v $5};
+      IF (mode & 128) {
+        _proc.mode_add $4 $3 -o $1;
+        UNLESS (isset(Q)) {
+          _proc.quote_add $4 NOTICE $1 :QUIET $5: $randread($main.reason_revenge);
+        };
+      };
+    };
+  };
+};
+ON #^HOOK -13 "MODE-o *" {
+  IF (!oper.test || self.test || [$2]==[SERVER] || [$1]==[$5]) {RETURN};
+  @ :mode = get_cookie(User $3 $1 $6);
+  @ :test = _proc.mass_check($2 $6);
+  IF (test && !(mode & 2) && (iscset(C $6) || iscset(F $6))) {_proc.flood_chan DEOP $1 $2 $4 $3 $6};
+  IF (iscset(P $6) && !(mode & 4)) {
+    @ :mode = get_cookie(User $3 $5 $6);
+    IF ((mode & 128) && !test) {
+      _proc.mode_add $4 $3 -o $1;
+      UNLESS (isset(Q)) {
+        _proc.quote_add $4 NOTICE $1 :DEOP $5: $randread($main.reason_revenge);
+      };
+    };
+    IF ((mode & 96) == 96) {_proc.mode_add $4 $3 +o $5};
+  };
+  IF (servernick($4) == [$5] && ismset(U)) {
+     _proc.away_save LiCe licelogd [$3] $1 \($userhost()\) dared to DEOP you!;
+  };
+};
+ON #^HOOK -13 "MODE+o *" {
+  IF (!oper.test || self.test) {RETURN};
+  @ :deop.test = 0;
+  IF ([$2]==[SERVER]) { 
+     @ :split = iscset(N $6) ? matchitem(NSL % $3 *@$5*) : 1;
+     IF (split < 0) {
+        @ :mode = get_cookie(User $3 $5 $6);
+        UNLESS ((mode & 32) || iscset(P $6)) {
+           @ :deop_test = 1;
+           _proc.mode_add $4 $3 -o $5;
+        };
+     };
+  }{
+    IF (!self.test && iscset(G $6)) {
+      @ :mode = get_cookie(User $3 $1 $6);
+      UNLESS (mode & 4) {
+        @ :mode = get_cookie(User $3 $5 $6);
+        UNLESS (mode & 32) {
+          @ :deop.test = 1;
+          _proc.mode_add $4 $3 -o $5;
+        };
+      };
+    };
+  };
+  IF (!self.test && !deop.test && iscset(B $6)) {
+    @ :mode = get_cookie(Shit $3 $5 $6);
+    IF (mode & 8) {_proc.mode_add $4 $3 -o $5};
+  };
+};
+ON #^HOOK -13 "MODE+k *" {
+  IF (!oper.test || self.test || !iscset(K $6)) {RETURN};
+  UNLESS ([$2]==[SERVER]) {
+    IF (iscset(M $6) && stripcrap(ALL $5) != [$5]) {
+      _proc.quote_add $4 KICK $3 $1 :Bogus key detected!;
+      _proc.mode_add $4 $3 -k $5;
+    };
+  }{
+    IF (iscset(N $6)) {_proc.mode_add $4 $3 -k $5};
+  };
+};
+
+# check lamers that cycle.
+ALIAS _proc.cyc_check (host,hash) {
+  @ :indx = hash_32bit($host);
+  @ :test = cycle_lamer[$hash][$indx];
+  IF (strlen($test)) {
+    @ :diff = (time() - when) % 60;
+    IF (diff < 4) {
+       ^ASSIGN -cycle_lamer[$hash][$indx];
+       RETURN 1;
+    }{
+      @ cycle_lamer[$hash][$indx] = time();
+      RETURN 0;
+    }
+  }{
+    @ cycle_lamer[$hash][$indx] = time();
+    RETURN 0;
+  };
+};
+
+# check lamers that are mass-deopping/kick.
+ALIAS _proc.mass_check (uh,hash) {
+  @ :indx = hash_32bit($uh);
+  @ :test = mass_lamer[$hash][$indx];
+  IF (strlen($test)) {
+    @ :when = word(0 $test);
+    @ :many = word(1 $test) + 1;
+    @ :diff = (time() - when) % 60;
+    #@ :diff = time() - when;
+    IF (diff < 60 && many >= FLOOD_AFTER) {RETURN 1};
+  }{
+    @ :when = time();
+    @ :many = 1;
+  };
+  @ mass_lamer[$hash][$indx] = when ## [ ] ## many;
+  RETURN 0;
+};
+#
+
+# $0=server $1=channel $2=mode $3=modearg
+ALIAS _proc.mode_add (serv,chan,mode,rest) {
+  @ :hash = hash_32bit($chan);
+  IF (strlen($chan_mode[$serv$hash]) >= (lice.get(main.mnm) * 2)) {
+    _proc.quote_add $serv MODE $chan $chan_mode[$serv$hash] $chan_rest[$serv$hash];
+    ^ASSIGN -chan_mode[$serv$hash];
+    ^ASSIGN -chan_rest[$serv$hash];
+  };
+  @ chan_mode[$serv$hash] #= mode;
+  PUSH chan_rest[$serv$hash] $rest;
+};
+# $0=server $1=channel
+ALIAS _proc.mode_flush (serv,chan) {
+  @ :hash = hash_32bit($chan);
+  IF (strlen($chan_mode[$serv$hash])) {
+    _proc.quote_add $serv MODE $chan $chan_mode[$serv$hash] $chan_rest[$serv$hash];
+    ^ASSIGN -chan_mode[$serv$hash];
+    ^ASSIGN -chan_rest[$serv$hash];
+    ^ASSIGN -delayed_modes[$serv][$hash];
+  };
+  _proc.quote_flush $serv;
+};
+# $0=server $1=message
+ALIAS _proc.quote_add (serv,text) {
+  @ :len = strlen($text);
+  IF ((strlen($quote[$serv]) + len) >= $lice.get(main.qbuff)) {_proc.quote_flush $serv};
+  @ quote[$serv] #= text ## chr(13);
+};
+# $0=server
+ALIAS _proc.quote_flush (serv) {
+  XQUOTE -S $serv $quote[$serv];
+  ^ASSIGN -quote.$serv;
+};
+### END Modes parser.
+
+### KICK parser.
+ON #-KICK -13 * {
+  @ :serv = servernum();
+  @ :nick = servernick($serv);
+  IF ([$0] == nick) {
+    _proc.channel_remove $serv $2;
+    IF (ismset(U)) {_proc.away_save LiCe licelogd [$2] $1 \($userhost()\) kicked you [$3-]};
+    RETURN;
+  };
+  IF (nick != [$1] && [$0]!=[$1] && ischanop($nick $2)) {
+     @ :hash = hash_32bit($2);
+     @ :mode = get_cookie(User $2 $1 $hash);
+     @ :test = _proc.mass_check($userhost($1) $hash);
+     IF (test && !(mode & 2) && (iscset(C $hash) || iscset(F $hash))) {
+        _proc.flood_chan KICK $1 $userhost($1) $serv $2 $hash;
+     };
+     IF (iscset(P $hash) && !(mode & 4)) {
+        @ :mode = get_cookie(User $2 $0 $hash);
+        IF (mode & 64) {_proc.quote_add $serv INVITE $0 $2};
+        IF (mode & 128) {_proc.quote_add $serv KICK $2 $1 :$0: $randread($main.reason_revenge)};
+        _proc.quote_flush $serv;
+     };
+  };
+  _proc.cookies_remove $2 $0;
+};
+### END KICK parser.
+
+### JOIN/PART PARSING ROUTINES
+ON #-CHANNEL_SYNC -13 * {
+   _proc.channel_remove $2 $0;
+   _proc.channel_create $2 $hash_32bit($0) $0;
+   XECHO -W $chanwin($0) $fmt.banner_chan() Channel $0 has synched in $1s \(Sets\: \+$lice.get(chan[$hash_32bit($0)][S])\);
+};
+ON #-JOIN -13 * {
+  UNLESS ([$0] == servernick()) {
+    ^ASSIGN join.test 0;
+    @ :serv = servernum();
+    @ :hash = hash_32bit($1);
+    IF (ischanop($servernick() $1)) {
+      IF (iscset(B $hash)) {_proc.join_shit $0 $2 $1 $hash $serv};
+      IF (iscset(D $hash) && !join.test) {_proc.join_bans $0 $2 $1 $hash $serv};
+      IF (iscset(P $hash) && !join.test) {_proc.join_usr1 $0 $2 $1 $hash $serv};
+    }{
+      IF (iscset(P $hash)) {_proc.join_usr2 $0 $2 $1 $hash $serv};
+    };
+    IF (iscset(H $hash) && !join.test) {_proc.join_ip $0 $2 $1};
+    IF (iscset(J $hash) && !join.test) {
+       IF (iscset(2 $hash)) {_proc.join_socks $0 $2 $1 $hash $serv};
+       _proc.join_clones $0 $2 $1 $hash $serv;
+    };
+    IF (iscset(E $hash)) {_proc.note_get $0};
+  }{
+    UNLESS (strlen($temp.my_ip_address)) {@ temp.my_ip_address = nametoip($after(@ $2))};
+   ^TIMER -REF SYNC[$hash] $lice.get(main.cch) {
+      UNLESS (strlen($lice.get(chan[$hash_32bit($1)][S])) || !onchannel($servernick() $1)) {
+        //PART $1;
+        WAIT -CMD WINDOW $winchan($1) CHANNEL "$1 $key($1)";
+      };
+    };
+  };
+};
+ON #-PART -13 * {
+  @ :serv = servernum();
+  UNLESS ([$0] == servernick($serv)) {_proc.cookies_remove $1 $0};
+};
+ALIAS _proc.cookies_remove (chan,nick) {
+  @ :h_chan = hash_32bit($chan);
+  @ :h_nick = hash_32bit($nick);
+  ^ASSIGN -Cookie[Shit][$h_chan][$h_nick];
+  ^ASSIGN -Cookie[User][$h_chan][$h_nick];
+};
+ALIAS _proc.channel_remove (serv,chan) {
+  @ :hash = hash_32bit($chan);
+  @ delarray(B$serv\-$hash);
+  @ delarray(E$serv\-$hash);
+  @ delarray(I$serv\-$hash);
+  ^ASSIGN -chan_mode[$serv$hash];
+  ^ASSIGN -chan_rest[$serv$hash];
+  fmt.titlebar $chan_topic[$winnum()$hash_32bit($chanwin())];
+  IF (numwords($myservers()) > 1) {
+     FE ($remw($servername($serv) $myservers())) server {
+        @ :srv = servernum($server);
+        @ :chn = mychannels($srv);
+        IF (rmatch($chan $chn)) {RETURN};
+     };
+  };
+  UNLESS (iscset(A $hash)) {
+      IF (strlen($bw[$hash])) {
+         ^ON #-raw_irc 26 -"% PRIVMSG $chan :*\\[$bw[$hash]\\]*";
+         ^ASSIGN -bw[$hash];
+      };
+      IF (strlen($bs[$hash])) {
+         ^ON #-raw_irc 30 -"% PRIVMSG $chan :* $bs[$hash] *";
+         ^ASSIGN -bs[$hash];
+      };
+      purge chan.$hash;
+      //^IGNORE $chan NONE;
+      @lice.del(|$hash_32bit($chan));
+      @lice.del(chan[$hash][S]);
+  };
+};
+ALIAS _proc.channel_create (serv,hash,chan) {
+  XEVAL -S $serv {
+   UNLESS (onchannel($servernick() $chan)) {RETURN};
+   @lice.set(chan[$hash][S] ${strlen($lice.get(chan[$hash][S])) ? lice.get(chan[$hash][S]) : lice.get(main.cset)});
+   IF (iscset(Q $hash)) {//^IGNORE $chan CTCPS TOPICS JOINS NICKS PARTS};
+   IF (iscset(E $hash)) {_proc.note_get $chan};
+   IF (ischanop($servernick($serv) $chan)) {
+      IF (iscset(L $hash) && strlen($lice.get(chan[$hash][L]))) {QUOTE MODE $chan $lice.get(chan[$hash][L])};
+      IF (iscset(T $hash) && strlen($lice.get(chan[$hash][T]))) {QUOTE TOPIC $chan :$lice.get(chan[$hash][T])};
+   };
+   @ list_mutex[B$serv$hash] = 1;
+   QUOTE MODE $chan +b;
+   # IrcNet +e/+I support
+   IF (left(4 $R) == [2.10]) {
+      @ list_mutex[E$serv$hash] = 1;
+      @ list_mutex[I$serv$hash] = 1;
+      QUOTE MODE $chan +e;
+      QUOTE MODE $chan +I;
+   };
+  };
+};
+### END OF JOIN/PART PARSING ROUTINES
+
+### Netsplit detection routines.
+^ASSIGN temp.domains ?? com edu net org gov;
+ON ^CHANNEL_SIGNOFF '% % %.\\\\[\$temp.domains\\\\] %.\\\\[\$temp.domains\\\\]' {
+  _proc.cookies_remove $0 $1;
+  _proc.split_save $2 $3 $0 ${ischanop($1 $0)?[@]:[]}$1;
+};
+### END Netsplit detection routines.
+
+### DCC REQUEST PARSING
+ALIAS _proc.dcc_update_queue {
+  IF (temp.dcc_active > 0) {@ temp.dcc_active--};
+};
+ON #-DCC_LOST -13 "% GET *" {_proc.dcc_update_queue};
+ON #-DCC_LOST -13 "% SEND *" {_proc.dcc_update_queue};
+ON #-DCC_LOST -13 "% CHAT % *" {
+  @ :id = finditem(DQCHAT $0);
+  UNLESS (id == -1) {@ delitem(DQCHAT $id)};
+};
+ON ^DCC_LOST "% % % IDLE TIME EXCEEDED" {
+  XECHO -C $fmt.banner_dcc() Auto: Closing DCC $1 to $0 after $tdiff($DCC_TIMEOUT) of wait.;
+};
+ON #-DCC_REQUEST 13 "% CHAT *" {
+  IF (finditem(DQCHAT $0) < 0) {queue.add DQCHAT 10 $0};
+  IF (L || A || chat.test) {
+    XECHO -C $fmt.banner_dcc() DCC CHAT request from $0 ${servername($winserv()) != S ? [\($servername($servernum())\)] : []};
+    ECHO $fmt.banner_dcc() Type "/CHAT" to connect to $0.;
+  }{
+    @ chat.test = 1;
+    INPUT_CHAR "Connect DCC CHAT from $0 ? " {
+      IF ([$0]==[Y]) {CHAT}{^DCC CLOSE CHAT $queue.tail(DQCHAT)};
+      ^ASSIGN -chat.test;
+    };
+  };
+};
+ON #-DCC_REQUEST -13 "% SEND % % % % %" {
+  @ :file = (left(1 $5) == [.]) ? [_] ## rest(1 $5) : [$5];
+  IF (isdset(C)) {
+    WAIT -CMD //^DCC CLOSE GET $0 $file;
+    RETURN;
+  };
+  @ :nfile = ismset(V) ? toupper($0) ## [\-] ## file : file;
+  //^DCC RENAME $0 $file $nfile;
+  IF (isdset(R)) {
+    @ :size = fsize($DCC_STORE_PATH/$nfile);
+    IF (size != -1 && size < [$6]) {
+      ##//^DCC RENAME $0 $nfile $DCC_STORE_PATH/$nfile;
+      ##WAIT -CMD //^DCC RESUME $0 $DCC_STORE_PATH/$nfile;
+      WAIT -CMD //^DCC RESUME $0 $nfile;
+      IF (ismset(U)) {_proc.away_save LiCe licelogd [DCC] RESUMED $file from $0 \($userhost()\)};
+      RETURN;
+    };
+    IF (size != -1 && size == [$6]) {
+       @ :serv = servernum();
+       WAIT -CMD //^DCC CLOSE GET $0 $nfile;
+       UNLESS (isdset(Q)) {_proc.quote_add $serv NOTICE $0 :Sorry, $file already exists.};
+       RETURN;
+    };
+  };
+  @ :new_file = nfile;
+  UNLESS (isdset(O)) {
+    WHILE (fexist($DCC_STORE_PATH/$new_file) == 1) {@ :new_file #= [_]};
+    IF (finditem(DQGET $0 $new_file) < 0) {//^DCC RENAME $0 $nfile $new_file};
+  };
+  IF (isdset(G)) {
+    queue.add DQGET $lice.get(main.dcc_get_queue) $0 $new_file;
+    ^TIMER -REF DQLOAD 7 _proc.dcc_queue_load GET;
+  }{
+    XECHO -C $fmt.banner_dcc() Incoming file from $0, type: "/DCC GET $0 \($new_file\)" to download.;
+    IF (ismset(U)) {_proc.away_save LiCe licelogd [DCC] Pending DCC GET $new_file from $0 \($userhost()\)};
+  };
+};
+ON ^DCC_CHAT "% REDIRECT *!*@* *" {
+  XECHO -C $fmt.banner_dcc() DCC REDIRECT GET [$5 $rightw(1 $3-)] from $before(! $2) \($after(! $2)\) via $0\...;
+  XEVAL -S $servernum($S) PRETEND :$2 PRIVMSG $N :$chr(1)$3-$chr(1);
+  ### XXX - not always accurate!
+};
+ON #-DCC_REQUEST -9 "% SEND % % % % %" {
+   @ dd.nick = [$0];
+   @ dd.host = [$3];
+   @ dd.rhost = nametoip($after(@ $get_uh($ddnick)));
+   @ dd.port = [$4];
+   @ dd.file = [$5];
+   @ dd.size = [$6];
+   IF (strlen($dd.rhost) && dd.host != dd.rhost) {
+      XECHO -C $fmt.banner_dcc() WARNING: Fake dcc handshake detected! [$dd.rhost appears to be $dd.host];
+      INPUT "[?] Proceed assuming $dd.nick has a misconfigured mIRC client? (y/n):" {
+        IF (left(1 $0) == [y] || left(1 $0) == [Y]) {
+        XEVAL -S $servernum($S) PRETEND :$dd.nick PRIVMSG $N :$chr(1)DCC SEND $dd.file $dd.rhost $dd.port $dd.file $dd.size$chr(1);
+        }{WAIT -CMD //^DCC CLOSE GET $dd.nick};
+   }purge dd};
+};
+### END DCC REQUEST PARSING
+
+### MSG/NOTICE/PUBLIC PARSING - THIS WAS A PAIN!!!!! -HS
+# Tell me about it! Thanks fudd for helping. tjh
+^ON ^PUBLIC '% % *\\\\[\$lice.get(main.buf)\\\\]*' {_proc.reply_action $userhost() $*};
+^ON ^PUBLIC_MSG '% % *\\\\[\$lice.get(main.buf)\\\\]*' {_proc.reply_action $userhost() $*};
+^ON ^PUBLIC_OTHER '% % *\\\\[\$lice.get(main.buf)\\\\]*' {_proc.reply_action $userhost() $*};
+ALIAS _proc.reply_action (uh,nick,chan,text) {
+  IF (ismset(H)) {
+    FE ($lice.get(main.buf)) arw {@ :text = sar(gi/$arw/${arw}/$text)};
+  };
+  @ :cwin = winchan($chan);
+  IF (cwin == -1) {
+    XECHO -W $chan $fmt.auto_reply_other($nick $chan $text);
+  }{
+    @ :lame = iscurchan($chan) ? fmt.auto_reply($nick $chan $text) : fmt.auto_reply_other($nick $chan $text);
+    XECHO -W $chan $lame;
+    IF (winnum() != cwin && ismset(1)) {
+       XECHO -C $fmt.banner_info() Auto-reply in window #$cwin ${servername($winserv()) != S ? [\($chan@$servername($servernum())\)] : [\($chan\)]};
+    };
+  };
+  IF (ismset(P)) {_proc.away_save $nick $uh [$chan] $text};
+  IF (ismset(2)) {_proc.tab_add $servernum() $nick};
+};
+ON #-MSG 13 * {
+  @ :serv = servernum();
+  IF (ismset(M)) {_proc.away_save $0 $userhost() $1-};
+  IF (ismset(R) && A && gone_away[$serv] && (findw($0 $tabnick[$serv]) == -1)) {QUOTE NOTICE $0 :Gone for $tdiff(${time() - gone_away[$serv]}) ${ismset(M) ? [please leave me a message.] : []}};
+  _proc.tab_add $serv $0;
+  queue.add ML 7 $fmt.msg($*);
+};
+ON #-MSG_GROUP 13 * {
+  IF (ismset(N)) {_proc.away_save $0 $userhost() [$1] $2-};
+  queue.add ML 7 $fmt.msg_group($*);
+};
+ON #-NOTICE 13 * {
+  IF (ismset(N)) {_proc.away_save $0 $userhost() $1-};
+  @ :nt = match(*Wall* $1) ? [WL] : [NL];
+  queue.add $nt 7 $fmt.notice($*);
+  _proc.tab_add $servernum() $0;
+};
+ON #-ACTION 13 '% % *\\\\[\$lice.get(main.mbuf)\\\\]*' {
+   IF (ismset(A)) {_proc.away_save $0 $userhost() [action:$1] * $0 $2-};
+};
+ON #-PUBLIC 13 * {
+   IF (ismset(P) && match(** $igtype($rigmask($0!$userhost($0))))) {
+      ^ASSIGN logd 1;
+      _proc.away_save $0 $userhost($0) [$1] $2-;
+   };
+};
+ON #-PUBLIC_NOTICE 13 * {
+  queue.add NL 7 $fmt.public_notice($*);
+};
+### END MSG/NOTICE PARSING
+
+# saves msg's when away.
+ALIAS _proc.away_save {
+  UNLESS (A || logd) {RETURN};
+  IF (temp.nrm == lice.get(main.mrm) && !delitem(AM 0)) {@ temp.nrm--};
+  IF (setitem(AM $temp.nrm $time() $0 $1 $2-) >= 0) {@ temp.nrm++};
+  IF (ismset(E)) {@ write($awayfd + $encode($getitem(AM ${temp.nrm - 1})))};
+  ^SET STATUS_USER1 $temp.nrm;
+  ^ASSIGN -logd;
+};
+
+### Userlist manipulation functions
+# finds a host match for user,
+# returns the handle's hash index - 0 on failure
+# $0=list $1=n!u@h
+ALIAS find_in_list (indx,nuh) {
+  @ :list = indx ## [list];
+  FOR (@ :cnt=0, numitems($list) > cnt, @ :cnt++) {
+    @ :hand = getitem($list $cnt);
+    @ :hash = hash_32bit($hand);
+    @ :test = finditem($indx$hash $nuh);
+    @ :test = (test < 0) ? rmatchitem($indx$hash $nuh) : test;
+    ###@ :test = getrmatches($indx$hash $nuh)
+    #IF (test >= 0) {RETURN $hash}
+    IF (test >= 0) {PUSH FUNCTION_RETURN $hash};
+  };
+  IF (!FUNCTION_RETURN) {@ FUNCTION_RETURN = 0};
+};
+## finds a channel match for user,
+## returns the modes for the channel - 0 on failure
+## $0=list $1=channel $2=n!u@h
+ALIAS find_in_chan (list,chan,hash,nuh) {
+  @ :hand = find_in_list($list $nuh);
+  UNLESS (hand) {RETURN 0};
+  @ :test = (word(0 $getitem(Chan$list$hand 0)) == [#*]) ? 0 : matchitem(Chan$list$hand $chan *);
+  IF (test < 0) {RETURN 0};
+  @ :mode = word(1 $getitem(Chan$list$hand $test));
+  @ :nick = hash_32bit($before(! $nuh));
+  ^ASSIGN Cookie.User[$hash][$nick] $hand $mode;
+  @ FUNCTION_RETURN = mode;
+};
+
+ALIAS find_in_a_chan (list,chan,hash,nuh) {
+  @ :myhand = find_in_list($list $nuh);
+  UNLESS (myhand) {RETURN 0};
+    FE ($myhand) hand {
+       @ :test = (word(0 $getitem(Chan$list$hand 0)) == [#*]) ? 0 : matchitem(Chan$list$hand $chan *);
+       IF (test < 0) {CONTINUE};
+       @ :mode = word(1 $getitem(Chan$list$hand $test));
+       @ :nick = hash_32bit($before(! $nuh));
+       ^ASSIGN Cookie.User[$hash][$nick] $hand $mode;
+       @ FUNCTION_RETURN = mode;
+    };
+};
+
+## retrives a previously saved userlist cookie.
+## returns the modes for the channel - 0 on failure
+## $0=list $1=channel $2=nick $3=hash
+ALIAS get_cookie (list,chan,nick,hash) {
+  @ :h_nick = hash_32bit($nick);
+  @ :mode = word(1 $Cookie[$list][$hash][$h_nick]);
+  @ FUNCTION_RETURN = mode ? mode : find_in_a_chan($list $chan $hash $nick!$userhost($nick));
+};
+#
+ 
+### Initialize ...
+#int main (int argc, char **argv, char **env) {
+ALIAS main_init {
+  ^LOCAL load_list;
+
+  ^WINDOW KILL_OTHERS;
+  ^SET DISPLAY ON;
+
+  @ srand(${time() + pid()});
+
+  IF (mkdir($lice.save_path)) {
+    PUSH load_list $LiCePath/lice/lice.binds $LiCePath/lice/lice.fkeys $LiCePath/lice/lice.stubs;
+    PUSH load_list $lice.save_path/lice.address $lice.save_path/lice.users;
+  };
+
+  LOAD $load_list;
+
+  IF (lice.get(main.theme) != [default]) {LOAD $which($LiCePath/themes/$lice.get(main.theme))};
+
+  # load sets from db
+  _lice.readsets;
+  # load notify list from db
+  //^NOTIFY $lice.get(lice.notify);
+  
+  # load servers list from db
+  _lice.readservers;
+  # load ignores from db
+  _lice.readignores;
+  # load chanlogs from db
+  _lice.readchanlog;
+
+  # start logging channels
+  FOREACH chanlog hash {
+    @ :chan = chanlog[$hash][C];
+    _proc.open_log $chan;
+    _proc.log_p $chan;
+    _proc.log_k $chan;
+    _proc.log_j $chan;
+  };
+
+  # MSG/DCC/TOPIC window
+  IF (iswset(W)) {^WINDOW NEW NAME MW LEVEL NONE DOUBLE OFF NOSERV STATUS_FORMAT " Message Window %>-- Type /WTOG W to finish -- " LAST};
+  IF (iswset(C)) {^WINDOW NEW NAME CW LEVEL NONE DOUBLE OFF NOSERV STATUS_FORMAT " Chatting Window %>-- Type /WTOG C to finish -- " LAST};
+  IF (iswset(T)) {
+    ^WINDOW TOPLINE 1 " -- LiCe Titlebar [tm] --";
+    ^WINDOW TOPLINES 1;
+  };
+
+  # Check for updates on startup.
+  IF (isset(U)) {^TIMER -REF UPDATE 60 UPDATE};
+
+  # misc /set's
+  IF (isset(Q)) {
+    ^STACK POP SET CLIENT_INFORMATION;
+  }{
+    ^STACK PUSH SET CLIENT_INFORMATION;
+    ^SET CLIENT_INFORMATION $lice();
+  };
+  IF (isdset(R)) {^SET MIRC_BROKEN_DCC_RESUME ON};
+  IF (ismset(B)) {^ON #-MSG 617 * {IF (A) {BEEP}}};
+
+  # If we have saved messages, put them back into the save buffer
+  IF (ismset(E)) {
+    IF ((numitems(AM) == 0) && (fexist($lice.save_path/lice.awaylog) == 1)) {
+      @ awayfd = open($lice.save_path/lice.awaylog R);
+      @ :mcount = 0;
+      WHILE (!eof($awayfd)) {
+        ^ASSIGN message $read($awayfd);
+        IF (!eof($awayfd) && leftw(1 $message) == [+]) {
+          @ setitem(AM $mcount $decode($rightw(1 $message)));
+          @ mcount++;
+          CONTINUE;
+        };
+        IF (!eof($awayfd) && leftw(1 $message) == [-]) {
+          @ delitem(AM $finditem(AM $decode($rightw(1 $message))));
+          @ mcount--;
+        };
+      };
+      @ temp.nrm = numitems(AM);
+      IF (temp.nrm != 0) {ECHO $fmt.banner_alert() Loaded $temp.nrm saved message$plural($temp.nrm)};
+    @ close($awayfd);
+    };
+    @ awayfd = open($lice.save_path/lice.awaylog W);
+  };
+  ^SET STATUS_USER $lice.get(main.set);
+  ^SET STATUS_USER1 $temp.nrm;
+  ^SET STATUS_USER2 ??;
+  ^SET STATUS_USER3 Idle: ?;
+
+  # hack to fix the realname annoyance.
+  @ :test = getenv(IRCNAME);
+  IF (strlen($test) && test != REALNAME) {^SET DEFAULT_REALNAME $test};
+
+  # auto-nick setup
+  ^ON #^NOTIFY_SIGNOFF 13 '$lice.get(main.auto_nick)' {
+    ECHO $fmt.banner_alert() Nick $lice.get(main.auto_nick) is now available (AutoNick);
+    IF (isset(A)) {^TIMER 5 NICK $lice.get(main.auto_nick)};
+  };
+  
+  IF (lice.get(main.auto_nick)) {^NOTIFY $lice.get(main.auto_nick)};
+
+  # Let the user know what their autoreply buffer is set to
+  ar;
+
+  ^WINDOW NAME 1 DOUBLE ${iswset(D)?[ON]:[OFF]} BEEP_ALWAYS ${iswset(B)?[ON]:[OFF]} LEVEL ALL;
+  IF (strlen($lice.get(main.umode))) {^TIMER -REF UMODE 7 {MODE $servernick() $lice.get(main.umode)}};
+
+  # hook to write sets
+  ^ON #-SET 13 * (set,data) {
+    @lice.set(*$set $data);
+  };
+
+  ^ASSIGN bench.ftime $utime();
+  XECHO -w 0 -v -B You got infested with LiCe $id.v in ${word(0 $bench.ftime) - word(0 $bench.stime)}.${word(1 $bench.ftime) - word(1 $bench.stime) < 0 ? [${1000000 + word(1 $bench.ftime) - word(1 $bench.stime)}] : [${word(1 $bench.ftime) - word(1 $bench.stime)}]} secs.;
+
+  # clean up
+  purge bench;
+
+  ^ALIAS -main_init;
+};
+
+main_init;
+
+# cag/00
+# HS/04-04
+# tjh/11

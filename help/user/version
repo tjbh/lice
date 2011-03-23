@@ -1,0 +1,6 @@
+Usage: VERSION [server]
+   Displays the client, script and server versions.
+   If 'server' is the argument, the version of that server is requested.
+
+See also: [SV]
+
