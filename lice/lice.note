@@ -14,7 +14,7 @@ IF (word(2 $loadinfo()) != [pf]) {
 
 PACKAGE LiCe;
 
-@ mkdir(~/.irc/notes);
+@ mkdir($lice.save_path/notes);
 
 # help
 ALIAS _proc.note_help {
@@ -28,7 +28,7 @@ ALIAS _proc.note_help {
 # this sets a note in our file.
 ALIAS _proc.note_set {
   IF (strlen($1)) {
-    @ :ns.fn = [~/.irc/notes/] ## encode($tolower($0));
+    @ :ns.fn = [$lice.save_path/notes/] ## encode($tolower($0));
     @ :ns.fd = open($ns.fn W);
     IF (write($ns.fd $1-) > 0) { XECHO -B Note: "$0" $1- };
     @ close($ns.fd);
@@ -40,9 +40,9 @@ ALIAS _proc.note_set {
 # duplicate a note
 ALIAS _proc.note_dup {
   IF (strlen($1)) {
-    @ :nd.f = [~/.irc/notes/] ## encode($tolower($0));
+    @ :nd.f = [$lice.save_path/notes/] ## encode($tolower($0));
     IF (fexist($nd.f) == 1) {
-      @ :nd.t = [~/.irc/notes/] ## encode($tolower($1));
+      @ :nd.t = [$lice.save_path/notes/] ## encode($tolower($1));
       ^EXEC -name note_dup cp $nd.f $nd.t;
       WAIT %note_dup;
       XECHO -B Duplicated notes for '$0' to '$1';
@@ -57,7 +57,7 @@ ALIAS _proc.note_dup {
 # this gets a previous note
 ALIAS _proc.note_get {
   FE ($*) ng.1 {
-    @ :ng.fn = [~/.irc/notes/] ## encode($tolower($ng.1));
+    @ :ng.fn = [$lice.save_path/notes/] ## encode($tolower($ng.1));
     IF (fexist($ng.fn) == 1) {
       @ :ng.fd = open($ng.fn R);
       @ :ng.str = read($ng.fd);
@@ -71,7 +71,7 @@ ALIAS _proc.note_get {
 };
 ALIAS _proc.note_wget {
   FE ($*) ng.1 {
-    @ :ng.fn = [~/.irc/notes/] ## encode($tolower($ng.1));
+    @ :ng.fn = [$lice.save_path/notes/] ## encode($tolower($ng.1));
     IF (fexist($ng.fn) == 1) {
       @ :ng.fd = open($ng.fn R);
       @ :ng.str = read($ng.fd);
@@ -87,12 +87,12 @@ ALIAS _proc.note_wget {
 # remove note
 ALIAS _proc.note_rem {
   IF ([$0]==[*]) {
-    @ :nr.fn = glob(~/.irc/notes/*);
+    @ :nr.fn = glob($lice.save_path/notes/*);
     @ unlink($nr.fn);
     XECHO -B Removed all notes;
   }{
     FE ($*) nr.1 {
-      @ :nr.fn = [~/.irc/notes/] ## encode($tolower($nr.1));
+      @ :nr.fn = [$lice.save_path/notes/] ## encode($tolower($nr.1));
       UNLESS (unlink($nr.fn)) {
         XECHO -B Failed to remove notes for \"$nr.1\";
       }{
@@ -116,4 +116,4 @@ ALIAS note {
   };
   UNLESS (@) { _proc.note_help };
 };
-#tjh/09
+#tjh/11
