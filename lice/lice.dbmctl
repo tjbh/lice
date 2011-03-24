@@ -96,7 +96,7 @@ ALIAS _lice.saveservers {
   FE ($serverctl(GMATCH *)) id {
     # work around epic5 bug - $serverctl(GMATCH *)) currently returns servers that have been deleted!
     IF (serverctl(GET $id NAME)) {
-      @lice.add(&server$(id) $serverctl(GET $id NAME):$serverctl(GET $id PORT):$serverctl(GET $id PASS):$serverctl(GET $id NICKNAME):$serverctl(GET $id GROUP):$serverctl(GET $id PROTOCOL));
+      @lice.add(&server$(id) $serverctl(GET $id NAME):$serverctl(GET $id PORT):$serverctl(GET $id PASS):nickname=$serverctl(GET $id NICKNAME):$serverctl(GET $id GROUP):$serverctl(GET $id PROTOCOL));
     };
   };
 };

@@ -48,7 +48,6 @@ ALIAS _proc.remove_list {
     (-t) {@ :patt = isnumber($1) ? [$1] : [00:00]};
     (#*) {@ :patt = isnumber($rest(1 $0)) ? [$0] : []};
   };
-  iecho Current ${list.name}s on $C \($servername($serv)\);
   FOR (@ :cnt=0, numitems($list) > cnt, @cnt++) {
     @ :str = getitem($list $cnt);
     UNLESS (patt) {ECHO [$[-2]{cnt + 1}] $ch($C)\: $str};
