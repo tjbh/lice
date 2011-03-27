@@ -1607,10 +1607,8 @@ ALIAS main_init {
 
   @ srand(${time() + pid()});
 
-  IF (mkdir($lice.save_path)) {
-    PUSH load_list $LiCePath/lice/lice.binds $LiCePath/lice/lice.fkeys $LiCePath/lice/lice.stubs;
-    PUSH load_list $lice.save_path/lice.address $lice.save_path/lice.users;
-  };
+  PUSH load_list $LiCePath/lice/lice.binds $LiCePath/lice/lice.fkeys $LiCePath/lice/lice.stubs;
+  PUSH $which(load_list $lice.save_path/lice.address) $which(load_list $lice.save_path/lice.users);
 
   LOAD $load_list;
 

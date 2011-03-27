@@ -108,10 +108,10 @@ ALIAS _proc.play_erase {
     };
   }{
     UNLESS (delarray(AM)) {XECHO -B Erasing $temp.nrm message$plural($temp.nrm) ...};
-    IF (ismset(E) && (fexist($twiddle(~/.lice/lice.awaylog)) == 1)) {
+    IF (ismset(E) && (fexist($lice.save_path/lice.awaylog) == 1)) {
       @ close($awayfd);
-      @ unlink($twiddle(~/.lice/lice.awaylog));
-      @ awayfd = open($twiddle(~/.lice/lice.awaylog) W);
+      @ unlink($twiddle($lice.save_path/lice.awaylog));
+      @ awayfd = open($lice.save_path/lice.awaylog W);
     };
     @ temp.nrm = 0;
     ^ASSIGN -old_idx;
@@ -120,7 +120,7 @@ ALIAS _proc.play_erase {
 };
 ALIAS erase {_proc.play_erase};
 ALIAS _proc.play_save {
-  @ :fd = open(~/.lice/LiCeAway.log W);
+  @ :fd = open($lice.save_path/LiCeAway.log W);
   IF (@) {
     @ :w_rec = getitem(AM $0);
     IF (w_rec) {
