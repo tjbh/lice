@@ -108,6 +108,7 @@ STUB ALIAS tog $LiCePath/lice/lice.tog;
 STUB ALIAS trace $LiCePath/extra/lice.trace;
 STUB ALIAS trans $LiCePath/lice/lice.trans;
 STUB ALIAS msg_completion $LiCePath/lice/lice.tab_comp;
+# If update has been disabled, we don't stub these in.
 UNLESS (dlu == 1) {
   STUB ALIAS update $LiCePath/lice/lice.update;
   STUB ALIAS upgrade $LiCePath/lice/lice.update;

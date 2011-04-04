@@ -17,7 +17,7 @@ PACKAGE LiCe;
 ALIAS gone {
   @ quiet.test = ismset(Q);
   @ :gone.msg = randread($main.reason_gone);
-  UNLESS (strlen($gone.msg)) {@ :gone.msg = [http://lice.codehack.com]};
+  UNLESS (strlen($gone.msg)) {@ :gone.msg = [http://lice.googlecode.com]};
   SWITCH ($0) {
     () {AWAY $gone.msg};
     (-q) {
@@ -27,4 +27,4 @@ ALIAS gone {
     (*) {AWAY $*};
   };
 };
-#tjh/09
+#tjh/11

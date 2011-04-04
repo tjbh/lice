@@ -439,7 +439,7 @@ ON #-TIMER -13 * {
     };
     IF (serv == winserv()) {
       IF (isaway($serv)) {
-        @ :lame = gone_away[$serv] ? tdiff2(${temp.last_ping - gone_away[$serv]}) : [??];
+        @ :lame = (gone_away[$serv] ? tdiff2(${temp.last_ping - gone_away[$serv]}) : [??]);
         ^SET STATUS_USER3 Away: $lame;
       }{^SET STATUS_USER3 Idle: $tdiff2($E)};
       IF (numitems(ALARM) > 0) {_proc.alarm_check $mid(${index(\: $0) + 1} 2 $0)};

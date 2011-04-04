@@ -33,8 +33,8 @@ ALIAS PIC {
     @ close($pic.fd);
     IF (strlen($2)) {MSG $pic.trg ** $2-}
   }{
-    IF (fexist(~/LiCe5/pics) == 1) {
-      CD ~/LiCe5/pics;
+    IF (fexist($LiCePath/pics) == 1) {
+      CD $LiCePath/pics;
       @ :pic.list = glob(*);
       ^CD ~;
       UNLESS (strlen($pic.list)) {
@@ -45,9 +45,9 @@ ALIAS PIC {
       echo.recursive $pic.list;
       uecho Usage: /PIC <picture> [target] [message];
     }{
-      XECHO -B Path not found: $twiddle(~/LiCe5/pics);
-      IF (mkdir(~/LiCe5/pics)) {
-        XECHO -B Failed to create: $twiddle(~/LiCe5/pics);
+      XECHO -B Path not found: $LiCePath/pics;
+      IF (mkdir($LiCePath/pics)) {
+        XECHO -B Failed to create: $LiCePath/pics;
       };
     };
   };
