@@ -156,6 +156,13 @@ UNLESS (lice.get(lice.database)) {
   };
 };
 
+# set autonick
+IF (strlen($lice.get(main.auto_nick))) {
+  ^SET auto_new_nick_list $lice.get(main.auto_nick);
+  }{
+  ^SET auto_new_nick_list user$rand(20) user$rand(20) user$rand(20);
+};
+
 # reason files 
 @ main.reason_quit = which(quit.reasons);
 @ main.reason_kick = which(kick.reasons);

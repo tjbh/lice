@@ -49,5 +49,11 @@ ALIAS protect {
   };
 };
 
+ALIAS _saveignore {
+  FE ($ignorectl(REFNUMS)) igs {
+    @lice.set(|$hash_32bit($ignorectl(GET $igs NICK)) $ignorectl(GET $igs NICK) $ignorectl(GET $igs SUPPRESS));
+  };
+};
+
 #HS/03
 #tjh/11

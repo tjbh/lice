@@ -23,6 +23,7 @@ PACKAGE LiCe;
 @ mkdir($lice.save_path);
 
 # open database
+
 @ lice.fd = dbmctl(OPEN STD $(lice.save_path)/lice.db);
 
 # check we got the db open and if not, die.
@@ -45,6 +46,14 @@ ALIAS lice.add (varname, data) {@ dbmctl(ADD $lice.fd "$tolower($varname)" $data
 ALIAS lice.set (varname, data) {@ dbmctl(CHANGE $lice.fd "$tolower($varname)" $data)};
 ALIAS lice.get (varname) {@ FUNCTION_RETURN = dbmctl(READ $lice.fd "$tolower($varname)")};
 ALIAS lice.del (varname) {@ dbmctl(DELETE $lice.fd "$tolower($varname)")};
+
+# check the db isn't still marked internally as open
+IF (lice.get(db.status) == 1) {
+  XECHO Database marked open;
+};
+
+# now mark database as open!
+@lice.set(db.status 1);
 
 # read sets from the db and push them into place
 ALIAS _lice.readsets {
@@ -72,7 +81,10 @@ ALIAS _lice.readignores {
   FE ($dbmctl(ALL_KEYS $lice.fd)) ls {
     @ :igid= after(| $ls);
     UNLESS (strlen($igid) == 0) {
-      //^IGNORE $lice.get($ls);
+#      //^IGNORE $lice.get($ls);
+    iecho $word(0 $lice.get($ls)) $word(1 $lice.get($ls));
+    iecho $ignorectl(ADD $word(0 $lice.get($ls)) $word(1 $lice.get($ls)));
+    
     };
   };
 };

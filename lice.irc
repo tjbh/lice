@@ -448,7 +448,10 @@ ON #-TIMER -13 * {
   };
   _proc.purge_lists $temp.last_ping;
 };
-ON #-EXIT 13 * {iecho Time wasted on IRC: $tdiff(${time() - F})};
+ON #-EXIT 13 * {
+  @lice.set(db.status 0);
+  iecho Time wasted on IRC: $tdiff(${time() - F});
+};
 
 # IrcNet is lame.
 ALIAS _proc.update_lag (sname,then) {
@@ -1623,10 +1626,9 @@ ALIAS main_init {
   _lice.readservers;
   # load ignores from db
   _lice.readignores;
-  # load chanlogs from db
-  _lice.readchanlog;
 
   # start logging channels
+  _lice.readchanlog;
   FOREACH chanlog hash {
     @ :chan = chanlog[$hash][C];
     _proc.open_log $chan;
