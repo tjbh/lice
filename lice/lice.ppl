@@ -55,7 +55,7 @@ ALIAS ppl {
   };
   @ ppl.i = ppl.l = ppl.m = ppl.o = ppl.v = 0;
   //WHO $ppl.c -END {
-    ^ON ^WHO -"$1 *";
+    ^ON ^WHO -"\\$1 *";
     @ :total = ppl.o + ppl.v + ppl.l;
     cecho $ppl.c - matched $ppl.m user$plural($ppl.m) \(*=$ppl.i -o=$ppl.l +v=$ppl.v +o=$ppl.o\) / $total total users;
     purge ppl;
