@@ -158,9 +158,9 @@ UNLESS (lice.get(lice.database)) {
 
 # set autonick
 IF (strlen($lice.get(main.auto_nick))) {
-  ^SET auto_new_nick_list $lice.get(main.auto_nick);
+  ^SET auto_new_nick_list $lice.get(main.auto_nick) $getenv(USER) LiCeUser$rand(9);
   }{
-  ^SET auto_new_nick_list user$rand(20) user$rand(20) user$rand(20);
+  ^SET auto_new_nick_list $getenv(USER) LiCeUser$rand(9);
 };
 
 # reason files 

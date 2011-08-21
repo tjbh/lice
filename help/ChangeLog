@@ -14,6 +14,7 @@
 	- Fixed /TOG X when used on multiple servers.
 	- Fixed /PPL to accept a channel arguement as detailed in the
 	  help file.
+	- Fixed /ppl breaking /who for the current chan.
 	- Servers are now saved correctly (and automatically)
 	- Other small fixes for reported issues.
 	- This release will probably have bugs! Please report them!

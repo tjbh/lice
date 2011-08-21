@@ -50,6 +50,7 @@ ALIAS lice.del (varname) {@ dbmctl(DELETE $lice.fd "$tolower($varname)")};
 # check the db isn't still marked internally as open
 IF (lice.get(db.status) == 1) {
   XECHO Database marked open;
+  XECHO Are you using LiCe already?;
 };
 
 # now mark database as open!
@@ -81,9 +82,10 @@ ALIAS _lice.readignores {
   FE ($dbmctl(ALL_KEYS $lice.fd)) ls {
     @ :igid= after(| $ls);
     UNLESS (strlen($igid) == 0) {
+# DEBUG
 #      //^IGNORE $lice.get($ls);
-    iecho $word(0 $lice.get($ls)) $word(1 $lice.get($ls));
-    iecho $ignorectl(ADD $word(0 $lice.get($ls)) $word(1 $lice.get($ls)));
+#    iecho $word(0 $lice.get($ls)) $word(1 $lice.get($ls));
+#    iecho $ignorectl(ADD $word(0 $lice.get($ls)) $word(1 $lice.get($ls)));
     
     };
   };
