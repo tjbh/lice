@@ -120,12 +120,7 @@ ALIAS notify {
   @lice.set (lice.notify $notify());
 };
 
-ALIAS server {
-  //SERVER $*;
-  _lice.saveservers;
-};
-
-# Catch other server connections and add to list.
+# Catch server connections and list.
 ^ON ^SERVER_ESTABLISHED * {_lice.saveservers};
 
 #tjh/11

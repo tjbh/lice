@@ -19,7 +19,7 @@ PACKAGE LiCe;
 ALIAS PIC {
   IF (@) {
     @ :pic.trg = strlen($1) ? [$1] : C;
-    @ :pic.file = which(pics/$0);
+    @ :pic.file = which($LiCePath/pics/$0);
     UNLESS (strlen($pic.file)) {RETURN};
     @ :pic.fd = open($pic.file R);
     UNLESS (pic.fd) {
@@ -52,4 +52,4 @@ ALIAS PIC {
     };
   };
 };
-#tjh/09
+#tjh/12
