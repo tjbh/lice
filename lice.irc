@@ -56,7 +56,7 @@ EVAL IF (word(0 $info(v)) != [epic5] || V < 20100430 || info(i) < 1638) {
      };
      IF (word(0 $info(v)) != [epic5]) {
        ECHO You need EPIC5! You have $word(0 $info(v)) ! Bye...;
-       QUIT;
+       RETURN;
      }; 
      ECHO Pausing 10 seconds...;
      PAUSE 10;

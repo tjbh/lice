@@ -17,6 +17,8 @@
 	- Fixed /ppl breaking /who for the current chan.
 	- Servers are now saved correctly (and automatically)
 	- Other small fixes for reported issues.
+	- CTOG Q no longer quiets topic changes. Doing so breaks topic
+	  update notifications.
 	- This release will probably have bugs! Please report them!
 
 *** Changes in version 5.1.2
