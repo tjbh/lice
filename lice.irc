@@ -203,7 +203,7 @@ ON ^331 * {
   UNLESS (win == -1) {
     @ :hash = hash_32bit($1);
     @ chan_topic[$win$hash] = [$1 No Topic Set];
-    IF (iscurchan($1) && iswset(T)) {@windowctl(SET $win TOPLINE 1  -- LiCe Titlebar [tm] --};
+    IF (iscurchan($1) && iswset(T)) {@windowctl(SET $win TOPLINE 1  -- LiCe Titlebar [tm] --)};
   };
 };
 ON ^332 * {
