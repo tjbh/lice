@@ -190,9 +190,9 @@ ON ^SWITCH_CHANNELS * {
   UNLESS (!(iswset(T)) || win == -1) {
     @ :hash = hash_32bit($2);
     IF ([$chan_topic[$win$hash]] == []) {
-      //WINDOW $win TOPLINE 1 " -- LiCe Titlebar [tm] --";
+      @windowctl(SET $win TOPLINE 1  -- LiCe Titlebar [tm] --);
     }{
-      //WINDOW $win TOPLINE 1 "$fmt.titlebar($chan_topic[$win$hash])";
+      @windowctl(SET $win TOPLINE 1 $fmt.titlebar($chan_topic[$win$hash]));
     };
   };
 };
@@ -234,4 +234,4 @@ ALIAS win {//WINDOW $*};
 ALIAS fri {friend $*};
 
 #HS/03
-#tjh/11
+#tjh/12

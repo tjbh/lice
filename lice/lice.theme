@@ -56,10 +56,10 @@ ALIAS _proc.redraw_tl (activate) {
     IF (activate) {WINDOW $win TOPLINES 1};
     @ :hash = hash_32bit($winchan($win));
     IF ([$chan_topic[$win$hash]] == []) {
-      //WINDOW $win TOPLINE 1 " -- LiCe Titlebar [tm] --";
+      @windowctl(SET $win TOPLINE 1  -- LiCe Titlebar [tm] --);
     }{
-      //WINDOW $win TOPLINE 1 "$fmt.titlebar($chan_topic[$win$hash])";
+      @windowctl(SET $win TOPLINE 1 $fmt.titlebar($chan_topic[$win$hash]));
     };
   };
 };
-#tjh/11
+#tjh/12

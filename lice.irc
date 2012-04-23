@@ -203,7 +203,7 @@ ON ^331 * {
   UNLESS (win == -1) {
     @ :hash = hash_32bit($1);
     @ chan_topic[$win$hash] = [$1 No Topic Set];
-    IF (iscurchan($1) && iswset(T)) {//WINDOW $win TOPLINE 1 " -- LiCe Titlebar [tm] --"};
+    IF (iscurchan($1) && iswset(T)) {@windowctl(SET $win TOPLINE 1  -- LiCe Titlebar [tm] --};
   };
 };
 ON ^332 * {
@@ -213,7 +213,7 @@ ON ^332 * {
     @ :hash = hash_32bit($1);
     @ chan_topic[$win$hash] = [$1-];
     IF (iscurchan($1) && iswset(T)) {
-      //WINDOW $win TOPLINE 1 "$fmt.titlebar($chan_topic[$win$hash])";
+      @windowctl(SET $win TOPLINE 1 $fmt.titlebar($chan_topic[$win$hash]));
     };
   };
 };
@@ -621,9 +621,9 @@ ON ^TOPIC * {
     @ chan_topic[$win$hash] = [$1-];
     IF (iscurchan($1)) {
       IF ([$2] == []) {
-        //WINDOW $win TOPLINE 1 " -- LiCe Titlebar [tm] --";
+        @windowctl(SET $win TOPLINE 1  -- LiCe Titlebar [tm] --);
       }{
-        //WINDOW $win TOPLINE 1 "$fmt.titlebar($chan_topic[$win$hash])";
+        @windowctl(SET $win TOPLINE 1 $fmt.titlebar($chan_topic[$win$hash]));
       };
     };
   };
