@@ -369,12 +369,13 @@ ON -366 * {
   };
 };
 ON ^353 * {
+  IF (iscset(Q $hash_32bit($2))) {RETURN};
   UNLESS (names.max) {
     @ :max = fmt.sc_max() ? fmt.sc_max() : (word(0 $geom()) - 1) / 11;
     @ :min = ismset(T) ? ((strlen($strftime($lice.get(main.tsfmt))) + 2) / 11) + 1 : 0;
     @ names.max = max - min;
     @ names.v = names.o = names.l = 0;
-    IF (ismset(V)) {ECHO $fmt.sc_top($2);};
+    ECHO $fmt.sc_top($2);
   };
   ^LOCAL list $3-;
   @ :names.list = [];
@@ -384,7 +385,6 @@ ON ^353 * {
     ECHO $fmt.sc_mid($names.list);
     @ :names.list = [];
   };
-  IF (!ismset(V) || iscset(Q $hash_32bit($2))) {RETURN};
   IF (strlen($names.list)) {ECHO $fmt.sc_mid($names.list)};
 };
 ##

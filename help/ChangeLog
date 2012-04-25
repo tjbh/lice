@@ -20,6 +20,7 @@
 	- CTOG Q no longer quiets topic changes. Doing so breaks topic
 	  update notifications!
 	- Fixed /WTOG T to properly show topics with double quotes in them.
+	- Fixed names display if /MTOG V isn't turned on.
 	- This release will probably have bugs! Please report them!
 
 *** Changes in version 5.1.2
