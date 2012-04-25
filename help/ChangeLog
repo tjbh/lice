@@ -12,13 +12,14 @@
 	- Fixed the friend !UNBAN command.  A side-effect is that /sb
 	  no longer shows "extra" info. Use the -f flag to see details.
 	- Fixed /TOG X when used on multiple servers.
-	- Fixed /PPL to accept a channel arguement as detailed in the
+	- Fixed /PPL to accept a channel argument as detailed in the
 	  help file.
 	- Fixed /ppl breaking /who for the current chan.
 	- Servers are now saved correctly (and automatically)
 	- Other small fixes for reported issues.
 	- CTOG Q no longer quiets topic changes. Doing so breaks topic
-	  update notifications.
+	  update notifications!
+	- Fixed /WTOG T to properly show topics with double quotes in them.
 	- This release will probably have bugs! Please report them!
 
 *** Changes in version 5.1.2

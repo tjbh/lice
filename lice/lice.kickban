@@ -40,6 +40,7 @@ ALIAS _proc.kick_ban {
   IF ([$0]==[I]) {
     ECHO $fmt.banner_kick() Ignoring all crap from $pat;
     //^IGNORE $pat ALL CRAP -PUBLIC;
+    @lice.set(|$hash_32bit($pat) $pat ALL CRAP -PUBLIC);
   };
 };
 ALIAS kb {_proc.kick_ban N $*};

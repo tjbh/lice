@@ -23,7 +23,6 @@ PACKAGE LiCe;
 @ mkdir($lice.save_path);
 
 # open database
-
 @ lice.fd = dbmctl(OPEN STD $(lice.save_path)/lice.db);
 
 # check we got the db open and if not, die.
@@ -49,15 +48,18 @@ ALIAS lice.del (varname) {@ dbmctl(DELETE $lice.fd "$tolower($varname)")};
 
 # check the db isn't still marked internally as open
 IF (lice.get(db.status) == 1) {
+  XECHO [LiCe System Message];
+  XECHO;
   XECHO Database marked open;
   XECHO Are you using LiCe already?;
+  PAUSE 5;
 };
 
 # now mark database as open!
 @lice.set(db.status 1);
 
 # read sets from the db and push them into place
-ALIAS _lice.readsets {
+ALIAS lice.readsets {
   # We sort the list of sets before loading to keep in sync with lice.sets format.
   # works around a bug where STATUS_NICKNAME being set before STATUS_FORMAT1 doesn't work correctly.
   FE ($sort($dbmctl(ALL_KEYS $lice.fd))) ls {
@@ -69,7 +71,7 @@ ALIAS _lice.readsets {
   };
 };
 
-ALIAS _lice.readchanlog {
+ALIAS lice.readchanlog {
   FE ($dbmctl(ALL_KEYS $lice.fd)) ls {
     @ :data= after(! $ls);
     UNLESS (strlen($data) == 0) {
@@ -78,20 +80,16 @@ ALIAS _lice.readchanlog {
   };
 };
 
-ALIAS _lice.readignores {
+ALIAS lice.readignores {
   FE ($dbmctl(ALL_KEYS $lice.fd)) ls {
     @ :igid= after(| $ls);
     UNLESS (strlen($igid) == 0) {
-# DEBUG
-#      //^IGNORE $lice.get($ls);
-#    iecho $word(0 $lice.get($ls)) $word(1 $lice.get($ls));
-#    iecho $ignorectl(ADD $word(0 $lice.get($ls)) $word(1 $lice.get($ls)));
-    
+      //^IGNORE $lice.get($ls);
     };
   };
 };
 
-ALIAS _lice.readservers {
+ALIAS lice.readservers {
   FE ($dbmctl(ALL_KEYS $lice.fd)) ls {
     @ :sid= after(& $ls);
     UNLESS (strlen($sid) == 0) {
@@ -100,7 +98,7 @@ ALIAS _lice.readservers {
   };
 };
 
-ALIAS _lice.saveservers {
+ALIAS lice.saveservers {
   FE ($dbmctl(ALL_KEYS $lice.fd)) ls {
     @ :sid= after(& $ls);
     UNLESS (strlen($sid) == 0) {
@@ -110,7 +108,7 @@ ALIAS _lice.saveservers {
   FE ($serverctl(GMATCH *)) id {
     # work around epic5 bug - $serverctl(GMATCH *)) currently returns servers that have been deleted!
     IF (serverctl(GET $id NAME)) {
-      @lice.add(&server$(id) $serverctl(GET $id NAME):$serverctl(GET $id PORT):$serverctl(GET $id PASS):$serverctl(GET $id NICKNAME):$serverctl(GET $id GROUP):$serverctl(GET $id PROTOCOL));
+      @lice.add(&server$(id) $serverctl(GET $id FULLDESC));
     };
   };
 };
@@ -120,7 +118,7 @@ ALIAS notify {
   @lice.set (lice.notify $notify());
 };
 
-# Catch server connections and list.
-^ON ^SERVER_ESTABLISHED * {_lice.saveservers};
+# Catch server connections and add to saved list.
+^ON ^CONNECT * {^TIMER 5 {lice.saveservers}};
 
-#tjh/11
+#tjh/12

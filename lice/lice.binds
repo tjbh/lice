@@ -85,7 +85,7 @@ BIND ^Wq PARSE_COMMAND {INPUT "Nick to query, =<nick> for CHAT: " IF (@) {win_ne
 # shrink size (shared)
 BIND ^Wr PARSE_COMMAND {//WINDOW SHRINK 1};
 # server
-BIND ^Ws PARSE_COMMAND {INPUT "Server[:port[:password[:nick[:network[:IRC/IRC-SSL]]]]]: " IF (@) {win_new SERVER $0;_lice.saveserversl}};
+BIND ^Ws PARSE_COMMAND {INPUT "Server[:port[:password[:nick[:network[:IRC/IRC-SSL]]]]]: " IF (@) {win_new SERVER $0;lice.saveserversl}};
 # time :)
 BIND ^Wt PARSE_COMMAND {echo.status Current time: $strftime($time() %a, %d \(%H:%M\) %b %Y [%Z])};
 #$strftime($time() %c %Z) - http://lice.muppetz.com}

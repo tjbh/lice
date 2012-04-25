@@ -21,16 +21,17 @@ ALIAS ignore {
       uecho Usage: IGNORE < nick | n!u@h pattern > [[-|+]Ignore types] [reason <your reason>] [timeout <time in secs>];
       uecho Usage: IGNORE < channel | channel pattern > [[-|+]Ignore types] [reason <your reason>] [timeout <time in secs>];
     }
-    (#*) (&*) (!*) {//IGNORE $0 $types; @lice.set(|$hash_32bit($0) $0 $types);};
-    (*!*) (*@*) (*.*) {//IGNORE $uhc($0) $types; @lice.set(|$hash_32bit($uhc($0)) $uhc($0) $types);};
+    (#*) (&*) (!*) {//IGNORE $0 $types; @lice.set(|$hash_32bit($0) $0 $igtype($0))};
+    (*!*) (*@*) (*.*) {//IGNORE $uhc($0) $types; @lice.set(|$hash_32bit($0) $0 $igtype($uhc($0)))};
     (*) {
       @ :user = get_uh($0);
       UNLESS (strlen($user)) {
         XECHO -B $0: Nick not online.;
         RETURN;
       };
-      //IGNORE $mask(0 $0!$user) $types;
-      @lice.set(|$hash_32bit($mask(0 $0!$user)) $mask(0 $0!$user) $types);
+      @ :pattern = mask(0 $0!$user);
+      //IGNORE $pattern $types;
+      @lice.set(|$hash_32bit($pattern) $pattern $igtype($pattern));
     };
   };
 };
@@ -46,12 +47,6 @@ ALIAS protect {
     IF (_proc.ssupport()) {
       //^SILENCE -*@*;
     };
-  };
-};
-
-ALIAS _saveignore {
-  FE ($ignorectl(REFNUMS)) igs {
-    @lice.set(|$hash_32bit($ignorectl(GET $igs NICK)) $ignorectl(GET $igs NICK) $ignorectl(GET $igs SUPPRESS));
   };
 };
 

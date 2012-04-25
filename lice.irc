@@ -1,7 +1,7 @@
 # LiCe5 - srfrog's LiCe4 ported and enhanced for epic5 by tjh [tim@muppetz.com]
 # Version: 5.2.0
 # Website: http://lice.muppetz.com/
-# Released: 25/03/2011
+# Released: 25/04/2012
 #
 #   IRCII Script Program. For use with ircii-EPIC5 clients.
 #   Copyright (C) 1993-2000 SrfRoG (cag@codehack.com)
@@ -1618,17 +1618,17 @@ ALIAS main_init {
   IF (lice.get(main.theme) != [default]) {LOAD $which($LiCePath/themes/$lice.get(main.theme))};
 
   # load sets from db
-  _lice.readsets;
+  lice.readsets;
   # load notify list from db
   //^NOTIFY $lice.get(lice.notify);
   
   # load servers list from db
-  _lice.readservers;
+  lice.readservers;
   # load ignores from db
-  _lice.readignores;
+  lice.readignores;
 
   # start logging channels
-  _lice.readchanlog;
+  lice.readchanlog;
   FOREACH chanlog hash {
     @ :chan = chanlog[$hash][C];
     _proc.open_log $chan;
@@ -1722,4 +1722,4 @@ main_init;
 
 # cag/00
 # HS/04-04
-# tjh/11
+# tjh/12
