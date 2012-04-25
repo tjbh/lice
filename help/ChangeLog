@@ -1,5 +1,5 @@
 *** Changes in version 5.2.0
-	- MAJOR changes have been made to LiCe!  Please read these
+	- *MAJOR* changes have been made to LiCe!  Please read these
 	  notes carefully.
 	- /SAVE is no longer required. All settings are written to
 	  a database now in realtime.  By default this is ~/.lice but
@@ -14,7 +14,7 @@
 	- Fixed /TOG X when used on multiple servers.
 	- Fixed /PPL to accept a channel argument as detailed in the
 	  help file.
-	- Fixed /ppl breaking /who for the current chan.
+	- Fixed /PPL breaking /WHO for the current chan.
 	- Servers are now saved correctly (and automatically)
 	- Other small fixes for reported issues.
 	- CTOG Q no longer quiets topic changes. Doing so breaks topic

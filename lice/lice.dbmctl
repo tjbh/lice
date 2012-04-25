@@ -31,9 +31,9 @@ IF (lice.fd == -1) {
   xECHO;
   XECHO [LiCe System Message];
   XECHO;
-  XECHO Unable to open $(lice.save_path)/lice.db - Please check this path is valid!;
+  XECHO ERROR: Unable to open $(lice.save_path)/lice.db - Please check this path is valid!;
   XECHO ;
-  XECHO This is a fatal error!;
+  XECHO Unable to continue.
   XECHO ;
   XECHO 5Exiting in 5 seconds.;
   ^PAUSE 5;
@@ -48,10 +48,15 @@ ALIAS lice.del (varname) {@ dbmctl(DELETE $lice.fd "$tolower($varname)")};
 
 # check the db isn't still marked internally as open
 IF (lice.get(db.status) == 1) {
+  CLEAR;
+  XECHO;
   XECHO [LiCe System Message];
   XECHO;
-  XECHO Database marked open;
+  XECHO Warning: Database marked open;
+  XECHO;
   XECHO Are you using LiCe already?;
+  XECHO;
+  XECHO Continuing in 5 seconds...;
   PAUSE 5;
 };
 
