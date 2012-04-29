@@ -1,3 +1,8 @@
+*** Changes in version 5.2.1
+	- Fixed bug where channels weren't being purged from the DB
+	  if you left using /L or /PART.
+	- Updates to QuickStart guide and other help files.
+
 *** Changes in version 5.2.0
 	- *MAJOR* changes have been made to LiCe!  Please read these
 	  notes carefully.

@@ -11,5 +11,5 @@ Usage: AR [auto reply word(s) ...] 
    By default, LiCe will make your current nick the auto-reply
    word.
 
-See also: [SAVE] [TOG] [CTOG] [MTOG] [SENSORS]
+See also: [TOG] [CTOG] [MTOG] [SENSORS]
 

@@ -8,6 +8,10 @@ LiCe has a number of commands to change the settings in use.
 Each command will bring up a menu with a short explaination of what
 they do. You can change more than one setting at once.
 
+If you have used previous versions of LiCe, you'll be used to having
+to /SAVE settings. /SAVE is no longer required in LiCe 5.2.0, all
+settings are now written to the LiCe save database automatically.
+
   3/SENSORS - Change LiCe sensor settings.  Unless you understand what
              you're doing, it's only recommended to change the AutoNick
              and the AutoAWAY settings.
@@ -31,11 +35,10 @@ they do. You can change more than one setting at once.
 
   3/DTOG    - Settings relating to DCC file transfers.
 
-  3/SAVE    - Save all the changes you've made to the settings.  This will
-             write all changes to disk so they're used on next LiCe load.
+  3/CTOG	- Change the toggles for the channel you're currently on.
 
                                 - Messages -
-LiCe will log message when you're set away, as long as /MTOG U is enabled.
+LiCe will log message when you're set away, as long as /MTOG U is enabled.
 
   4/GONE    - This will set you away on the server.  If you don't specify a
              message after the command, LiCe will use a random message from
@@ -52,7 +55,11 @@ LiCe will log message when you're set away, as long as /MTOG U is enabled.
                              - Useful Commands -
 List of commands that will be helpful.
 
-  5/AR      - Set a word (or words) that will be highlighted when said in a
+  5/J       - Join command. Used to join a channel, i.e. /J #LiCe
+
+  5/L       - Leave command. Used to leave the channel you're on.
+
+  5/AR      - Set a word (or words) that will be highlighted when said in a
              channel you're in. Makes it easy to see your nickname when
              in a busy channel and also will log any mention of it when you
              are set away.
@@ -64,4 +71,9 @@ List of commands that will be helpful.
              currently active.
 
   5/SC      - List all the nicks on the current channel.
+
+  5/WHOIS   - Will perform a whois on the nickname requested.
+	     i.e. /WHOIS tjh
+
+  5/QUIT    - Quit epic5 and resume your normal boring life!
 

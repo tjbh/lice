@@ -8,7 +8,7 @@ Usage: CTOG [channel toggle letter(s)] 
    was triggered.
 
 A
-   Makes the toggles permanent on /SAVE.
+   Write these toggles to database.
 
 B
    Shit actions: AutoDEOP, AutoKICK, AutoIGNORE, AutoBAN.
@@ -74,8 +74,7 @@ Usage: CTOG [channel toggle letter(s)] 
 S
    AutoSHIT of flooders. When enabled, it will add users that flood your
    channels with SHIT mode +F (KICKBAN). Users that attempt to flood You,
-   are added with mode +I (IGNORE). This AutoSHIT will not be save
-   automatically, you need to use /SAVE for that.
+   are added with mode +I (IGNORE). 
 
 T
    Topic lock. This will enforce your topic for that channel.

@@ -101,7 +101,7 @@ LOAD -pf $LiCePath/lice/lice.defaults;
 LOAD $LiCePath/themes/default;
 
 # program information
-^ASSIGN id.v $decode(DFCODCCODA);
+^ASSIGN id.v $decode(DFCODCCODB);
 
 ALIAS lice (addon) {
   @ :ret = [];
@@ -725,7 +725,8 @@ ALIAS leave {
       };};
   };
 };
-ALIAS l {//PART};
+ALIAS l {leave $*};
+ALIAS part {leave $*};
 ALIAS cycle {
    @ :c.ch = @ ? (ischannel($0) ? [$0] : [#$0]) : C;
    UNLESS (rmatch($c.ch $mychannels()) == 0) {

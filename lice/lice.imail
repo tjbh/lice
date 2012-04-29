@@ -178,7 +178,7 @@ ALIAS _proc.imail_send {
         # so shoot me :)
         @ write($im.fd $chr(32));
         @ write($im.fd ---);
-        @ write($im.fd LiCe v$id.v | http://lice.codehack.com);
+        @ write($im.fd LiCe v$id.v | http://lice.muppetz.com);
         @ write($im.fd  );
       };
       @ close($im.fd);
