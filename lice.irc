@@ -433,7 +433,7 @@ ON #-TIMER -13 * {
        IF (isset(R)) {
           FE ($mychannels($serv)) chan {
              IF (!ischanop($nick $chan) && numonchannel($chan) == 1) {
-                //PART $chan;
+                leave $chan;
                 WAIT -CMD WINDOW $winchan($chan) CHANNEL "$chan $key($chan)";
              };
           };
@@ -730,12 +730,12 @@ ALIAS part {leave $*};
 ALIAS cycle {
    @ :c.ch = @ ? (ischannel($0) ? [$0] : [#$0]) : C;
    UNLESS (rmatch($c.ch $mychannels()) == 0) {
-    //PART $c.ch;
+    leave $c.ch;
     WAIT -CMD //JOIN $c.ch $key($c.ch);
    }{//JOIN $c.ch;};
 };
 ALIAS chg {
-  //PART *;
+  leave $*;
   IF (@) {WAIT -CMD JOIN $0-};
 };
 ALIAS w {
@@ -1324,7 +1324,7 @@ ON #-JOIN -13 * {
     UNLESS (strlen($temp.my_ip_address)) {@ temp.my_ip_address = nametoip($after(@ $2))};
    ^TIMER -REF SYNC[$hash] $lice.get(main.cch) {
       UNLESS (strlen($lice.get(chan[$hash_32bit($1)][S])) || !onchannel($servernick() $1)) {
-        //PART $1;
+        leave $1;
         WAIT -CMD WINDOW $winchan($1) CHANNEL "$1 $key($1)";
       };
     };

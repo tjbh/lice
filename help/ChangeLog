@@ -1,6 +1,6 @@
 *** Changes in version 5.2.1
-	- Fixed bug where channels weren't being purged from the DB
-	  if you left using /L or /PART.
+	- Fixed routines called when leaving a channel. This ensures
+	  the database stays clean.
 	- Updates to QuickStart guide and other help files.
 
 *** Changes in version 5.2.0

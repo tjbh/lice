@@ -58,7 +58,7 @@ BIND ^Wj PARSE_COMMAND {
     win_new CHANNEL $chan NAME $chan;
     ^ON -WINDOW_KILL "$winnum($chan) %" {
       ^ASSIGN -chan_topic[$chanwin($1)$hash_32bit($1)];
-      IF (onchannel($servernick() $1)) {//PART $1};
+      IF (onchannel($servernick() $1)) {leave $1};
       ^ON -WINDOW_KILL -"$0 %";
     };
   };
