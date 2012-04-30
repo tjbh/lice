@@ -1,8 +1,0 @@
-Usage: SAVE [Quiet]
-   Saves all LiCe settings and lists.
-   If 'Quiet' is the argument, everything is saved silently.
-   A backup file of the old save is made in the '~/.irc'
-   directory (LiCe's main working directory).
-
-See also: [USERLIST] [NOTIFY] [SENSORS]
-

@@ -3,11 +3,12 @@
 #   Copyright (C) 2000 SrfRoG (cag@codehack.com)
 #
 # ---------------------------------------------------------------------------
-# lice.dbmctl written by tjh for LiCe5.2.0+ for EPIC5. tjh - tim@muppetz.com
+# lice.db written by tjh for LiCe5.2.0+ for EPIC5. tjh - tim@muppetz.com
 #
 # This file opens the database file in which variables are stored and creates
 # some aliases to easily manage the variables in the DB.
-# autosave of system settings is handled (mostly) by this file.
+#
+# Autosave of system settings is handled by this file.
 #
 # http://lice.muppetz.com - LiCe5
 # ---------------------------------------------------------------------------
@@ -60,7 +61,7 @@ IF (lice.get(db.status) == 1) {
   PAUSE 5;
 };
 
-# now mark database as open!
+# mark database as open
 @lice.set(db.status 1);
 
 # read sets from the db and push them into place
@@ -123,7 +124,11 @@ ALIAS notify {
   @lice.set (lice.notify $notify());
 };
 
-# Catch server connections and add to saved list.
+# Auto save of servers
+ALIAS SERVER {
+  //SERVER $*;
+  IF (([$0] =~ [-D*]) || ([$0] =~ [-U*])) {lice.saveservers};
+};
 ^ON ^CONNECT * {^TIMER 5 {lice.saveservers}};
 
 #tjh/12

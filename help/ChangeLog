@@ -1,7 +1,7 @@
 *** Changes in version 5.2.1
-	- Fixed routines called when leaving a channel. This ensures
-	  the database stays clean.
+	- Fixed routines called when leaving a channel.
 	- Updates to QuickStart guide and other help files.
+	- We now remove servers from database when deleted.
 
 *** Changes in version 5.2.0
 	- *MAJOR* changes have been made to LiCe!  Please read these

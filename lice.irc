@@ -88,8 +88,8 @@ UNLESS (strlen($lice.save_path)) {^ASSIGN lice.save_path $twiddle(~/.lice)};
 # lice.epic5 imports builtins from epic4 for epic5 - backwards compatability
 LOAD -pf $LiCePath/lice/lice.epic5; 
 
-# database storage
-LOAD -pf $LiCePath/lice/lice.dbmctl;
+# database engine;
+LOAD -pf $LiCePath/lice/lice.db;
 
 # check to disable update
 IF (fexist($(LiCePath)/disable_update) == 1) {@ dlu = 1};
@@ -735,7 +735,7 @@ ALIAS cycle {
    }{//JOIN $c.ch;};
 };
 ALIAS chg {
-  leave $*;
+  leave;
   IF (@) {WAIT -CMD JOIN $0-};
 };
 ALIAS w {
@@ -807,7 +807,7 @@ ALIAS rar {
     iecho Removed $lice.get(main.buf) from your auto-reply buffer;
     @lice.del(main.buf);
   }{
-    iecho Auto-reply buffer is already empty;
+    iecho Auto-reply buffer is empty;
   };
 };
 ALIAS stime {
