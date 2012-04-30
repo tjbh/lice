@@ -88,7 +88,7 @@ ALIAS _proc.ctog_do_locks (type,mode,hash,chan,serv) {
   };
 };
 ALIAS ctog {
-  UNLESS (@) {
+  UNLESS ((@) && (!$C)) {
     _proc.setup_ctog;
     RETURN;
   };
