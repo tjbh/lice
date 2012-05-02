@@ -6,6 +6,7 @@
 # All code by SrfRoG, unless specified. Visit http://lice.codehack.com
 # ---------------------------------------------------------------------------
 # Updated for EPIC5 by tjh
+# Updated 3/5/2012 to support %halfop
 
 IF (word(2 $loadinfo()) != [pf]) {
   LOAD -pf $word(1 $loadinfo());
@@ -22,12 +23,13 @@ ALIAS cwho {
   @ :cw.opts = [];
   @ :cw.flag = 0;
   @ :cw.cnt = 1;
-  WHILE (cw.opts = getopt(optopt optarg alov $*)) {
+  WHILE (cw.opts = getopt(optopt optarg alovh $*)) {
     SWITCH ($cw.opts) {
       (a) { @ :cw.flag = 1 };
       (l) { @ :cw.flag ^= 2 };
       (o) { @ :cw.flag ^= 4 };
       (v) { @ :cw.flag ^= 8 };
+      (h) { @ :cw.flag ^= 16 };
       (!) { XECHO -B Invalid option \"$optopt\" };
     };
   };
@@ -55,6 +57,15 @@ ALIAS cwho {
         };
         CONTINUE;
     };
+    @ :cw.hmode = left(1 $cw.1);
+    IF (cw.hmode == [%] && (cw.flag & 1 || cw.flag & 16)) {
+        @ :cw.host = userhost($cw.nick);
+        IF (pattern($cw.mask ${cw.nick}!${cw.host})) {
+          cecho [$[-3]cw.cnt] %$[9]cw.nick $cw.host $cw.type;
+          @ cw.cnt++;
+        };
+        CONTINUE;
+    };
     @ :cw.vmode = mid(1 1 $cw.1);
     IF (cw.vmode == [+] && (cw.flag & 1 || cw.flag & 8)) {
         @ :cw.host = userhost($cw.nick);
@@ -74,4 +85,4 @@ ALIAS cwho {
   };
   UNLESS (cw.cnt > 1) {XECHO -B No matches for \"$cw.mask\"};
 };
-#tjh/09
+#tjh/12

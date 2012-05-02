@@ -351,6 +351,8 @@ ALIAS _proc.names_mode (nick) {
   @ :mod = left(1 $nick);
   IF (mod == [@]) {
     @ names.o++;
+  } ELSIF (mod == [%]) {
+    @ names.h++;
   } ELSIF (mod == [+]) {
     @ names.v++;
   } ELSE {
@@ -363,8 +365,8 @@ ALIAS _proc.names_mode (nick) {
 };
 ON -366 * {
   IF (names.max) {
-    @ :names.t = names.v + names.o + names.l;
-    if (fmt.sc_bot()) {ECHO $fmt.sc_bot($2 $names.o $names.v $names.l $names.t);};
+    @ :names.t = names.v + names.o + names.h + names.l;
+    if (fmt.sc_bot()) {ECHO $fmt.sc_bot($2 $names.o $names.h $names.v $names.l $names.t);};
     purge names;
   };
 };
@@ -374,7 +376,7 @@ ON ^353 * {
     @ :max = fmt.sc_max() ? fmt.sc_max() : (word(0 $geom()) - 1) / 11;
     @ :min = ismset(T) ? ((strlen($strftime($lice.get(main.tsfmt))) + 2) / 11) + 1 : 0;
     @ names.max = max - min;
-    @ names.v = names.o = names.l = 0;
+    @ names.v = names.o = names.h = names.l = 0;
     ECHO $fmt.sc_top($2);
   };
   ^LOCAL list $3-;

@@ -35,7 +35,7 @@ ALIAS sc {
   @ :min = ismset(T) ? ((strlen($strftime($lice.get(main.tsfmt))) + 2) / 11) + 1 : 0;
   @ :max -= min;
 
-  @ scn.v = scn.o = scn.l = 0;
+  @ scn.v = scn.o = scn.l = scn.h = 0;
   @ :scn.list = [];
 
   ECHO $fmt.sc_top($chan);
@@ -46,8 +46,8 @@ ALIAS sc {
     @ :scn.list = [];
   };
   IF (strlen($scn.list)) {ECHO $fmt.sc_mid($scn.list)};
-  @ :scn.t = scn.v + scn.o + scn.l;
-  IF (fmt.sc_bot()) {ECHO $fmt.sc_bot($chan $scn.o $scn.v $scn.l $scn.t);};
+  @ :scn.t = scn.v + scn.o + scn.l + scn.h;
+  IF (fmt.sc_bot()) {ECHO $fmt.sc_bot($chan $scn.o $scn.h $scn.v $scn.l $scn.t);};
   purge scn;
 };
 
@@ -56,6 +56,9 @@ ALIAS _proc.scn_mode (nick) {
   IF (left(1 $nick) == [@]) {
     @ scn.o++;
     ^LOCAL mod @;
+  } ELSIF (left(1 $nick) == [%]) {
+    @ scn.h++;
+    ^LOCAL mod %;
   } ELSIF (mid(1 1 $nick) == [+]) {
     @ scn.v++;
     ^LOCAL mod +;
@@ -65,4 +68,4 @@ ALIAS _proc.scn_mode (nick) {
   @ :ret = mod ## nic;
   RETURN $ret;
 };
-#tjh/09
+#tjh/12
