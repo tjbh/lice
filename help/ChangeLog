@@ -1,3 +1,7 @@
+*** Changes in version 5.2.2
+	- Added support for the display of halfop status on join and to
+	  SC, CWHO and PPL.
+
 *** Changes in version 5.2.1
 	- Fixed cleanup routines not being called when leaving a channel.
 	- Updates to QuickStart guide and other help files.

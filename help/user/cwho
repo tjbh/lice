@@ -5,6 +5,7 @@ Usage: CWHO [[flag] [nick!user@host pattern]] 
 Flags:
 	-a	ALL. Display all users matching n!u@h (default)
 	-o	OPS. Displays channel ops for a given n!u@h pattern.
+	-h	HALFOPS. Displays channel half-ops for a given n!u@h pattern.
 	-l	NONOPS. Displays channel non-ops for a given n!u@h pattern.
 	-v	VOICES. Displays channel voices for a given n!u@h pattern.
 

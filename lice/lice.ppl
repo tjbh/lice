@@ -6,6 +6,7 @@
 # All code by SrfRoG, unless specified. Visit http://lice.codehack.com
 # ---------------------------------------------------------------------------
 # Updated for EPIC5 by tjh
+# Updated to support halfop by tjh
 
 IF (word(2 $loadinfo()) != [pf]) {
   LOAD -pf $word(1 $loadinfo());
@@ -23,7 +24,7 @@ ALIAS ppl {
   ^ASSIGN ppl.s *.*;
   ^ASSIGN ppl.k 999;
   #@ :ppl.foo = getopt();
-  WHILE (option = getopt(optopt optarg "c:ghilop:n:s:v" $*)) {
+  WHILE (option = getopt(optopt optarg "c:ghilop:n:s:va" $*)) {
     SWITCH ($option) {
       (c) {IF (isnumber($optarg)) {@ ppl.k = optarg}};
       (g) {@ ppl.x #= [G]};
@@ -35,13 +36,15 @@ ALIAS ppl {
       (n) {@ ppl.n = optarg};
       (s) {@ ppl.s = optarg};
       (v) {@ ppl.x #= [+]};
+      (a) {@ ppl.x #= [%]};
     };
   };
   @ ppl.c = optarg ? optarg : C;
   ^ON ^WHO "\\$ppl.c *" {
     ^LOCAL modes $2;
-    IF (pass(@ $modes)) {@ ppl.o++}{
-    IF (pass(+ $modes)) {@ ppl.v++}{@ ppl.l++};};
+    IF (pass(@ $modes)) {@ ppl.o++}{ 
+    IF (pass(% $modes)) {@ ppl.a++}{
+    IF (pass(+ $modes)) {@ ppl.v++}{@ ppl.l++};}};
     @ ppl.i += !!pass(* $modes);
     IF (pass(X $ppl.x)) {
       IF (pass(@ $modes)) {RETURN};
@@ -53,14 +56,14 @@ ALIAS ppl {
     #XECHO -C $cparse(%W$[2]2\%n$_dots(11 $left(9 $1))$_rdots(11 $strip(-+=~ $3))%B@%n$4$_rdots(${word(0 $geom()) - (27 + strlen($4))} $5)%C$6%n)
     XECHO -C 16$[2]2$_dots(11 $left(9 $1))$_rdots(11 $strip(-+=~ $3))12@$4$_rdots(${word(0 $geom()) - (26 + strlen($4))} $5)${isdigit($6) ? [$6] : []};
   };
-  @ ppl.i = ppl.l = ppl.m = ppl.o = ppl.v = 0;
+  @ ppl.i = ppl.l = ppl.m = ppl.o = ppl.a = ppl.v = 0;
   //WHO $ppl.c -END {
     ^ON ^WHO -"\\$1 *";
-    @ :total = ppl.o + ppl.v + ppl.l;
-    cecho $ppl.c - matched $ppl.m user$plural($ppl.m) \(*=$ppl.i -o=$ppl.l +v=$ppl.v +o=$ppl.o\) / $total total users;
+    @ :total = ppl.o + ppl.v + ppl.l + ppl.a;
+    cecho $ppl.c - matched $ppl.m user$plural($ppl.m) \(*=$ppl.i -o=$ppl.l +v=$ppl.v +o=$ppl.o +h=$ppl.a \) / $total total users;
     purge ppl;
     ^SET HOLD_MODE OFF;
   };
   ^SET HOLD_MODE ON;
 };
-#tjh/09
+#tjh/12

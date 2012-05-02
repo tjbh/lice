@@ -1,0 +1,28 @@
+Usage: IGNORE < nick | n!u@h pattern > [[-|+]Ignore types]
+Usage: IGNORE < channel | channel pattern > [[-|+]Ignore types]
+
+   IGNOREs a nick or users matching the wildcard pattern specified.
+   It can also ignore entire channels, by channel name or pattern.
+   If no 'ignore types' are given, "ALL CRAP -PUBLIC" is used.
+
+Ignore types:
+   ALL MSGS PUBLIC WALLS WALLOPS INVITES NOTICES NOTES CTCPS CRAP NONE
+
+Examples:
+   /IGNORE *!*@*aol.com          - ignores users matching '*!*@*aol.com'.
+   /IGNORE *!*@*aol.com NONE     - removes ignore for '*!*@*aol.com'.
+
+   /IGNORE Vassago MSGS NOTICES  - ignores 'NOTICES' and 'MSGS' from
+                                   Vassago's address.
+                                   (ie., *!*lamer@*dork.org).
+   /IGNORE Vassago NONE          - removes previous ignore for Vassago's
+                                   address.
+
+   /IGNORE #exceed CTCPS         - ignores all 'CTCPS' for channel
+                                   #exceed (if you are on the channel).
+   /IGNORE #exceed NONE          - removes previous ignore for #exceed.
+
+   /IGNORE *!*@*                 - ignores everyone! be careful!
+                                 
+See also: [NOIG] [epic 1 IGNORE]
+

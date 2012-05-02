@@ -7,8 +7,9 @@ Flags:
 	-g	GONE. Displays users that are AWAY.
 	-h	HERE. Displays users that are not AWAY.
 	-i	IRCOPS. Displays users that are IRC operators.
-	-l	LAMERS. Displays users that are not Ops or Voices (-o).
+	-l	LAMERS. Displays users that are not Ops, half Ops or Voices (-o).
 	-o	OPS. Displays users that are channel operators (+o).
+	-a	HALFOPS. Displays users that are channel half Ops (+%)
 	-v	VOICES. Displays users that are channel voices (+v).
 	-n name	Displays users that match the name in their IRCNAME.
 	-p mask	Displays users only matching the mask in their
