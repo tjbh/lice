@@ -72,7 +72,7 @@ ALIAS fmt.sc_mid {
 }
 ALIAS fmt.sc_bot {
   @ :ch.h = hash_32bit($0)
-  RETURN $G Ministats $0 $1o $3n $numitems(B$winserv()\-$ch.h)b $2v ${chan[$ch.h][S]?[\(Sets\: +$chan[$ch.h][S]\)]:[]}
+  RETURN $G Ministats $0 $1o $2h $4n $numitems(B$winserv()\-$ch.h)b $3v ${chan[$ch.h][S]?[\(Sets\: +$chan[$ch.h][S]\)]:[]}
 }
 ALIAS fmt.send_action		RETURN 3* $N${iscurchan($0)?[]:[\:$0]} $1-
 ALIAS fmt.send_action_me 	RETURN -> \($N\) 9$0 $1-

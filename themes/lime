@@ -84,7 +84,7 @@ ALIAS fmt.sc_mid (list) {
   }
   RETURN $ret
 }
-ALIAS fmt.sc_bot	RETURN $G Channel stats: ops/$1 non/$3 voc/$2 total/$4
+ALIAS fmt.sc_bot	RETURN $G Channel stats: ops/$1 halfs/$2 non/$4 voc/$3 total/$5
 ALIAS fmt.send_action	RETURN $G 32$N${iscurchan($0)?[]:[50\/32]##[$0]} $1-
 ALIAS fmt.send_action_me   RETURN $G 32$N50/32$0 $1-
 ALIAS fmt.send_dcc_chat	RETURN 50[37dcc50/32$050] $1-

@@ -126,7 +126,7 @@ alias fmt.sc_mid {
 }
 alias fmt.sc_bot {
     @ :ch.h = hash_32bit($0)
-    return 12:: $shade(stats 12 2 14) $0: +o[$1] -o[$3] +b[$numitems(B$winserv()\-$ch.h)] +v[$2] ${chan[$ch.h][S]?[\(Sets\: +$chan[$ch.h][S]\)]:[]}
+    return 12:: $shade(stats 12 2 14) $0: +o[$1] +h[$2] -o[$4] +b[$numitems(B$winserv()\-$ch.h)] +v[$3] ${chan[$ch.h][S]?[\(Sets\: +$chan[$ch.h][S]\)]:[]}
 }
 # /whois
 alias fmt.whois_top return 12.: $0     12:: $114!$214@$3 12:.

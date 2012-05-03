@@ -96,7 +96,7 @@ ALIAS fmt.sc_mid (list) {
   }
   RETURN $cparse(%n$ret%c=)
 }
-ALIAS fmt.sc_bot	RETURN $center($word(0 $geom()) [ops: $1] [voices: $2] [total: $4] [bans: $numitems(B$winserv()\-$hash_32bit($0))])
+ALIAS fmt.sc_bot	RETURN $center($word(0 $geom()) [ops: $1] [halfs: $2] [voices: $3] [total: $5] [bans: $numitems(B$winserv()\-$hash_32bit($0))])
 ALIAS fmt.send_action 	RETURN 10* ${ischanop($N $0)?[9@$N${iscurchan($0)?[]:[\:10$tolower($0)]}]:[$N${iscurchan($0)?[]:[\:10$tolower($0)]}]} $1-
 ALIAS fmt.send_action_me 	RETURN 14>> \(16$0\> 10* $N $1-
 ALIAS fmt.send_dcc_chat RETURN 14>> 12=6$012= $1-

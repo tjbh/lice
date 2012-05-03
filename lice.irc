@@ -101,7 +101,7 @@ LOAD -pf $LiCePath/lice/lice.defaults;
 LOAD $LiCePath/themes/default;
 
 # program information
-^ASSIGN id.v $decode(DFCODCCODB);
+^ASSIGN id.v $decode(DFCODCCODC);
 
 ALIAS lice (addon) {
   @ :ret = [];
@@ -220,6 +220,7 @@ ON ^332 * {
   };
 };
 ON ^333 * {XECHO -W $chanwin($1) $fmt.banner_chan() $fmt.topic_set($1 Set by $2 on $strftime($3 %c))};
+ON ^335 * {ECHO $fmt.whois_mid(Bot $2-)};
 ON #-351 13 * {
   XECHO -B $info(C);
   XECHO -B System: $uname(%a);
