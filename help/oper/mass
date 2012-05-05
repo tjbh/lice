@@ -3,6 +3,8 @@ Usage: MASS <-flag> [pattern [reason of kick]]
 Flags:
 	-o	MassOP (+o) non-op'd nicks.
 	-d	MassDEOP (-o) op'd nicks.
+	-h	MassHOP (+h) non-halfop'd nicks.
+	-n	MassDHOP (-h) halfop'd nicks.
 	-v	MassVOICE (+v) non-op'd nicks.
 	-q	MassQUIET (-v) voice'd nicks.
 	-k	MassKICK all nicks.
@@ -16,4 +18,3 @@ i.e
 	/MASS -k *.com paying for internet is lame!!!!
 
 See also: [OP] [DOP] [VOICE] [QUIET] [KICK]
-

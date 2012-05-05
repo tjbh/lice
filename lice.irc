@@ -730,6 +730,7 @@ ALIAS leave {
 };
 ALIAS l {leave $*};
 ALIAS part {leave $*};
+
 ALIAS cycle {
    @ :c.ch = @ ? (ischannel($0) ? [$0] : [#$0]) : C;
    UNLESS (rmatch($c.ch $mychannels()) == 0) {
@@ -784,6 +785,14 @@ ALIAS dop {
 ALIAS op {
   ^ASSIGN mode_list $*;
   _proc.loop_mode $winserv() + o $C mode_list;
+};
+ALIAS dhop
+  ^ASSIGN mode_list $*;
+  _proc.loop_mode $winserv() - h $C mode_list;
+};
+ALIAS hop {
+  ^ASSIGN mode_list $*;
+  _proc.loop_mode $winserv() + h $C mode_list;
 };
 ALIAS reop {
   ^ASSIGN mode_list $remw($N $chops($C)) $*;

@@ -1,0 +1,6 @@
+Usage: HOP <nick1 nick2 ... nicks> 
+
+   Gives channel half-operator status (+h) to the specified nick(s)
+
+See also: [REOP] [DHOP] [QUIET] [VOICE] [MASS]
+

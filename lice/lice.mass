@@ -22,6 +22,7 @@ ALIAS _proc.mass_match {
     SWITCH ($0) {
       (+k) { PUSH $2 $mm.1 };
       (+o) { IF (ischanop($mm.1 $C)) { PUSH $2 $mm.1 } };
+      (+n) { IF (ishalfop($mm.1 $C)) { PUSH $2 $mm.1 } };
       (-k) (-o) { UNLESS (ischanop($mm.1 $C)) { PUSH $2 $mm.1 } };
       (+v) { IF (ischanvoice($mm.1 $C) == 1) { PUSH $2 $mm.1 } };
       (-v) { IF (ischanvoice($mm.1 $C) == 0) { PUSH $2 $mm.1 } };
@@ -38,6 +39,10 @@ ALIAS mass {
         _proc.mass_match +o $mass.p mass_list;
         _proc.loop_mode $winserv() - o $C mass_list;
       };
+      (-n) {
+        _proc.mass_match +o $mass.p mass_list;
+        _proc.loop_mode $winserv() - h $C mass_list;
+      };
       (-k) {
         @ mass_msg = strlen($2) ? [$2-] : randread($main.reason_kick);
         _proc.mass_match +k $mass.p mass_list;
@@ -52,6 +57,10 @@ ALIAS mass {
         _proc.mass_match -o $mass.p mass_list;
         _proc.loop_mode $winserv() + o $C mass_list;
       };
+      (-h) {
+        _proc.mass_match -h $mass.p mass_list;
+        _proc.loop_mode $winserv() + h $C mass_list;
+      };
       (-q) {
         _proc.mass_match +v $mass.p mass_list;
         _proc.loop_mode $winserv() - v $C mass_list;
@@ -62,8 +71,8 @@ ALIAS mass {
       };
     };
   }{
-    uecho Usage: /MASS <-d|-o|-q|-v> [pattern];
+    uecho Usage: /MASS <-d|-o|-n|-h|-q|-v> [pattern];
     uecho Usage: /MASS <-k|-l> [pattern [reason]];
   };
 };
-#tjh/09
+#tjh/12

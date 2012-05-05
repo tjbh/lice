@@ -1,0 +1,5 @@
+Usage: DOP <nick1 nick2 ... nicks> 
+   Removes channel half-operator status (-h) from the specified nick(s)
+
+See also: [HOP] [QUIET] [VOICE] [MASS]
+

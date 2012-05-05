@@ -79,7 +79,7 @@ ALIAS fmt.sc_mid (list) {
   }
 				RETURN 7³ $ret
 }
-ALIAS fmt.sc_bot 		RETURN 7À4Ä14Ä4> 15+o14[16$114] 15-o14[16$314] 15+v14[16$214] 15total14[16$414]
+ALIAS fmt.sc_bot 		RETURN 7À4Ä14Ä4> 15+o14[16$114] 15+h14[16$214] 15-o14[16$414] 15+v14[16$314] 15total14[16$514]
 ALIAS fmt.send_action		RETURN 4> 15$N${iscurchan($0)?[]:[14/16$0]} $1-
 ALIAS fmt.send_action_me 	RETURN 4> 15$N14/15$0 $1-
 ALIAS fmt.send_dcc_chat 	RETURN 4-> 15chat14[15$014]7: $1-
