@@ -82,7 +82,7 @@ ALIAS fmt.sc_max 	RETURN 7
 ALIAS fmt.sc_top	RETURN $cparse(%K:\(%n%Wchannel:%n%B $0%n%K\)$repeat(${66-strlen($0)} :))
 ALIAS fmt.sc_mid (list) {
   FE ($list) xx {
-    @ :mod = pass(@+ $xx)
+    @ :mod = pass(@+% $xx)
     @ :spc = mod ? mod : [ ]
     @ :nic = strip(@+% $xx)
     @ :ret #= [%K|] ## [%W] ## spc ## [%n] ## [$[9]nic]

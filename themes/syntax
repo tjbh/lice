@@ -72,7 +72,7 @@ ALIAS fmt.sc_mid (list) {
   @ :cnt = 0
   FE ($list) xx {
     @ :cnt++
-    @ :mod = pass(@+ $xx)
+    @ :mod = pass(@+% $xx)
     @ :spc = mod ? mod : [ ]
     @ :nic = strip(@+% $xx)
     @ :ret #= [16] ## spc ## [15] ## [$[10]nic] ## [${cnt!=fmt.sc_max()?[14ú ]:[]}]

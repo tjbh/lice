@@ -93,7 +93,7 @@ ALIAS fmt.sc_top	RETURN $fmt.banner_chan() Names on $ch($0)\:
 ALIAS fmt.sc_max	RETURN 0
 ALIAS fmt.sc_mid (list) {
   FE ($list) xx {
-    @ :mod = pass(@+ $xx)
+    @ :mod = pass(@+% $xx)
     IF (strlen($mod)) {
       @ :spc = [16] ## mod ## []
       @ :nic = mid(0 9 $strip(@+% $xx))

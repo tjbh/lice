@@ -72,7 +72,7 @@ ALIAS fmt.sc_top		RETURN 7Ú4Ä14Ä4ÄÄ7ÄÄ4ÄÄ14Ä[users14/15$014]4Ä7ÄÄ4
 ALIAS fmt.sc_max		RETURN 5
 ALIAS fmt.sc_mid (list) {
   FE ($list) xx {
-    @ :mod = pass(@+ $xx)
+    @ :mod = pass(@+% $xx)
     @ :spc = mod ? mod : [ ]
     @ :nic = strip(@+% $xx)
     @ :ret #= [14\[] ## [4] ## spc ## [] ## [$[10]nic] ## [14\]] ## [ ]
