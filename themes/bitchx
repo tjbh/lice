@@ -45,7 +45,7 @@ ALIAS fmt.sc_mid (list) {
   FE ($list) xx {
     @ :mod = pass(@+ $xx)
     @ :spc = mod ? mod : [ ]
-    @ :nic = strip(@+ $xx)
+    @ :nic = strip(@+% $xx)
     @ :ret #= [14\[] ## [11] ## spc ## [12] ## [$[10]nic] ## [14\]] ## [ ]
   }
 			RETURN $ret

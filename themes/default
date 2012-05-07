@@ -77,7 +77,7 @@ ALIAS fmt.sc_mid (list) {
     @ :mod = pass(@+ $xx)
     IF (strlen($mod)) {
       @ :spc = [16] ## mod ## []
-      @ :nic = mid(0 9 $strip(@+ $xx))
+      @ :nic = mid(0 9 $strip(@+% $xx))
     }{
       @ :spc = [ ]
       @ :nic = mid(0 9 $xx)

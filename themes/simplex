@@ -86,12 +86,12 @@ ALIAS fmt.sc_mid (list) {
   FE ($list) xx {
     @ :mod = pass(@+ $xx)
     @ :spc = mod ? mod : [ ]
-    @ :nic = strip(@+ $xx)
+    @ :nic = strip(@+% $xx)
     @ :ret #= [%n] ## spc ## [%n] ## [$[9]nic] ## [ ]
   }
   RETURN $cparse($ret)
 }
-ALIAS fmt.sc_bot        RETURN $fmt.banner_chan() Ministats: +o[$1] -o[$3] +v[$2] - total: $4
+ALIAS fmt.sc_bot        RETURN $fmt.banner_chan() Ministats: +o[$1] +h[$2]-o[$4] +v[$3] - total: $5
 
 # Event banner colors
 ALIAS fmt.banner_info	RETURN 3$G

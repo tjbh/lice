@@ -74,7 +74,7 @@ FE ($list) xx {
   @ :cnt++
   @ :mod = pass(@+ $xx)
   @ :spc = mod ? mod : [ ]
-  @ :nic = strip(@+ $xx)
+  @ :nic = strip(@+% $xx)
   @ :ret #= [14\[12] ## spc ## [2] ## [$[10]nic] ## [${cnt!=fmt.sc_max()?[14\] ]:[]}]
 }
 		      RETURN 12º $ret
