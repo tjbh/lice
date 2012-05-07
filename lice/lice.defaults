@@ -62,7 +62,7 @@ SET INSERT_MODE ON;
 SET INVERSE_VIDEO ON;
 SET LASTLOG 512;
 SET LASTLOG_LEVEL DCC,ALL;
-SET LOAD_PATH /usr/local/share/epic/script:~/.irc:.;
+SET LOAD_PATH /usr/local/share/epic/script:~/lice5:.;
 SET LOG OFF;
 SET LOGFILE IRCLOG;
 SET MAIL 2;
@@ -176,4 +176,4 @@ IF (strlen($lice.get(main.auto_nick))) {
 ^ASSIGN main.dcc_active_limit 10;
 ^ASSIGN main.dcc_send_queue 50;
 ^ASSIGN main.dcc_get_queue 50;
-#tjh/11
+#tjh/12

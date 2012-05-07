@@ -3,9 +3,10 @@
 #   Copyright (C) 2000 SrfRoG (cag@codehack.com)
 #
 # ---------------------------------------------------------------------------
-# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# All code by SrfRoG, unless specified. Visit http://lice.muppetz.com
 # ---------------------------------------------------------------------------
 # Updated for EPIC5 by tjh
+# Support for halfop added by tjh 7/5/2012
 
 IF (word(2 $loadinfo()) != [pf]) {
   LOAD -pf $word(1 $loadinfo());
@@ -22,7 +23,8 @@ ALIAS _proc.mass_match {
     SWITCH ($0) {
       (+k) { PUSH $2 $mm.1 };
       (+o) { IF (ischanop($mm.1 $C)) { PUSH $2 $mm.1 } };
-      (+n) { IF (ishalfop($mm.1 $C)) { PUSH $2 $mm.1 } };
+      (-h) { IF (ishalfop($mm.1 $C)) { PUSH $2 $mm.1 } };
+      (+h) { UNLESS (ishalfop($mm.1 $C)) { PUSH $2 $mm.1 } };
       (-k) (-o) { UNLESS (ischanop($mm.1 $C)) { PUSH $2 $mm.1 } };
       (+v) { IF (ischanvoice($mm.1 $C) == 1) { PUSH $2 $mm.1 } };
       (-v) { IF (ischanvoice($mm.1 $C) == 0) { PUSH $2 $mm.1 } };
@@ -40,7 +42,7 @@ ALIAS mass {
         _proc.loop_mode $winserv() - o $C mass_list;
       };
       (-n) {
-        _proc.mass_match +o $mass.p mass_list;
+        _proc.mass_match -h $mass.p mass_list;
         _proc.loop_mode $winserv() - h $C mass_list;
       };
       (-k) {
@@ -58,7 +60,7 @@ ALIAS mass {
         _proc.loop_mode $winserv() + o $C mass_list;
       };
       (-h) {
-        _proc.mass_match -h $mass.p mass_list;
+        _proc.mass_match +h $mass.p mass_list;
         _proc.loop_mode $winserv() + h $C mass_list;
       };
       (-q) {

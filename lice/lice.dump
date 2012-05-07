@@ -3,7 +3,7 @@
 #   Copyright (C) 2000 SrfRoG (cag@codehack.com)
 #
 # ---------------------------------------------------------------------------
-# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# All code by SrfRoG, unless specified. Visit http://lice.muppetz.com
 # ---------------------------------------------------------------------------
 # Updated for EPIC5 by tjh
 
@@ -32,4 +32,4 @@ ALIAS dump {
     XECHO -B Dump done.;
   };
 };
-#tjh/11
+#tjh/12
