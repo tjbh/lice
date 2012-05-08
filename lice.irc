@@ -193,7 +193,7 @@ ON ^318 * {
   IF (temp.whois_away > 0) {
     @temp.whois_away--;
     IF (ismset(O)) {_proc.note_wget $1};
-    IF (fmt.whois_bot()) {ECHO $fmt.whois_bot(Whois $*);}
+    IF (aliasctl(ALIAS EXISTS fmt.whois_bot)) {ECHO $fmt.whois_bot(Whois $*)};
   };
 };
 ON ^319 * {ECHO $fmt.whois_mid(Channels $2-)};
@@ -278,7 +278,7 @@ ON ^369 * {
   IF (temp.whois_away > 0) {
     @temp.whois_away--;
     IF (ismset(O)) {_proc.note_wget $1};
-    IF (fmt.whois_bot()) {ECHO $fmt.whois_bot(Whowas $*);};  
+    IF (aliasctl(ALIAS EXISTS fmt.whois_bot)) {ECHO $fmt.whois_bot(Whowas $*);};  
   };
 };
 ON ^378 * {ECHO $fmt.whois_mid(Security $1 is really $5 [$6])};
@@ -367,7 +367,7 @@ ALIAS _proc.names_mode (nick) {
 ON -366 * {
   IF (names.max) {
     @ :names.t = names.v + names.o + names.h + names.l;
-    if (fmt.sc_bot()) {ECHO $fmt.sc_bot($2 $names.o $names.h $names.v $names.l $names.t);};
+    IF (aliasctl(ALIAS EXISTS fmt.sc_bot)) {ECHO $fmt.sc_bot($2 $names.o $names.h $names.v $names.l $names.t)};
     purge names;
   };
 };

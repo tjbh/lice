@@ -47,7 +47,7 @@ ALIAS sc {
   };
   IF (strlen($scn.list)) {ECHO $fmt.sc_mid($scn.list)};
   @ :scn.t = scn.v + scn.o + scn.l + scn.h;
-  IF (fmt.sc_bot()) {ECHO $fmt.sc_bot($chan $scn.o $scn.h $scn.v $scn.l $scn.t);};
+  IF (aliasctl(ALIAS EXISTS fmt.sc_bot)) {ECHO $fmt.sc_bot($chan $scn.o $scn.h $scn.v $scn.l $scn.t)};
   purge scn;
 };
 

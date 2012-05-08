@@ -91,7 +91,7 @@ ALIAS fmt.sc_mid (list) {
   FE ($list) xx {
     @ :mod = pass(@+% $xx)
     @ :spc = mod ? mod : [ ]
-    IF (spc == [%]) {@ spc = [%%]}
+    @ msar(r/%/%%/spc)
     @ :nic = strip(@+% $xx)
     @ :ret #= [%c=] ## [%B] ## spc ## [%n] ## [$[9]nic]
   }
