@@ -93,13 +93,13 @@ ALIAS fmt.sc_mid (list) {
   FE ($list) xx {
     @ :mod = pass(@+% $xx)
     @ :spc = mod ? mod : [ ]
-    IF (spc == [%]) {@ spc = [%%]}
+    @ msar(r/%/%%/spc)
     @ :nic = strip(@+% $xx)
     @ :ret #= [%K=] ## [%B] ## spc ## [%n] ## [$[9]nic]
   }
   RETURN $cparse(%n$ret%K=)
 }
-ALIAS fmt.sc_bot	RETURN $cparse(%K=\(%nscanned %B@%c $tolower($strftime(%I:%M %p))%n%K\)$repeat(25 =)\(%no:%n%c$repeat(${3-strlen($1)} $chr(32))$1%n%K\)=\(%nv:%n%c$repeat(${3-strlen($2)} $chr(32))$2%n%K\)=\(%nt:%n%c$repeat(${3-strlen($4)} $chr(32))$4%n%K\)=\(%nb:%n%c$repeat(${3-strlen($numitems(B$winserv()\-$hash_32bit($0)))} $chr(32))$numitems(B$winserv()\-$hash_32bit($0))%n%K\)=%n)
+ALIAS fmt.sc_bot	RETURN $cparse(%K=\(%nscanned %B@%c $tolower($strftime(%I:%M %p))%n%K\)$repeat(17 =)\(%no:%n%c$repeat(${3-strlen($1)} $chr(32))$1%n%K\)=\(%nh:%n%c$repeat(${3-strlen($2)} $chr(32))$2%n%K\)=\(%nv:%n%c$repeat(${3-strlen($3)} $chr(32))$3%n%K\)=\(%nt:%n%c$repeat(${3-strlen($5)} $chr(32))$5%n%K\)=\(%nb:%n%c$repeat(${3-strlen($numitems(B$winserv()\-$hash_32bit($0)))} $chr(32))$numitems(B$winserv()\-$hash_32bit($0))%n%K\)=%n)
 ALIAS fmt.send_action 	RETURN 10* $N${iscurchan($0)?[]:[\:10$tolower($0)]} $1-
 ALIAS fmt.send_action_me 	RETURN 14>> \(16$0\\) 10* $N $1-
 ALIAS fmt.send_dcc_chat RETURN 14>> 12= 6$0 12= $1-
