@@ -1,17 +1,22 @@
-*** Changes in version 5.2.2
-	- The "LiCe Support HalfOp Release!"
+*** Changes in version 5.2.2 - LiCe HalfOP Release!
 	- Added support for the display of halfop status on join and to
 	  SC, CWHO, PPL and MASS.
-	- Added /HOP and /DHOP and documentation.
-	- Updated most themes to output +h count for /SC
-
-*** Changes in version 5.2.1
+	- Added /HOP and /DHOP plus documentation.
+	- Updated themes to support +h count.
+	- Corrected theme bug causing some functions being called twice.
+	- You can now install *.reason files in your .lice directory.
+	  If they're found, they will be used instead of the supplied 
+	  ones in the lice install directory. Useful for global
+	  installs, allows each user to customise their gone/back/quit
+	  etc reason files individually.
+	
+*** Changes in version 5.2.1 30/04/2012
 	- Fixed cleanup routines not being called when leaving a channel.
 	- Updates to QuickStart guide and other help files.
 	- We now instantly remove servers from database when deleted.
 	- Small fix to /CTOG when not on a channel.
 	
-*** Changes in version 5.2.0
+*** Changes in version 5.2.0 - 25/04/2012
 	- *MAJOR* changes have been made to LiCe!  Please read these
 	  notes carefully.
 	- /SAVE is no longer required. All settings are written to

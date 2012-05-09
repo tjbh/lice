@@ -46,6 +46,7 @@ SET DISPLAY_PC_CHARACTERS 4;
 SET DO_NOTIFY_IMMEDIATELY ON;
 SET EIGHT_BIT_CHARACTERS ON;
 SET FLOATING_POINT_MATH OFF;
+SET OLD_MATH_PARSER OFF;
 SET FLOOD_AFTER 5;
 SET FLOOD_RATE 3;
 SET FLOOD_USERS 10;
@@ -164,13 +165,13 @@ IF (strlen($lice.get(main.auto_nick))) {
 };
 
 # reason files 
-@ main.reason_quit = which(quit.reasons);
-@ main.reason_kick = which(kick.reasons);
-@ main.reason_back = which(back.reasons);
-@ main.reason_gone = which(gone.reasons);
-@ main.reason_oops = which(oops.reasons);
-@ main.reason_error = which(error.reasons);
-@ main.reason_revenge = which(revenge.reasons);
+@ main.reason_quit = (fexist($(lice.save_path)/quit.reasons) == 1) ? which($lice.save_path/quit.reasons) : which($LiCePath/quit.reasons);
+@ main.reason_kick = (fexist($(lice.save_path)/kick.reasons) == 1) ? which($lice.save_path/kick.reasons) : which($LiCePath/kick.reasons);
+@ main.reason_back = (fexist($(lice.save_path)/back.reasons) == 1) ? which($lice.save_path/back.reasons) : which($LiCePath/back.reasons);
+@ main.reason_gone = (fexist($(lice.save_path)/gone.reasons) == 1) ? which($lice.save_path/gone.reasons) : which($LiCePath/gone.reasons);
+@ main.reason_oops = (fexist($(lice.save_path)/oops.reasons) == 1) ? which($lice.save_path/oops.reasons) : which($LiCePath/oops.reasons);
+@ main.reason_error = (fexist($(lice.save_path)/error.reasons) == 1) ? which($lice.save_path/error.reasons) : which($LiCePath/error.reasons);
+@ main.reason_revenge = (fexist($(lice.save_path)/revenge.reasons) == 1) ? which($lice.save_path/revenge.reasons) : which($LiCePath/revenge.reasons);
 
 # some DCC stuff
 ^ASSIGN main.dcc_active_limit 10;

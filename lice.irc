@@ -88,7 +88,7 @@ UNLESS (strlen($lice.save_path)) {^ASSIGN lice.save_path $twiddle(~/.lice)};
 # lice.epic5 imports builtins from epic4 for epic5 - backwards compatability
 LOAD -pf $LiCePath/lice/lice.epic5; 
 
-# database engine;
+# database engine
 LOAD -pf $LiCePath/lice/lice.db;
 
 # check to disable update
