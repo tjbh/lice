@@ -1660,9 +1660,10 @@ ALIAS main_init {
     ^WINDOW TOPLINES 1;
   };
 
-  # Check for updates on startup.
-  IF (isset(U)) {^TIMER -REF UPDATE 60 UPDATE};
-
+  # Check for updates on startup, if enabled!
+  UNLESS (dlu == 1) {
+    IF (isset(U)) {^TIMER -REF UPDATE 60 UPDATE};
+  };
   # misc /set's
   IF (isset(Q)) {
     ^STACK POP SET CLIENT_INFORMATION;

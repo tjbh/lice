@@ -54,19 +54,8 @@ ALIAS lice.set (varname, data) {@ dbmctl(CHANGE $lice.fd "$tolower($varname)" $d
 ALIAS lice.get (varname) {@ FUNCTION_RETURN = dbmctl(READ $lice.fd "$tolower($varname)")};
 ALIAS lice.del (varname) {@ dbmctl(DELETE $lice.fd "$tolower($varname)")};
 
-# check the db isn't still marked internally as open
-IF (lice.get(db.status) == 1) {
-  CLEAR;
-  XECHO;
-  XECHO [LiCe System Message];
-  XECHO;
-  XECHO Warning: Database marked open;
-  XECHO;
-  XECHO Are you using LiCe already?;
-  XECHO;
-  XECHO Continuing in 5 seconds...;
-  PAUSE 5;
-};
+# Small alert if the DB is still open.
+IF (lice.get(db.status) == 1) {TIMER 2 uecho Warning: The LiCe database is already marked open! Are you already running LiCe?};
 
 # mark database as open
 @lice.set(db.status 1);
