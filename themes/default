@@ -36,7 +36,7 @@ SET STATUS_VOICE +
 SET STATUS_WINDOW +
 
 # bah!
-^WINDOW DOUBLE ON
+IF (iswset(D)) {^WINDOW DOUBLE ON}
 
 # Event formats
 ALIAS fmt.action	RETURN * $0${iscurchan($1)?[]:[\:]##ch($1)} $2-
