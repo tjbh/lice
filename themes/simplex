@@ -137,5 +137,6 @@ ALIAS fmt.whois_mid     {
     (Spoof)	{RETURN $fmt.banner_whois() $1-}
     (Idle)	{RETURN $fmt.banner_whois() $sim.nick has been idle for $1-}
     (Signon)	{RETURN $fmt.banner_whois() $sim.nick signed on at $1-}
+    (Identity)	{RETURN $fmt.banner_whois() $1-}
    }
 }

@@ -141,6 +141,7 @@ SWITCH ($0) {
   (Spoof)     {RETURN 12º 12s2poof    14ð $1-}
   (Notes)     {RETURN 12º 12n2ote     14ð $1-}
   (Services)  {RETURN 12º 12s2erivces 14ð $1-}
+  (Identity)  {RETURN 12º 12i2dentity 14ð $1-}
 }
 }
 ALIAS fmt.whois_top { 

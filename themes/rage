@@ -126,6 +126,7 @@ ALIAS fmt.whois_mid {
     (Operator) 	{RETURN 14³ [ 16o15perator14] ³ $1 $tolower($2-)}
     (Spoof)     {RETURN 7³ 14[   16s15poof14 ] ³ $1-}
     (Notes)     {RETURN 7³ 14[   16n15otes14 ] ³ $1-}
+    (Identity)  {RETURN 7³ 14[ 16i15dentity14] ³ $1-}
   }
 }
 

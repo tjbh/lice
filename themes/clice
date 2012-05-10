@@ -107,6 +107,7 @@ ALIAS fmt.whois_mid {
     (Spoof)    {RETURN 4³ 7Spoof    4ù $1-}
     (Idle)     {RETURN 4³ 7Idletime 4ù $1-}
     (Notes)    {RETURN 4³ 7Notes    4ù $1-}
+    (Identity) {RETURN 4³ 7Identity 4ù $1-}
   }
 }
 ALIAS -fmt.whois_bot

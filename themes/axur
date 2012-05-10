@@ -82,6 +82,7 @@ ALIAS fmt.whois_mid {
     (Services)  {RETURN 14³ 16services  14ð $1-}
     (Spoof)     {RETURN 14³ 16spoof     14ð $1-}
     (Notes)     {RETURN 14³ 16notes     14ð $1-}
+    (Identity)  {RETURN 14³ 16identity  14ð $1-}
   }
 }
 ALIAS fmt.whois_top { 
