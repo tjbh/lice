@@ -115,4 +115,4 @@ ALIAS fmt.banner_usage		RETURN 14$G
 ALIAS fmt.banner_tip		RETURN +++
 
 # tjbh/99
-# tjh/12
+# tjh/12 Halfop Support

@@ -1,6 +1,8 @@
 # simlpex
 # Author: Q <Q@ping.be>
+# Updated for Halfop support and bugfixes by tjh
 # last changed: 19990103
+# last changed by tjh: 20120510 (13 years later!)
 # bases on the lice3 theme by SrfRoG (srfrog@mistik.net)
 
 PACKAGE LiCeTheme
@@ -86,7 +88,7 @@ ALIAS fmt.sc_mid (list) {
   FE ($list) xx {
     @ :mod = pass(@+% $xx)
     @ :spc = mod ? mod : [ ]
-    IF (spc == [%]) {@ spc = [%%]}
+    @ msar(r/%/%%/spc)
     @ :nic = strip(@+% $xx)
     @ :ret #= [%n] ## spc ## [%n] ## [$[9]nic] ## [ ]
   }
@@ -113,7 +115,6 @@ ALIAS fmt.banner_server	RETURN $G
 ALIAS fmt.banner_chan	RETURN $G
 ALIAS fmt.banner_usage	RETURN 14$G
 ALIAS fmt.banner_tip    RETURN +++
-#ALIAS fmt.banner_whois	RETURN 13$G
 ALIAS fmt.banner_whois	RETURN 11$G
 ALIAS fmt.whois_top     {
    ^ASSIGN sim.nick $1
@@ -124,10 +125,12 @@ ALIAS fmt.whois_bot     {purge sim}
 ALIAS fmt.whois_mid     {
    SWITCH ($0) {
     (Away)	{RETURN $fmt.banner_whois() $sim.nick is away: $1-}
+    (Domain)	{RETURN $fmt.banner_whois() $1-}
     (Ircname)	{RETURN $fmt.banner_whois() $sim.nick is $sim.user@$sim.host \($1-\)}
     (Channels)	{RETURN $fmt.banner_whois() $sim.nick on channels: $1-}
     (Operator)	{RETURN $fmt.banner_whois() $1-}
     (Server)	{RETURN $fmt.banner_whois() $sim.nick on irc via $1-}
+    (Notes)	{RETURN $fmt.banner_whois() Notes $1-}
     (Services)	{RETURN $fmt.banner_whois() $1-}
     (Shitlist)	{RETURN $fmt.banner_whois() $sim.nick has $1-}
     (Userlist)	{RETURN $fmt.banner_whois() $sim.nick has $1-}
@@ -136,15 +139,3 @@ ALIAS fmt.whois_mid     {
     (Signon)	{RETURN $fmt.banner_whois() $sim.nick signed on at $1-}
    }
 }
-
-#whois - screwes up other theme's (obsolete)
-#ON ^311 * {ECHO $fmt.banner_whois() $1 is $2@$3 \($5-\)}
-#ON ^312 * {ECHO $fmt.banner_whois() $1 on irc via $2 \($3-\)}
-#ON ^313 * {ECHO $fmt.banner_whois() $1-}
-#ON ^314 * {ECHO $fmt.banner_whois() $1 was $2@$3 \($5-\)}
-#ON ^317 * {ECHO $fmt.banner_whois() $1 has been idle for $tdiff($2)${!isnumber($3)?[]:[, signed on at $strftime($3 %c)} }
-#ON ^318 * {}
-#ON ^319 * {ECHO $fmt.banner_whois() $1 on channels: $2-}
-#ON ^369 * {}
-#ON ^301 * {ECHO $fmt.banner_whois() $0 is away: $1-}
-

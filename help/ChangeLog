@@ -9,6 +9,8 @@
 	  ones in the lice install directory. Useful for global
 	  installs, allows each user to customise their gone/back/quit
 	  etc reason files individually.
+	- Fixed bug where /UPDATE would still trigger even if
+	  disable_update file existed.  Thanks Q for reporting.
 	
 *** Changes in version 5.2.1 30/04/2012
 	- Fixed cleanup routines not being called when leaving a channel.
