@@ -20,13 +20,13 @@ ALIAS silence {
              //SILENCE $sil.sign*@$4;
              //SILENCE $sil.sign$sil.dork*;
           }{//SILENCE $sil.sign$sil.dork*}
-       };{//SILENCE $0}
-    };{
+       }{//SILENCE $0}
+    }{
     @ sil.cnt = 1;
 
 #   IF ([$0] == '') {@ sil.pers = [$N]} {@ sil.pers = [$0]};
 # I'm not happy with this. $N can not be correct, but it *seems* to work.
-    @ sil.pers = @ ? [$0] : [$N];
+    @ sil.pers = (@ ? [$0] : [$N]);
     iecho ---- Silence List for $sil.pers@$S;
     ^ON ^271 * {
       @ sil.mask = [$2];
@@ -34,7 +34,7 @@ ALIAS silence {
       @sil.cnt++;
     };
     //SILENCE $sil.pers;
-    };
+    }
   }{
      iecho This server does not support silence.;
   };

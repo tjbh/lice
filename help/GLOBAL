@@ -14,3 +14,8 @@ exists on load, the /UPDATE function will be removed and the main
 toggle of U (/TOG U) will be removed from /TOG.  This removes the
 /update functionality.  You may wish to also delete the update text
 from the help directory.
+
+Users can now install their own *.reason file in the ~/.lice/
+directory.  This allows each user to have their own reason file with
+whatever messages they're like. If the reason file doesn't exist, LiCe
+will fall back to using the globally installed reason files.

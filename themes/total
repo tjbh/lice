@@ -106,8 +106,8 @@ ALIAS fmt.sc_bot	 {
 	^set floating_point_math ON
 	@ :operc = ([$1] / [$5]) * 100
 	@ :perce = strlen($stripc($[6]operc))
-	@ :bigcent = 35 - perce
-	RETURN $cparse(%Kсд\(%n%Y@%C:%c $[-6]operc%C"%"%K\)$repeat($bigcent д)\(%n%Co:%n%c$repeat(${3-strlen($1)} $chr(32))$1%n%K\)д\(%n%Cv:%n%c$repeat(${3-strlen($2)} $chr(32))$2%n%K\)д\(%n%Ct:%n%c$repeat(${3-strlen($4)} $chr(32))$4%n%K\)д\(%n%Cb:%n%c$repeat(${3-strlen($numitems(B$winserv()\-$hash_32bit($0)))} $chr(32))$numitems(B$winserv()\-$hash_32bit($0))%n%K\)д╫%n)
+	@ :bigcent = 37 - perce
+	RETURN $cparse(%Kсд\(%n%Y@%C:%c $[-6]operc%C%%%K\)$repeat($bigcent д)\(%n%Co:%n%c$repeat(${3-strlen($1)} $chr(32))$1%n%K\)д\(%n%Cv:%n%c$repeat(${3-strlen($3)} $chr(32))$3%n%K\)д\(%n%Ct:%n%c$repeat(${3-strlen($5)} $chr(32))$5%n%K\)д\(%n%Cb:%n%c$repeat(${3-strlen($numitems(B$winserv()\-$hash_32bit($0)))} $chr(32))$numitems(B$winserv()\-$hash_32bit($0))%n%K\)д╫%n)
 	^set floating_point_math OFF
 }
 ALIAS fmt.send_action 	RETURN 10* ${ischanop($N $0)?[12@$N]:[${ischanvoice($N $0)?[12+$N]:[$N]}]}${iscurchan($0)?[]:[12/$rest(1 $0)]} $1-

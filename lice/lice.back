@@ -15,10 +15,14 @@ IF (word(2 $loadinfo()) != [pf]) {
 PACKAGE LiCe;
 
 ALIAS back {
+  IF ([$0] == [-a]) {
+    AWAY -all;
+    RETURN;
+  };
   AWAY;
   @ :target = ((T ? T : C) ? C : N);
   UNLESS (ismset(Q) || [$[2]0] == [-q]) {
     DESCRIBE $target is back. ${@?[$*]:randread($main.reason_back)};
   };
 };
-#tjh/09
+#tjh/12

@@ -124,6 +124,8 @@ ALIAS fmt.whois_mid {
     (Signon) 	{RETURN 14³ [   16s15ignon14] 4³ $1-}
     (Idle) 	{RETURN 4³ 14[     16i15dle14] 7³ $1-}
     (Operator) 	{RETURN 14³ [ 16o15perator14] ³ $1 $tolower($2-)}
+    (Spoof)     {RETURN 7³ 14[   16s15poof14 ] ³ $1-}
+    (Notes)     {RETURN 7³ 14[   16n15otes14 ] ³ $1-}
   }
 }
 
@@ -148,3 +150,4 @@ ALIAS -fmt.banner_server
 ALIAS fmt.banner_usage			RETURN $G
 
 # tjbh/99
+#tjh/12

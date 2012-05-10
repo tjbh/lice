@@ -2,15 +2,22 @@
 	- Added support for the display of halfop status on join and to
 	  SC, CWHO, PPL and MASS.
 	- Added /HOP and /DHOP plus documentation.
-	- Updated themes to support +h count.
+	- Updated most themes to support +h count in /SC footer.
 	- Corrected theme bug causing some functions being called twice.
 	- You can now install *.reason files in your .lice directory.
 	  If they're found, they will be used instead of the supplied 
 	  ones in the lice install directory. Useful for global
 	  installs, allows each user to customise their gone/back/quit
 	  etc reason files individually.
-	- Fixed bug where /UPDATE would still trigger even if
+	- Fixed bug where /UPDATE would still trigger even if the
 	  disable_update file existed.  Thanks Q for reporting.
+	- Fixes to many themes to fix blank lines on /WHOIS & /WHOWAS
+	  Reported by Q
+	- Bug fixes to /SILENCE & added documentation for SILENCE to
+	  the user help.
+	- Fixed /GONE -a not setting a message.
+	- Enhanced /BACK to support -a, returning you to all connected
+	  servers.
 	
 *** Changes in version 5.2.1 30/04/2012
 	- Fixed cleanup routines not being called when leaving a channel.

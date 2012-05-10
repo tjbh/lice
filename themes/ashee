@@ -83,7 +83,7 @@ ALIAS fmt.sc_mid {
 }
 ALIAS fmt.sc_bot {
   @ :ch.h = hash_32bit($0)
-		RETURN *** Stats $0: +o[$1] +h[$2] -o[$4] +b[$numitems(B$winserv()\-$ch.h)] +v[$3] ${chan[$ch.h][S]?[\(Sets\: +$chan[$ch.h][S]\)]:[]}
+		RETURN *** Stats $0: +o[$1] -o[$4] +b[$numitems(B$winserv()\-$ch.h)] +h[$2] +v[$3] ${chan[$ch.h][S]?[\(Sets\: +$chan[$ch.h][S]\)]:[]}
 }
 ALIAS fmt.send_action		RETURN * $N${iscurchan($0)?[]:[\:$0]} $1-
 ALIAS fmt.send_action_me 	RETURN > \($0\) * $N $1-
@@ -127,3 +127,4 @@ ALIAS fmt.banner_usage		RETURN 14$G
 ALIAS fmt.banner_tip		RETURN +++
 
 # tjbh/99
+#tjh/12

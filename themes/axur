@@ -35,7 +35,6 @@ ALIAS fmt.mode_me   RETURN 14[15[16UserMode15]14] Your usermode is now: 1
 ALIAS fmt.mode_server   RETURN 14\(16servermode14!$114\) \(11$0 14ð $2-14\) $syn.time($Z)
 ALIAS fmt.msg           RETURN 14\[13$014\(13$sar(/@/15@13/$userhost())14\)\] $1-
 ALIAS fmt.msg_group           RETURN 14\[16<11Ä10Ä 16msg14\($0 14ð $sar(/@/14@15/$userhost())14\)\] $2-
-#ALIAS fmt.msg_group     RETURN 14-13$014:6$114- $2-
 ALIAS fmt.notice        RETURN -16$0\($userhost()\)- $1-
 ALIAS fmt.notify_signoff   RETURN 14\[15\[16Signoff15\]14\] $syn.time($Z) 10$0 has left IRC...
 ALIAS fmt.notify_signon RETURN 14\[15\[16Signon15\]14\] $syn.time($Z) 11$014\(10$sar(/@/14@10/$1)14\) is on IRC...
@@ -78,7 +77,11 @@ ALIAS fmt.whois_mid {
     (Away)      {RETURN 14³ 16away      14ð $1-}
     (Operator)  {RETURN 14³ 16operator  14ð ..16!@#$15}
     (Signon)    {RETURN 14³ 16signon    14ð $1-}
+    (Note)      {RETURN 14³ 16note      14ð $1-}
     (Idle)      {RETURN 14³ 16idle      14ð $1-}
+    (Services)  {RETURN 14³ 16services  14ð $1-}
+    (Spoof)     {RETURN 14³ 16spoof     14ð $1-}
+    (Notes)     {RETURN 14³ 16notes     14ð $1-}
   }
 }
 ALIAS fmt.whois_top { 
@@ -110,14 +113,9 @@ ALIAS fmt.banner_usage  RETURN $G
 ^set status_away 14]ÄÄ[1615away14:16$sar(/://$status_user1)
 ^set status_channel  15ù 10%C
 ^set status_chanop 11@
-#^set status_clock 10À0Ä10[1615clock13:16%T
 ^set status_clock Ä10[1615%T16
 ^set status_format 14ð 16%R10:%*%@%N%#%B%C%+%A14Ä%>%!110:16%2 14ð
 ^set status_format1 11Ú0Ä10[16%R14:%*%@10%N%#%B%C%+%A10]0Ä%>10ÄÄÄÄ[1615lag13:%2160]ÄÄ10ÄÄ11Ä¿
-#^set status_format1 11Ú0Ä10[16%R14:%*%@10%N%#%B%C%+%A10]0Ä%>10¿ 11Ú10Ä0ÄÄÄ[1615lag13:%2160]ÄÄ10ÄÄ11Ä¿
-#^set status_format2 10ÀÄ14[1615tog14:16%014]ÄÄ[1615server14:16$S14%F%M14]Ä%>10Ù %T0]ÄÙ
-#^set status_format2 10À0ÄÄ14[15tog:%01615server13:16$S14%F%M10]0Ä%>10Ù %T10]11ÄÙ
-#^set status_format2 10À0ÄÄ14[15tog13:0%0 13\(0$S13\)15%F%M10]0Ä%>10Ù %T10]11ÄÙ
 ^set status_format2 10À0ÄÄ14[15tog13:0%0 13\(0$S13\)15%F%M10]0Ä%>10ÄÄ%T10]11ÄÙ
 ^set status_hold_lines 10, %B
 ^set status_mail 10]0ÄÄ10[16mail13(15%M13)
@@ -125,7 +123,6 @@ ALIAS fmt.banner_usage  RETURN $G
 ^set status_nick %N
 ^set status_notify 14]0ÄÄ10[11a14:10%F
 ^set status_oper 11*
-#^set status_server  10[15Server: 16%S10]
 ^set status_umode 14(11+%#14)
 ^set status_voice +
 ^set status_window ^^^^^

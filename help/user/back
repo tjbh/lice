@@ -1,14 +1,19 @@
-Usage: BACK [-q] [message]
+Usage: BACK [-a] [-q] [message]
    Marks yourself HERE from a previous AWAY.
 
+   Use -a to return you on all servers you're connected to.  You can't
+   supply a return message with this option.
+
    It tells the last channel/nick you were in contact with that you're
-   "back", if not in "QUIET MODE".
+   "back", if not in "QUIET MODE" (MTOG Q).
 
    The message is used to describe why you are HERE now :) if no message
    is provided, the default one is used. The "-q" is used to cancel the
    announcing even if "QUIET MODE" is not set.
 
-   Edit the file "~/.irc/back.reasons" to customize the default message.
+   Edit the file "~/lice5/back.reasons" to customize the default message.
+   Or if you don't wnat to edit LiCe files, create ~/.lice/back.reasons
+   and put your own messages in there.
  
 See also: [GONE] [PLAY] [ERASE]
 

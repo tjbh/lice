@@ -106,6 +106,7 @@ ALIAS fmt.whois_mid {
     (Signon)   {RETURN 4³ 7Signon   4ù at $1-}
     (Spoof)    {RETURN 4³ 7Spoof    4ù $1-}
     (Idle)     {RETURN 4³ 7Idletime 4ù $1-}
+    (Notes)    {RETURN 4³ 7Notes    4ù $1-}
   }
 }
 ALIAS -fmt.whois_bot

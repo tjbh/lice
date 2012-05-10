@@ -3,7 +3,7 @@
 #   Copyright (C) 2000 SrfRoG (cag@codehack.com)
 #
 # ---------------------------------------------------------------------------
-# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# All code by SrfRoG, unless specified. Visit http://lice.muppetz.com
 # ---------------------------------------------------------------------------
 # Updated for EPIC5 by tjh
 
@@ -17,9 +17,10 @@ PACKAGE LiCe;
 ALIAS gone {
   @ quiet.test = ismset(Q);
   @ :gone.msg = randread($main.reason_gone);
-  UNLESS (strlen($gone.msg)) {@ :gone.msg = [http://lice.googlecode.com]};
+  UNLESS (strlen($gone.msg)) {@ :gone.msg = [http://lice.muppetz.com]};
   SWITCH ($0) {
     () {AWAY $gone.msg};
+    (-a) {AWAY -all ${strlen($1)?[$1-]:gone.msg}};
     (-q) {
       @ quiet.test = 1;
       AWAY ${strlen($1)?[$1-]:gone.msg};
@@ -27,4 +28,4 @@ ALIAS gone {
     (*) {AWAY $*};
   };
 };
-#tjh/11
+#tjh/12

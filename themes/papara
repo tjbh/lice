@@ -86,7 +86,7 @@ ALIAS fmt.sc_mid (list) {
   }
   RETURN $cparse(%K|%n$ret)
 }
-ALIAS fmt.sc_bot	RETURN $cparse(%K|\(%n%Wscanned %B@%c $Z%n%K\)$repeat(34 -)\(%n%Wo:%n%c$repeat(${3-strlen($1)} $chr(32))$1%n%K\)=\(%n%Wv:%n%c$repeat(${3-strlen($2)} $chr(32))$2%n%K\)=\(%n%Wt:%n%c$repeat(${3-strlen($4)} $chr(32))$4%n%K\)-%n)
+ALIAS fmt.sc_bot	RETURN $cparse(%K|\(%n%Wscanned %B@%c $Z%n%K\)$repeat(26 -)\(%n%Wo:%n%c$repeat(${3-strlen($1)} $chr(32))$1%n%K\)=\(%n%Wh:%n%c$repeat(${3-strlen($2)} $chr(32))$2%n%K\)=\(%n%Wv:%n%c$repeat(${3-strlen($3)} $chr(32))$3%n%K\)=\(%n%Wt:%n%c$repeat(${3-strlen($5)} $chr(32))$5%n%K\)-%n)
 ALIAS fmt.send_action 	RETURN 10* $N${iscurchan($0)?[]:[\:$0]} $1-
 ALIAS fmt.send_action_me 	RETURN 14>> \(16$0\\) 10* $N $1-
 ALIAS fmt.send_dcc_chat RETURN 14>> 7=12$07= $1-

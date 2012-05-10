@@ -2,8 +2,8 @@
 # Website: http://lice.muppetz.com/
 # SVN: http://lice.googlecode.com/
 #
-# Version: 5.2.1
-# Released: 01/05/2012
+# Version: 5.2.2
+# Released: 10/05/2012
 #
 #   IRCII Script Program. For use with ircii-EPIC5 clients.
 #   Copyright (C) 1993-2000 SrfRoG (cag@codehack.com)
@@ -27,7 +27,7 @@
 # ---------------------------------------------------------------------------
 #
 #   Lots of code change and modifications by tjh.
-#   Most routines are all SrfRoG original though, just updated/slightly
+#   Most routines are all SrfRoG original though, just updated or
 #   modified to work with epic5.
 
 IF (word(2 $loadinfo()) != [pf]) {

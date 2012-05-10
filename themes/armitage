@@ -138,6 +138,9 @@ SWITCH ($0) {
   (Operator)  {RETURN 12º 12o2perator 14ð 16$1 can 16/KILL people you can't 14\(IRC 16Operat16or14\)}
   (Signon)    {RETURN 12º 12s2ignon   14ð $1-}
   (Idle)      {RETURN 12º 12i2dle     14ð $1-}
+  (Spoof)     {RETURN 12º 12s2poof    14ð $1-}
+  (Notes)     {RETURN 12º 12n2ote     14ð $1-}
+  (Services)  {RETURN 12º 12s2erivces 14ð $1-}
 }
 }
 ALIAS fmt.whois_top { 

@@ -1,28 +1,36 @@
-Usage: IGNORE < nick | n!u@h pattern > [[-|+]Ignore types]
-Usage: IGNORE < channel | channel pattern > [[-|+]Ignore types]
+Usage: SILENCE [+|-] < nick | n!u@h pattern >
 
-   IGNOREs a nick or users matching the wildcard pattern specified.
-   It can also ignore entire channels, by channel name or pattern.
-   If no 'ignore types' are given, "ALL CRAP -PUBLIC" is used.
+   Note: Only some servers support silence. This command will report
+   if your server doesn't support it.
 
-Ignore types:
-   ALL MSGS PUBLIC WALLS WALLOPS INVITES NOTICES NOTES CTCPS CRAP NONE
+   By itself, /SILENCE will show you the list of n!u@h on your SILENCE
+   list.  SILENCE means the server won't send you any MESSAGES or NOTICES
+   from that mask.  You will still receive public messages.
+
+   If you specify a nick without a +/- it will display the silence list 
+   of the nick specified. You can only see this information if you're on
+   the same server as them.
+ 
+   If a + is supplied, that nick will be added to your silence list.
+   If a - is supplied, that nick will be removed from your silence list.
+
+   If a n!u@h pattern is specified in place of a nick, you will add or
+   remove that pattern from your silence list.
 
 Examples:
-   /IGNORE *!*@*aol.com          - ignores users matching '*!*@*aol.com'.
-   /IGNORE *!*@*aol.com NONE     - removes ignore for '*!*@*aol.com'.
+   /SILENCE                      - Prints the list of what's on your
+                                   silence list.
 
-   /IGNORE Vassago MSGS NOTICES  - ignores 'NOTICES' and 'MSGS' from
-                                   Vassago's address.
-                                   (ie., *!*lamer@*dork.org).
-   /IGNORE Vassago NONE          - removes previous ignore for Vassago's
-                                   address.
+   /SILENCE +DonG                - Adds DonG to your silence list.
+   
+   /SILENCE -bartgeek            - Removes bartgeek from your silence
+                                   list.   
 
-   /IGNORE #exceed CTCPS         - ignores all 'CTCPS' for channel
-                                   #exceed (if you are on the channel).
-   /IGNORE #exceed NONE          - removes previous ignore for #exceed.
+   /SILENCE +*!*@*aol.com        - Adds '*!*@*aol.com' to your silence
+                                   list.
 
-   /IGNORE *!*@*                 - ignores everyone! be careful!
+   /SILENCE Dave-PZ              - Show Dave-PZ's silence list, if he's
+                                   on the same server as you.
                                  
-See also: [NOIG] [epic 1 IGNORE]
+See also: [NOIG] [IGNORE]
 

@@ -13,7 +13,9 @@ Usage: GONE [-a|-q] [message]
 
      e.g. /GONE -a Gone for the weekend, bye bye!!
 
-   Edit the file "~/.irc/gone.reasons" to customize the default message.
+   Edit the file "~/lice5/gone.reasons" to customize the default message.
+   Or create a "~/.lice/gone.reasons" file if you don't want to edit LiCe
+   files.
 
 See also: [BACK] [PLAY] [ERASE]
 
