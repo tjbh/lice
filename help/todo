@@ -1,0 +1,17 @@
+Latest update: 11th May 2012
+============================
+
+This is a list of random bits and pieces I'll be working on for
+LiCe5 in the future. 
+Feel free to email me, tim@muppetz.com with any thing else you'd like to see!
+
+* Remove all compatability stuff in lice.epic5, or at least use only what we need.
+  I have started on this. Moving to serverctl and windowctl...
+
+* Update /ctog to support server+channel instead of just channel. [Hard]
+* Fix broken /adcc - Nearly. - DONE(?)
+* Update /noig to not display /ctog Q channels.
+* Make autocompelte work for HELP
+* Add NOTE into dbmctl
+* Use epic's built in log function, rather than the chanlog ^ON method?
+* Rebuild the themes...

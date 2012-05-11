@@ -50,9 +50,9 @@ ALIAS help (topic, topic2, path) {
       pager $open($file R);
     };
   }{
-  pager $open($LiCePath/help/INDEX R);
+  pager $open($LiCePath/help/index R);
     INPUT "Topic? " {
-      IF (@) {help $0};
+      IF (@) {help $tolower($0)};
     };
   };
   ^CD $twiddle($LiCePath);

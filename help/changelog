@@ -18,6 +18,7 @@
 	- Fixed /GONE -a not setting a message.
 	- Enhanced /BACK to support -a, returning you to all connected
 	  servers.
+	- /HELP no longer cares about case.
 	
 *** Changes in version 5.2.1 30/04/2012
 	- Fixed cleanup routines not being called when leaving a channel.
