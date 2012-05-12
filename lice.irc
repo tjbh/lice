@@ -1722,7 +1722,7 @@ ALIAS main_init {
 
   # hook to write sets
   ^ON #-SET 13 * (set,data) {
-    IF (getsets($set) && data) {
+    IF (getsets($set) && (data != [])) {
       @lice.set(*$set $data)
     };
   };
