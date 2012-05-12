@@ -5,8 +5,8 @@
 # ---------------------------------------------------------------------------
 # All code by SrfRoG, unless specified. Visit http://lice.codehack.com
 # ---------------------------------------------------------------------------
-# Currently broken. HELP doesn't work in EPIC5 the same way...
 # Updated for EPIC5 by tjh
+# Works a treat.
 
 IF (word(2 $loadinfo()) != [pf]) {
   LOAD -pf $word(1 $loadinfo());
@@ -38,5 +38,4 @@ ALIAS pager (file) {
     @ close($fd);
   };
 };
-
-#tjh/11
+#tjh/12

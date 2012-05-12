@@ -22,6 +22,7 @@ ALIAS chanst {
     RETURN;
   };
   @ :ch.o = 0;
+  @ :ch.ho = 0;
   @ :ch.d = 0;
   @ :ch.v = 0;
   @ :ch.t = 0;
@@ -29,10 +30,11 @@ ALIAS chanst {
   @ :ch.b = numitems(B$winserv()\-$ch.h);
   FE ($channel($ch.name)) ch.1 {
     IF (left(1 $ch.1) == [@]) { @ ch.o++ }{ @ ch.d++ };
+    IF (left(1 $ch.1) == [%]) { @ ch.ho++ };
     IF (mid(1 1 $ch.1) == [+]) { @ ch.v++ };
     @ ch.t++;
   };
   @ :sets = strlen($lice.get(chan[$ch.h][S])) ? [\(Sets\: \+] ## lice.get(chan[$ch.h][S]) ## [\)] : [];
-  XECHO -B Stats $ch($ch.name)\: \($ch.t\) +o[$ch.o] -o[$ch.d] +b[$ch.b] +v[$ch.v] $sets;
+  XECHO -B Stats $ch($ch.name)\: \($ch.t\) +o[$ch.o] +h[$ch.ho] -o[$ch.d] +b[$ch.b] +v[$ch.v] $sets;
 };
-#tjh/09
+#tjh/12

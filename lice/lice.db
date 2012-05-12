@@ -7,6 +7,7 @@
 #
 # This file opens the database file in which variables are stored and creates
 # some aliases to easily manage the variables in the DB.
+# It also handles the reload of all settings (lice.readdb)
 #
 # Autosave of 
 #	* /SETs
@@ -64,16 +65,16 @@ IF (lice.get(db.status) == 1) {TIMER 2 uecho Warning: The LiCe database is alr
 ALIAS lice.readdb {
   FE ($sort($dbmctl(ALL_KEYS $lice.fd))) dbi {
     @ :type = left(1 $dbi);
-  SWITCH ($type) {
-    (\\*) {
+    SWITCH ($type) {
+      (\\*) {
         @ :val = lice.get($dbi);
         UNLESS (val == [<unset>]) {
           //^SET $after(* $dbi) $val;
         };
       };
-    (|) {//^IGNORE $lice.get($dbi)};
-    (!) {^ASSIGN Chanlog$after(! $dbi) $lice.get($dbi)};
-    (&) {//^SERVER -ADD $lice.get($dbi)};
+      (|) {//^IGNORE $lice.get($dbi)};
+      (!) {^ASSIGN Chanlog$after(! $dbi) $lice.get($dbi)};
+      (&) {//^SERVER -ADD $lice.get($dbi)};
     };
   };
 };
