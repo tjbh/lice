@@ -1720,10 +1720,10 @@ ALIAS main_init {
   ^WINDOW NAME 1 DOUBLE ${iswset(D)?[ON]:[OFF]} BEEP_ALWAYS ${iswset(B)?[ON]:[OFF]} LEVEL ALL;
   IF (strlen($lice.get(main.umode))) {^TIMER -REF UMODE 7 {MODE $servernick() $lice.get(main.umode)}};
 
-  # hook to write sets
+  # hook to catch /SETs and write them to the db
   ^ON #-SET 13 * (set,data) {
-    IF (getsets($set) && (data != [])) {
-      @lice.set(*$set $data)
+    IF (getsets($set) && (@data)) {
+      @lice.set(*$set $data);
     };
   };
 
