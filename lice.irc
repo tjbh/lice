@@ -2,8 +2,8 @@
 # Website: http://lice.muppetz.com/
 # SVN: http://lice.googlecode.com/
 #
-# Version: 5.2.2
-# Released: 12/05/2012
+# Version: 5.2.3
+# Released: xx/xx/2012
 #
 #   IRCII Script Program. For use with ircii-EPIC5 clients.
 #   Copyright (C) 1993-2000 SrfRoG (cag@codehack.com)
@@ -101,7 +101,7 @@ LOAD -pf $LiCePath/lice/lice.defaults;
 LOAD $LiCePath/themes/default;
 
 # program information
-^ASSIGN id.v $decode(DFCODCCODC);
+^ASSIGN id.v $decode(DFCODCCODD);
 
 ALIAS lice (addon) {
   @ :ret = [];
@@ -1632,18 +1632,13 @@ ALIAS main_init {
 
   IF (lice.get(main.theme) != [default]) {LOAD $which($LiCePath/themes/$lice.get(main.theme))};
 
-  # load sets from db
-  lice.readsets;
+  # Read all settings from the database
+  lice.readdb;
+
   # load notify list from db
   //^NOTIFY $lice.get(lice.notify);
   
-  # load servers list from db
-  lice.readservers;
-  # load ignores from db
-  lice.readignores;
-
   # start logging channels
-  lice.readchanlog;
   FOREACH chanlog hash {
     @ :chan = chanlog[$hash][C];
     _proc.open_log $chan;

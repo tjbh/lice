@@ -60,46 +60,25 @@ IF (lice.get(db.status) == 1) {TIMER 2 uecho Warning: The LiCe database is alr
 # mark database as open
 @lice.set(db.status 1);
 
-# read sets from the db and push them into place
-ALIAS lice.readsets {
-  # We sort the list of sets before loading to keep in sync with lice.sets format.
-  # works around a bug where STATUS_NICKNAME being set before STATUS_FORMAT1 doesn't work correctly.
-  FE ($sort($dbmctl(ALL_KEYS $lice.fd))) ls {
-    @ :dbset = after(* $ls);
-    @ :dbvalue = lice.get($ls);
-    UNLESS ((strlen($dbset) == 0) || (dbvalue == [<unset>])) {
-      //^SET $dbset $dbvalue;
+# restore database state.
+ALIAS lice.readdb {
+  FE ($sort($dbmctl(ALL_KEYS $lice.fd))) dbi {
+    @ :type = left(1 $dbi);
+  SWITCH ($type) {
+    (\\*) {
+        @ :val = lice.get($dbi);
+        UNLESS (val == [<unset>]) {
+          //^SET $after(* $dbi) $val;
+        };
+      };
+    (|) {//^IGNORE $lice.get($dbi)};
+    (!) {^ASSIGN Chanlog$after(! $dbi) $lice.get($dbi)};
+    (&) {//^SERVER -ADD $lice.get($dbi)};
     };
   };
 };
 
-ALIAS lice.readchanlog {
-  FE ($dbmctl(ALL_KEYS $lice.fd)) ls {
-    @ :data= after(! $ls);
-    UNLESS (strlen($data) == 0) {
-      ^ASSIGN Chanlog$(data) $lice.get($ls);
-    };
-  };
-};
-
-ALIAS lice.readignores {
-  FE ($dbmctl(ALL_KEYS $lice.fd)) ls {
-    @ :igid= after(| $ls);
-    UNLESS (strlen($igid) == 0) {
-      //^IGNORE $lice.get($ls);
-    };
-  };
-};
-
-ALIAS lice.readservers {
-  FE ($dbmctl(ALL_KEYS $lice.fd)) ls {
-    @ :sid= after(& $ls);
-    UNLESS (strlen($sid) == 0) {
-      //^SERVER -ADD $lice.get($ls);
-    };
-  };
-};
-
+# save servers routine
 ALIAS lice.saveservers {
   FE ($dbmctl(ALL_KEYS $lice.fd)) ls {
     @ :sid= after(& $ls);

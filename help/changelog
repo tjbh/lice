@@ -1,4 +1,9 @@
-*** Changes in version 5.2.2 - LiCe HalfOP Release!
+*** Changes in version 5.2.3 
+	- Major optimisation restoring the database on LiCe load.
+	- Fixed database routine to ensure only valid data is written
+	  to database when using /SET
+
+*** Changes in version 5.2.2 - LiCe HalfOP Release! - 12/05/2012
 	- Added support for the display of halfop status on join and to
 	  SC, CWHO, PPL and MASS.
 	- Added /HOP and /DHOP plus documentation.
