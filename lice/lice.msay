@@ -16,12 +16,23 @@ PACKAGE LiCe;
 
 ALIAS msay {
   UNLESS (@) {
-    uecho Usage: /MSAY <public text>;
+    uecho Usage: /MSAY [-a] <public text>;
     RETURN
   };
+  IF ([$0] == [-a]) {
+    FOR serv from 0 to $serverctl(MAX) {
+      IF (serverctl(GET $serv CONNECTED)) {
+        @ msay_list = mychannels($serv);
+        ^ASSIGN msay_send $1-;
+        _proc.loop_send $serv PRIVMSG msay_list msay_send;
+      };
+    };
+  ECHO $fmt.send_public(#* $1-);
+  }{
   @ msay_list = mychannels();
   ^ASSIGN msay_send $*;
   _proc.loop_send $winserv() PRIVMSG msay_list msay_send;
-  ECHO $fmt.send_public(#* $*)
+  ECHO $fmt.send_public(#* $*);
+  };
 };
-#tjh/09
+#tjh/12

@@ -1,5 +1,9 @@
-Usage: MSAY <public text> 
-   Sends public text to all the channel you are, at once.
+Usage: MSAY [-a] <public text> 
+   Sends public text to all the channels on the server
+   you're currently talking to.
+
+   Use -a to send to all channels of all servers you're
+   connected to.  
 
 See also: [MME] [RE] [RELM]
 

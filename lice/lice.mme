@@ -19,9 +19,13 @@ alias mme {
     uecho Usage: /MME <action>;
     RETURN;
   };
-  @ mme_list = mychannels();
-  @ mme_send = chr(1) ## [ACTION $*] ## chr(1);
-  _proc.loop_send $winserv() PRIVMSG mme_list mme_send;
+  FOR serv from 0 to $serverctl(MAX) {
+    IF (serverctl(GET $serv CONNECTED)) {
+      @ mme_list = mychannels($serv);
+      @ mme_send = chr(1) ## [ACTION $*] ## chr(1);
+      _proc.loop_send $serv PRIVMSG mme_list mme_send;
+    };
+  };
   ECHO $fmt.send_action(#* $*);
 };
-#tjh/09
+#tjh/12

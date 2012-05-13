@@ -1,5 +1,6 @@
 Usage: MME <action> 
-   Sends an action to all the channels you are, at once.
+   Sends an action to all the channels of the current
+   server you are, at once.
 
 See also: [MSAY] [RE] [RELM]
 
