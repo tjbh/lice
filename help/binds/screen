@@ -2,7 +2,7 @@
                     Command key:  ctrl-w (^w)   Literal: ^w-a
  
       clear       f            logging     H          + create      c
-      exec (sh)   :            version     v            name        y
+      exec (sh)   !            version     v            name        y
       monitor     M            suspend     z          + query       q
       other       a            next        n            time        t
       switch      '            next        <space>      last        ^X

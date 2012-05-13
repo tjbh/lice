@@ -6,6 +6,7 @@
 # All code by SrfRoG, unless specified. Visit http://lice.codehack.com
 # ---------------------------------------------------------------------------
 # Updated for EPIC5 by tjh
+# Updated to support halfop by tjh 13/05/2012
 
 IF (word(2 $loadinfo()) != [pf]) {
   LOAD -pf $word(1 $loadinfo());
@@ -18,6 +19,10 @@ PACKAGE LiCe;
 ALIAS chanst {
   @ :ch.name = ischannel($0) ? [$0] : C;
   UNLESS (onchannel($N $ch.name)) {
+    IF (ch.name == [0]) {
+      XECHO -B You're not on a channel in this window.;
+      RETURN;
+    };
     XECHO -B $ch($ch.name)\: You're not on that channel.;
     RETURN;
   };
@@ -29,12 +34,14 @@ ALIAS chanst {
   @ :ch.h = hash_32bit($ch.name);
   @ :ch.b = numitems(B$winserv()\-$ch.h);
   FE ($channel($ch.name)) ch.1 {
-    IF (left(1 $ch.1) == [@]) { @ ch.o++ }{ @ ch.d++ };
-    IF (left(1 $ch.1) == [%]) { @ ch.ho++ };
-    IF (mid(1 1 $ch.1) == [+]) { @ ch.v++ };
     @ ch.t++;
+    IF (left(1 $ch.1) == [@]) { @ ch.o++ } 
+    ELSIF (left(1 $ch.1) == [%]) { @ ch.ho++ }
+    ELSIF  (mid(1 1 $ch.1) == [+]) { @ ch.v++ }{
+      @ ch.d++;
+    };
   };
   @ :sets = strlen($lice.get(chan[$ch.h][S])) ? [\(Sets\: \+] ## lice.get(chan[$ch.h][S]) ## [\)] : [];
-  XECHO -B Stats $ch($ch.name)\: \($ch.t\) +o[$ch.o] +h[$ch.ho] -o[$ch.d] +b[$ch.b] +v[$ch.v] $sets;
+  XECHO -B Stats $ch($ch.name)\: \($ch.t\) +o[$ch.o] +h[$ch.ho] +v[$ch.v] -o[$ch.d] +b[$ch.b] $sets;
 };
 #tjh/12

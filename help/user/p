@@ -2,8 +2,8 @@ Usage: P [nick|channel] 
    Requests CTCP PING information for a nick or channel, or current
    channel if no arguments.
  
-Note: CTCP PING check how long does it take for a certain user
-      to receive information from you. More than 45 seconds is
+Note: CTCP PING checks how long it takes for a certain user to
+      receive information from you. More than 45 seconds is
       considered a very "laggy" connection.
 
 See also: [VER] [OFFERS]

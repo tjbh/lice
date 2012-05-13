@@ -124,7 +124,7 @@ BIND ^W^` PARSE_COMMAND {//WINDOW NEXT};
 # toggle beeping
 BIND ^W^G PARSE_COMMAND {//WINDOW BEEP_ALWAYS TOGGLE};
 # licence
-BIND ^W, PARSE_COMMAND {HELP LICENSE};
+BIND ^W, PARSE_COMMAND {HELP license};
 # last win
 BIND ^W^X PARSE_COMMAND {//^WINDOW SWAP LAST};
 # toggle double status for a single window

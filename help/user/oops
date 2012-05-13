@@ -3,7 +3,7 @@ Usage: OOPS <nick> 
    originally, specify the "correct" nick and /OOPS will apologize and
    send the message to the correct nick.
 
-   Edit the file "~/.epic/oops.reasons" to customize the message.
+   Edit the file "~/.lice/oops.reasons" to customize the message.
 
 See also: [M] [N] [RELM]
 

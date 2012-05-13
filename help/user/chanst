@@ -1,7 +1,8 @@
 Usage: CHANST [channel]
    Gives statistics of the channel specified:
-   Number of channel operators, non operators, bans, voices and
-   irc operators, also the sets active for the channel.
+   Number of channel operators, half operators, non operators, 
+   bans, voices and irc operators, also the sets active for
+   the channel.
 
 See also: [SV] [SC] [P]
 
