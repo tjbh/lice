@@ -1,9 +1,11 @@
 *** Changes in version 5.2.3 
-	- Major optimisation restoring the database on LiCe load.
+	- Optimised restoring the database on LiCe load - Much faster.
 	- Fixed database routine to ensure only valid data is written
 	  to database when using /SET
-	- Enhanced /CHANST to support halfop.
-	- Updates to a number of help files.
+	- Updated /CHANST to support halfop.
+	- Documentation updates to a number of help files.
+	- Fixed some ^W binds not working if using a single status
+	  line.
 
 *** Changes in version 5.2.2 - LiCe HalfOP Release! - 12/05/2012
 	- Added support for the display of halfop status on join and to
