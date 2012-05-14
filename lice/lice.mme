@@ -5,7 +5,7 @@
 # ---------------------------------------------------------------------------
 # All code by SrfRoG, unless specified. Visit http://lice.codehack.com
 # ---------------------------------------------------------------------------
-# Updated for EPIC5 by tjh
+# Updated by tjh to support all servers 14/05/2012
 
 IF (word(2 $loadinfo()) != [pf]) {
   LOAD -pf $word(1 $loadinfo());
@@ -15,17 +15,27 @@ IF (word(2 $loadinfo()) != [pf]) {
 PACKAGE LiCe;
 
 alias mme {
-  UNLESS (@) {
-    uecho Usage: /MME <action>;
-    RETURN;
-  };
-  FOR serv from 0 to $serverctl(MAX) {
-    IF (serverctl(GET $serv CONNECTED)) {
-      @ mme_list = mychannels($serv);
+  SWITCH ($0) {
+  () {uecho Usage: /MME [-a] <action>};
+
+  (-a) {
+      FOR serv from 0 to $serverctl(MAX) {
+        IF (serverctl(GET $serv CONNECTED)) {
+          @ mme_list = mychannels($serv);
+          @ mme_send = chr(1) ## [ACTION $1-] ## chr(1);
+          _proc.loop_send $serv PRIVMSG mme_list mme_send;
+        };
+      };
+      ECHO $fmt.send_action(ALL/#* $1-);
+    };
+
+  (*) {
+      @ mme_list = mychannels();
       @ mme_send = chr(1) ## [ACTION $*] ## chr(1);
-      _proc.loop_send $serv PRIVMSG mme_list mme_send;
+      _proc.loop_send $winserv() PRIVMSG mme_list mme_send;
+      ECHO $fmt.send_action(#* $*);
     };
   };
-  ECHO $fmt.send_action(#* $*);
 };
+
 #tjh/12

@@ -5,7 +5,8 @@
 # ---------------------------------------------------------------------------
 # All code by SrfRoG, unless specified. Visit http://lice.codehack.com
 # ---------------------------------------------------------------------------
-# Updated for EPIC5 by tjh
+# Updated to support all servers by tjh 14/5/2012
+
 
 IF (word(2 $loadinfo()) != [pf]) {
   LOAD -pf $word(1 $loadinfo());
@@ -15,24 +16,27 @@ IF (word(2 $loadinfo()) != [pf]) {
 PACKAGE LiCe;
 
 ALIAS msay {
-  UNLESS (@) {
-    uecho Usage: /MSAY [-a] <public text>;
-    RETURN
-  };
-  IF ([$0] == [-a]) {
-    FOR serv from 0 to $serverctl(MAX) {
-      IF (serverctl(GET $serv CONNECTED)) {
-        @ msay_list = mychannels($serv);
-        ^ASSIGN msay_send $1-;
-        _proc.loop_send $serv PRIVMSG msay_list msay_send;
+  SWITCH ($0) {
+    () {uecho Usage: /MSAY [-a] <public text>};
+
+    (-a) {
+      FOR serv from 0 to $serverctl(MAX) {
+        IF (serverctl(GET $serv CONNECTED)) {
+          @ msay_list = mychannels($serv);
+          ^ASSIGN msay_send $1-;
+          _proc.loop_send $serv PRIVMSG msay_list msay_send;
+        };
       };
+      ECHO $fmt.send_public(ALL/#* $1-);
     };
-  ECHO $fmt.send_public(#* $1-);
-  }{
-  @ msay_list = mychannels();
-  ^ASSIGN msay_send $*;
-  _proc.loop_send $winserv() PRIVMSG msay_list msay_send;
-  ECHO $fmt.send_public(#* $*);
+  
+    (*) {
+      @ msay_list = mychannels();
+      ^ASSIGN msay_send $*;
+      _proc.loop_send $winserv() PRIVMSG msay_list msay_send;
+      ECHO $fmt.send_public(#* $*);
+    };
   };
 };
+
 #tjh/12

@@ -1,6 +1,9 @@
-Usage: MME <action> 
+Usage: MME [-a] <action> 
    Sends an action to all the channels of the current
    server you are, at once.
+
+   Use -a to send to all channels of all servers you're
+   connected to.
 
 See also: [MSAY] [RE] [RELM]
 
