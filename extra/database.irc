@@ -1,0 +1,124 @@
+#
+#
+# ---------------------------------------------------------------------------
+# Database Editor/Viewer for epic's $dbmctl() 
+# ---------------------------------------------------------------------------
+#
+# Written by tjh 2012 - tim@muppetz.com
+#
+#
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+
+# This routine loads the database file and assigns the file descriptor.
+# We also mark that we have a database open using db.loaded so we can check
+# before performing any operations.  The path to the open database is stored in
+# db.file.  This routine won't let you open a database that doesn't exist, use
+# dbcreate for that.
+#
+ALIAS dbfile {
+  IF ([$0] == [-c]) {
+    UNLESS (db.loaded) {
+      XECHO -B You don't have a database open.;
+      RETURN;
+    };
+    @ dbmctl(CLOSE $db.fd);
+    @ db.loaded = 0;
+    XECHO -B Closed database $db.file;
+    RETURN;
+  };
+  IF (db.loaded) {@ :db.old = db.file};
+  UNLESS (@) {
+    XECHO;
+    IF (db.loaded) {XECHO -B Database Open: $db.file};
+    XECHO -B To load/change a database:  /dbfile <filename>;
+    XECHO -B To close the open database: /dbfile -c;
+  }{
+    @ db.file = [$0];
+    UNLESS (fexist(${db.file ## [.pag]}) ==1) {
+      XECHO -B Sorry $db.file doesn't exist!;
+      RETURN;
+      };
+    IF (db.loaded) {
+      @ dbmctl(CLOSE $db.fd);
+      XECHO -B Closed $db.old;
+    };
+    @ db.fd = dbmctl(OPEN STD $db.file);
+    UNLESS (db.fd == -1) {
+      XECHO -B $db.file loaded. \(Using file descriptor $db.fd\);
+      @ db.loaded = 1;
+    }{
+      XECHO -B Error! Can't open $db.file - Please check this file is valid;
+    };
+  };
+};
+
+# This routine lets you edit/change database variables.  Which is kinda handy
+# sometimes isn't it?
+ALIAS dbedit {
+  UNLESS (db.loaded) {XECHO Please load a database first using /dbfile;RETURN};
+  UNLESS (([$0]) && ([$1])) {
+    XECHO -B Usage: /dbedit <option>;
+    XECHO -B;
+    XECHO -B  -c <variable>  Create <variable>;
+    XECHO -B  -e <variable>  Edit the contents of <variable>;
+    XECHO -B  -r <variable>  Rename <variable>;
+    XECHO -B  -d <variable>  Delete <variable>;
+  };
+  SWITCH ($0) {
+    (-e)  {
+    XECHO You want to edit a variable!;
+    };
+  };
+};
+
+# This routine resets the database to the start and loops over them all returning
+# their values.  The dump is completed when the next read of the database returns
+# null.  Some filtering/search capabilities are included, these still loop over
+# the whole database as there's no way to search within in.
+#
+ALIAS db {
+  UNLESS (db.loaded) {XECHO Please load a database first using /dbfile;RETURN};
+  UNLESS (@) {
+    XECHO -B Usage: /db <option>;
+    XECHO -B;
+    XECHO -B  -a         List all database variables.;
+    XECHO -B  -f <text>  Find variable names matching <text>;
+    XECHO -B  -d <text>  Find variable values matching <text>;
+    XECHO -B  -ac        List all database variable, stripped of control chars;
+    XECHO -B  -fa <text> Find variable names matching <text>, stripped of control chars;
+    XECHO;
+    RETURN;
+  };
+  @: endfile = position = matchcount = 0;
+  XECHO;
+  XECHO $repeat(15  ) [Database: $db.file];
+  XECHO Variable $repeat(37  ) Value;
+  XECHO $repeat(70 =);
+  WHILE (endfile != 1) {
+    IF (position == 0)  {
+      @ item = dbmctl(NEXT_KEY $db.fd 1);
+    }{
+      @ item = dbmctl(NEXT_KEY $db.fd 0);
+    };
+    @ position++;
+    @ itemdata = dbmctl(READ $db.fd $item);
+    UNLESS (item) {
+      @ endfile = 1;
+      @ position--;
+      XECHO $repeat(70 =);
+      IF (matchcount == 0) {XECHO Nothing found!}{XECHO Total Items: $matchcount};
+    }{
+      SWITCH ($0) {
+        (-a) { XECHO $item $repeat(${45 - strlen($item)}  ) $itemdata; @ matchcount++};
+        (-ac) { XECHO $stripcrap(ALL $item) $repeat(${45 - strlen($item)}  ) $stripcrap(ALL $itemdata); @ matchcount++};
+        (-f) {IF (match(*$1* $item)) {XECHO $item $repeat(${45 - strlen($item)}  ) $itemdata; @ matchcount++}};
+        (-fa) {IF (match(*$1* $stripcrap(ALL $itemdata))) {XECHO $stripcrap(ALL $item) $repeat(${45 - strlen($item)}  ) $stripcrap(ALL $itemdata); @ matchcount++}};
+        (-d) {IF (match(*$1* $itemdata)) {XECHO $item $repeat(${45 - strlen($item)}  ) $itemdata; @ matchcount++}};
+        (*) {XECHO Unsupported flag;RETURN};
+      };
+    };
+  };
+};
