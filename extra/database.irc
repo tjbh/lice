@@ -11,7 +11,14 @@ IF (word(2 $loadinfo()) != [pf]) {
   LOAD -pf $word(1 $loadinfo());
   RETURN;
 };
-
+XECHO;
+XECHO +--------------------------------------------------------+;
+XECHO Database Editor for EPIC5's $$dbmctl command;
+XECHO;
+XECHO /dbfile		- Load/change database files;
+XECHO /dbkeys		- Dump a quick list of all DB Keys;
+XECHO /db		- Database list/search commands;
+XECHO /dbedit		- Database editing commands;
 # This routine loads the database file and assigns the file descriptor.
 # We also mark that we have a database open using db.loaded so we can check
 # before performing any operations.  The path to the open database is stored in
@@ -66,12 +73,45 @@ ALIAS dbedit {
     XECHO -B  -e <variable>  Edit the contents of <variable>;
     XECHO -B  -r <variable>  Rename <variable>;
     XECHO -B  -d <variable>  Delete <variable>;
+    RETURN;
   };
+  XECHO $$0 is $0;
+#  UNLESS (@dbmctl(READ $db.fd $1) && ($0 != [-c])) {XECHO ERROR: $1 doesn't exist in the database;XECHO ERROR CODE $dbmctl(ERROR $db.fd);RETURN};
+  @ dbvar = [$1];
+  @ dbval = dbmctl(READ $db.fd $1); 
   SWITCH ($0) {
     (-e)  {
-    XECHO You want to edit a variable!;
+      INPUT "New value for $1: " {
+        IF (@ && [$*] != [$dbval]) {
+          @ dbmctl(CHANGE $db.fd $dbvar $*);
+          XECHO $dbvar changed to: $*;
+        }{
+          XECHO $dbvar unchanged;
+        };
+      };
+      XTYPE -literal $dbmctl(READ $db.fd $dbvar);
     };
+    (-d)  {@ dbmctl(DELETE $db.fd $dbvar); XECHO $dbvar Deleted;}
+    (-c)  {
+      INPUT "New value for new variable $1: " {
+          @ dbmctl(ADD $db.fd $dbvar $*);
+          XECHO $dbvar created with value: $*;
+        };
+      };
+    (-r) {
+      INPUT "Rename $1 to: " {
+        @dbmctl(ADD $db.fd $0 $dbmctl(READ $db.fd $dbvar));
+        @dbmctl(DELETE $db.fd $dbvar);
+        XECHO $dbvar renamed to: $0;
+      };
+    };    
   };
+};
+
+# Quickdump of all keys.
+ALIAS dbkeys {
+  XECHO;
+  XECHO $sort($dbmctl(ALL_KEYS $db.fd));
 };
 
 # This routine resets the database to the start and loops over them all returning
@@ -84,17 +124,18 @@ ALIAS db {
   UNLESS (@) {
     XECHO -B Usage: /db <option>;
     XECHO -B;
-    XECHO -B  -a         List all database variables.;
-    XECHO -B  -f <text>  Find variable names matching <text>;
-    XECHO -B  -d <text>  Find variable values matching <text>;
-    XECHO -B  -ac        List all database variable, stripped of control chars;
-    XECHO -B  -fa <text> Find variable names matching <text>, stripped of control chars;
+    XECHO -B  -k         List all database variables.;
+    XECHO -B  -a         List all database variables and contents.;
+    XECHO -B  -f <text>  Find variable names containing <text>;
+    XECHO -B  -d <text>  Find variable contents containing <text>;
+    XECHO -B  -ac        List all database variables and contents, stripped of control chars;
+    XECHO -B  -fa <text> Find variable names containing <text>, stripped of control chars;
     XECHO;
     RETURN;
   };
-  @: endfile = position = matchcount = 0;
   XECHO;
   XECHO $repeat(15  ) [Database: $db.file];
+  @ :endfile = :position = :matchcount = 0;
   XECHO Variable $repeat(37  ) Value;
   XECHO $repeat(70 =);
   WHILE (endfile != 1) {
@@ -112,13 +153,15 @@ ALIAS db {
       IF (matchcount == 0) {XECHO Nothing found!}{XECHO Total Items: $matchcount};
     }{
       SWITCH ($0) {
-        (-a) { XECHO $item $repeat(${45 - strlen($item)}  ) $itemdata; @ matchcount++};
-        (-ac) { XECHO $stripcrap(ALL $item) $repeat(${45 - strlen($item)}  ) $stripcrap(ALL $itemdata); @ matchcount++};
-        (-f) {IF (match(*$1* $item)) {XECHO $item $repeat(${45 - strlen($item)}  ) $itemdata; @ matchcount++}};
-        (-fa) {IF (match(*$1* $stripcrap(ALL $itemdata))) {XECHO $stripcrap(ALL $item) $repeat(${45 - strlen($item)}  ) $stripcrap(ALL $itemdata); @ matchcount++}};
-        (-d) {IF (match(*$1* $itemdata)) {XECHO $item $repeat(${45 - strlen($item)}  ) $itemdata; @ matchcount++}};
-        (*) {XECHO Unsupported flag;RETURN};
+        (-a) 	{ XECHO $item $repeat(${45 - strlen($item)}  ) $itemdata; @ matchcount++};
+	(-k)  	{ XECHO $item; @ matchcount++};
+        (-ac) 	{ XECHO $stripcrap(ALL $item) $repeat(${45 - strlen($item)}  ) $stripcrap(ALL $itemdata); @ matchcount++};
+        (-f) 	{ IF (match(*$1* $item)) {XECHO $item $repeat(${45 - strlen($item)}  ) $itemdata; @ matchcount++}};
+        (-fa) 	{ IF (match(*$1* $stripcrap(ALL $itemdata))) {XECHO $stripcrap(ALL $item) $repeat(${45 - strlen($item)}  ) $stripcrap(ALL $itemdata); @ matchcount++}};
+        (-d) 	{ IF (match(*$1* $itemdata)) {XECHO $item $repeat(${45 - strlen($item)}  ) $itemdata; @ matchcount++}};
+        (*) 	{ XECHO Unsupported flag;RETURN};
       };
     };
   };
 };
+#tjh/12

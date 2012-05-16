@@ -8,6 +8,7 @@
 	  line.
 	- /MSAY and /MME now support sending to all channels on all 
 	  connected servers.
+	- Fixed problems with /NOTE not working correctly.
 
 *** Changes in version 5.2.2 - LiCe HalfOP Release! - 12/05/2012
 	- Added support for the display of halfop status on join and to
