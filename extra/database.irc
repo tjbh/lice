@@ -16,8 +16,7 @@ XECHO +--------------------------------------------------------+;
 XECHO Database Editor for EPIC5's $$dbmctl command;
 XECHO;
 XECHO /dbfile		- Load/change database files;
-XECHO /dbkeys		- Dump a quick list of all DB Keys;
-XECHO /db		- Database list/search commands;
+XECHO /dblist		- Database list/search commands;
 XECHO /dbedit		- Database editing commands;
 # This routine loads the database file and assigns the file descriptor.
 # We also mark that we have a database open using db.loaded so we can check
@@ -75,8 +74,7 @@ ALIAS dbedit {
     XECHO -B  -d <variable>  Delete <variable>;
     RETURN;
   };
-  XECHO $$0 is $0;
-#  UNLESS (@dbmctl(READ $db.fd $1) && ($0 != [-c])) {XECHO ERROR: $1 doesn't exist in the database;XECHO ERROR CODE $dbmctl(ERROR $db.fd);RETURN};
+  UNLESS (finddb($1) && ($0 != [-c])) {XECHO ERROR: $1 doesn't exist in the database;RETURN};
   @ dbvar = [$1];
   @ dbval = dbmctl(READ $db.fd $1); 
   SWITCH ($0) {
@@ -108,18 +106,12 @@ ALIAS dbedit {
   };
 };
 
-# Quickdump of all keys.
-ALIAS dbkeys {
-  XECHO;
-  XECHO $sort($dbmctl(ALL_KEYS $db.fd));
-};
-
 # This routine resets the database to the start and loops over them all returning
 # their values.  The dump is completed when the next read of the database returns
 # null.  Some filtering/search capabilities are included, these still loop over
 # the whole database as there's no way to search within in.
 #
-ALIAS db {
+ALIAS dblist {
   UNLESS (db.loaded) {XECHO Please load a database first using /dbfile;RETURN};
   UNLESS (@) {
     XECHO -B Usage: /db <option>;
@@ -164,4 +156,23 @@ ALIAS db {
     };
   };
 };
+
+ALIAS finddb (query) {
+  @ :endfile = :position = 0;
+  WHILE (endfile != 1) {
+    IF (position == 0)  {
+      @ item = dbmctl(NEXT_KEY $db.fd 1);
+    }{
+      @ item = dbmctl(NEXT_KEY $db.fd 0);
+    };
+    @ position++;
+    IF ([$item] == [$query]) {RETURN 1};
+    UNLESS (item) {
+      @ endfile = 1;
+      @ position--;
+      };
+    };
+  };
+};
+
 #tjh/12
