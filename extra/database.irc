@@ -1,7 +1,6 @@
 #
-#
 # ---------------------------------------------------------------------------
-# Database Editor/Viewer for epic5's $dbmctl() 
+# LiCe Database Editor/Viewer for epic5's $dbmctl() 
 # ---------------------------------------------------------------------------
 #
 # Written by tjh 2012 - tim@muppetz.com
@@ -16,61 +15,21 @@ IF (word(2 $loadinfo()) != [pf]) {
   LOAD -pf $word(1 $loadinfo());
   RETURN;
 };
+
+# database editor version
+ASSIGN db.ev 1.1;
+UNLESS (id.v) {XECHO -B What? You need to have loaded LiCe 5.2.0+ first before you can edit its Database!;RETURN}
+
 XECHO;
 XECHO +--------------------------------------------------------+;
-XECHO Database Editor for EPIC5's $$dbmctl command;
+XECHO          Database Editor v$db.ev for LiCe $id.v;
 XECHO;
-XECHO /dbfile		- Load/change database files;
-XECHO /dblist		- Database list/search commands;
-XECHO /dbedit		- Database editing commands;
-
-# This routine loads the database file and assigns the file descriptor.
-# We also mark that we have a database open using db.loaded so we can check
-# before performing any operations.  The path to the open database is stored in
-# db.file.  This routine won't let you open a database that doesn't exist, use
-# dbcreate for that.
-#
-ALIAS dbfile {
-  IF ([$0] == [-c]) {
-    UNLESS (db.loaded) {
-      XECHO -B You don't have a database open.;
-      RETURN;
-    };
-    @ dbmctl(CLOSE $db.fd);
-    @ db.loaded = 0;
-    XECHO -B Closed database $db.file;
-    RETURN;
-  };
-  IF (db.loaded) {@ :db.old = db.file};
-  UNLESS (@) {
-    XECHO;
-    IF (db.loaded) {XECHO -B Database Open: $db.file};
-    XECHO -B To load/change a database:  /dbfile <filename>;
-    XECHO -B To close the open database: /dbfile -c;
-  }{
-    @ db.file = [$0];
-    UNLESS (fexist(${db.file ## [.pag]}) ==1) {
-      XECHO -B Sorry $db.file doesn't exist!;
-      RETURN;
-      };
-    IF (db.loaded) {
-      @ dbmctl(CLOSE $db.fd);
-      XECHO -B Closed $db.old;
-    };
-    @ db.fd = dbmctl(OPEN STD $db.file);
-    UNLESS (db.fd == -1) {
-      XECHO -B $db.file loaded. \(Using file descriptor $db.fd\);
-      @ db.loaded = 1;
-    }{
-      XECHO -B Error! Can't open $db.file - Please check this file is valid;
-    };
-  };
-};
+XECHO   /dblist		- Database list/search commands;
+XECHO   /dbedit		- Database editing commands;
 
 # This routine lets you edit/change/delete and create database variables.  
 # Which is kinda useful really for an "editor" right?
 ALIAS dbedit {
-  UNLESS (db.loaded) {XECHO Please load a database first using /dbfile;RETURN};
   UNLESS (([$0]) && ([$1])) {
     XECHO -B Usage: /dbedit <option>;
     XECHO -B;
@@ -82,30 +41,30 @@ ALIAS dbedit {
   };
   UNLESS (finddb($1) && ($0 != [-c])) {XECHO ERROR: $1 doesn't exist in the database;RETURN};
   @ dbvar = [$1];
-  @ dbval = dbmctl(READ $db.fd $1); 
+  @ dbval = dbmctl(READ $lice.fd $1); 
   SWITCH ($0) {
     (-e)  {
       INPUT "New value for $1: " {
         IF (@ && [$*] != [$dbval]) {
-          @ dbmctl(CHANGE $db.fd $dbvar $*);
+          @ dbmctl(CHANGE $lice.fd $dbvar $*);
           XECHO $dbvar changed to: $*;
         }{
           XECHO $dbvar unchanged;
         };
       };
-      XTYPE -literal $dbmctl(READ $db.fd $dbvar);
+      XTYPE -literal $dbmctl(READ $lice.fd $dbvar);
     };
-    (-d)  {@ dbmctl(DELETE $db.fd $dbvar); XECHO $dbvar Deleted;}
+    (-d)  {@ dbmctl(DELETE $lice.fd $dbvar); XECHO $dbvar Deleted;}
     (-c)  {
       INPUT "New value for new variable $1: " {
-          @ dbmctl(ADD $db.fd $dbvar $*);
+          @ dbmctl(ADD $lice.fd $dbvar $*);
           XECHO $dbvar created with value: $*;
         };
       };
     (-r) {
       INPUT "Rename $1 to: " {
-        @dbmctl(ADD $db.fd $0 $dbmctl(READ $db.fd $dbvar));
-        @dbmctl(DELETE $db.fd $dbvar);
+        @dbmctl(ADD $lice.fd $0 $dbmctl(READ $lice.fd $dbvar));
+        @dbmctl(DELETE $lice.fd $dbvar);
         XECHO $dbvar renamed to: $0;
       };
     };    
@@ -118,7 +77,6 @@ ALIAS dbedit {
 # the whole database as there's no way to search within in.
 #
 ALIAS dblist {
-  UNLESS (db.loaded) {XECHO Please load a database first using /dbfile;RETURN};
   UNLESS (@) {
     XECHO -B Usage: /db <option>;
     XECHO -B;
@@ -132,18 +90,18 @@ ALIAS dblist {
     RETURN;
   };
   XECHO;
-  XECHO $repeat(15  ) [Database: $db.file];
+  XECHO $repeat(15  ) [Database: $lice.save_path/lice.db;
   @ :endfile = :position = :matchcount = 0;
   XECHO Variable $repeat(37  ) Value;
   XECHO $repeat(70 =);
   WHILE (endfile != 1) {
     IF (position == 0)  {
-      @ item = dbmctl(NEXT_KEY $db.fd 1);
+      @ item = dbmctl(NEXT_KEY $lice.fd 1);
     }{
-      @ item = dbmctl(NEXT_KEY $db.fd 0);
+      @ item = dbmctl(NEXT_KEY $lice.fd 0);
     };
     @ position++;
-    @ itemdata = dbmctl(READ $db.fd $item);
+    @ itemdata = dbmctl(READ $lice.fd $item);
     UNLESS (item) {
       @ endfile = 1;
       @ position--;
@@ -170,9 +128,9 @@ ALIAS finddb (query) {
   @ :endfile = :position = 0;
   WHILE (endfile != 1) {
     IF (position == 0)  {
-      @ item = dbmctl(NEXT_KEY $db.fd 1);
+      @ item = dbmctl(NEXT_KEY $lice.fd 1);
     }{
-      @ item = dbmctl(NEXT_KEY $db.fd 0);
+      @ item = dbmctl(NEXT_KEY $lice.fd 0);
     };
     @ position++;
     IF ([$item] == [$query]) {RETURN 1};
