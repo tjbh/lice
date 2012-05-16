@@ -1,11 +1,16 @@
 #
 #
 # ---------------------------------------------------------------------------
-# Database Editor/Viewer for epic's $dbmctl() 
+# Database Editor/Viewer for epic5's $dbmctl() 
 # ---------------------------------------------------------------------------
 #
 # Written by tjh 2012 - tim@muppetz.com
 #
+# Much help and guidance from #epic on efnet.  Couldn't have written this
+# without the help of hop, caf, CrazyEddy & many other helpful friendly souls
+# in there. Thanks!
+#
+# PS: Yea, it looks like fortran. I learnt this craft from srfrog - Blame him.
 #
 IF (word(2 $loadinfo()) != [pf]) {
   LOAD -pf $word(1 $loadinfo());
@@ -18,6 +23,7 @@ XECHO;
 XECHO /dbfile		- Load/change database files;
 XECHO /dblist		- Database list/search commands;
 XECHO /dbedit		- Database editing commands;
+
 # This routine loads the database file and assigns the file descriptor.
 # We also mark that we have a database open using db.loaded so we can check
 # before performing any operations.  The path to the open database is stored in
@@ -61,8 +67,8 @@ ALIAS dbfile {
   };
 };
 
-# This routine lets you edit/change database variables.  Which is kinda handy
-# sometimes isn't it?
+# This routine lets you edit/change/delete and create database variables.  
+# Which is kinda useful really for an "editor" right?
 ALIAS dbedit {
   UNLESS (db.loaded) {XECHO Please load a database first using /dbfile;RETURN};
   UNLESS (([$0]) && ([$1])) {
@@ -157,6 +163,9 @@ ALIAS dblist {
   };
 };
 
+# We walk through the database looking for $query
+# If we find it exactly, we return 1 to the calling
+# function.  Lets you confirm a variable name exists.
 ALIAS finddb (query) {
   @ :endfile = :position = 0;
   WHILE (endfile != 1) {
