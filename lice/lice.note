@@ -104,16 +104,13 @@ ALIAS _proc.note_rem {
 
 # user command
 ALIAS note {
-  @ :opt = getopt(optopt optarg d:g:r:s:h $*);
-  SWITCH ($opt) {
-    (d) { _proc.note_dup $1 $2 };
-    (g) { _proc.note_get $1- };
-    (r) { _proc.note_rem $1- };
-    (s) { _proc.note_set $1- };
-    (h) { _proc.note_help };
-    (!) { XECHO -B Invalid option \"$optopt\" };
-    (-) { XECHO -B Missing argument for \"$optopt\" };
+  UNLESS (@) { _proc.note_help; RETURN};
+  SWITCH ($0) {
+    (-upd) { _proc.note_dup $1 $2 };
+    (-get) { _proc.note_get $1- };
+    (-rem) { _proc.note_rem $1- };
+    (-set) { _proc.note_set $1- };
+    (*)    { XECHO -B Invalid option};
   };
-  UNLESS (@) { _proc.note_help };
 };
-#tjh/11
+#tjh/12
