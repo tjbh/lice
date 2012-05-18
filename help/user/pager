@@ -1,6 +1,6 @@
 Usage: PAGER <[path/]filename> 
       Allows you to view text files in your ircii active window.
-      The internal ircii viewer/pager is utilized (ie. /help).
+      The rewritten LiCe viewer/pager routine is utilized (ie. /help).
 
       Example:
            /PAGER ~/ircrc.example

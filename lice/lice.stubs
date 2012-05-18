@@ -133,6 +133,7 @@ STUB ALIAS party $LiCePath/lice/lice.party;
 STUB ALIAS _proc.ban $LiCePath/lice/lice.banlist;
 STUB ALIAS _proc.dcc_queue_check $LiCePath/lice/lice.dcclist;
 STUB ALIAS _proc.dcc_queue_load $LiCePath/lice/lice.dcclist;
+STUB ALIAS _proc.disp_file $LiCePath/lice/lice.pager;
 STUB ALIAS _proc.flood_chan $LiCePath/lice/lice.floodlist;
 STUB ALIAS _proc.flood_nick $LiCePath/lice/lice.floodlist;
 STUB ALIAS _proc.join_clones $LiCePath/lice/lice.joinlist;

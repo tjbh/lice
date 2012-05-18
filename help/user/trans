@@ -1,5 +1,7 @@
 Usage: TRANS [[-fFgGiIpPsS][-o][-m <target>][-n <target>]] <text>
 
+BROKEN: This is currently broken in LiCe 5+.  Sorry.
+
 Attempts to translate <text> using altavista's babelfish server.
 If no language option is selected, English to Spanish is the default.
 

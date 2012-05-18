@@ -1,4 +1,4 @@
-#
+# lice.database
 # ---------------------------------------------------------------------------
 # LiCe Database Editor/Viewer for epic5's $dbmctl() 
 # ---------------------------------------------------------------------------
@@ -9,7 +9,6 @@
 # without the help of hop, caf, CrazyEddy & many other helpful friendly souls
 # in there. Thanks!
 #
-# PS: Yea, it looks like fortran. I learnt this craft from srfrog - Blame him.
 #
 IF (word(2 $loadinfo()) != [pf]) {
   LOAD -pf $word(1 $loadinfo());

@@ -32,7 +32,7 @@ ALIAS help (topic, topic2, path) {
       @ isdir = 1;
       @ newpath = LiCePath ## [/help/$topic/];
       ^CD $newpath;
-      IF (fexist($newpath$topic) == 1) {pager $open($newpath$topic R);};
+      IF (fexist($newpath$topic) == 1) {_proc.disp_file $open($newpath$topic R);};
       echo.recursive $glob(*);
       XECHO;
       INPUT "Topic? " {
@@ -47,10 +47,10 @@ ALIAS help (topic, topic2, path) {
     };  
     IF (fexist($file) == -1) {uecho No such help topic;RETURN;};
     IF (isdir == 0) {
-      pager $open($file R);
+      _proc.disp_file $open($file R);
     };
   }{
-  pager $open($LiCePath/help/index R);
+  _proc.disp_file $open($LiCePath/help/index R);
     INPUT "Topic? " {
       IF (@) {help $tolower($0)};
     };

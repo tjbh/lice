@@ -9,6 +9,9 @@
 	- /MSAY and /MME now support sending to all channels on all 
 	  connected servers.
 	- Fixed problems with /NOTE not working correctly.
+	- Fixed /PAGER
+	- Added lice.database to extra directory. You can view/edit
+	  your LiCe 5.2.0+ database using this script.
 
 *** Changes in version 5.2.2 - LiCe HalfOP Release! - 12/05/2012
 	- Added support for the display of halfop status on join and to

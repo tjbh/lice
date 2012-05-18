@@ -15,10 +15,24 @@ IF (word(2 $loadinfo()) != [pf]) {
 
 PACKAGE LiCe;
 
+
+# Proper pager alias - tjh - May 2012
+ALIAS pager {
+  UNLESS (@) {
+   uecho Usage: /PAGER <file>;
+   RETURN;
+  };
+  IF (fexist($0) == -1) {
+    XECHO -B  File note found: $0;
+    RETURN;
+  };
+  _proc.disp_file $open($0 R);
+};
+
 # Written by tjh.
-ALIAS pager (file) {
+ALIAS _proc.disp_file (file) {
   @ :lines = (word(1 $geom()) - 5);
-  IF (lines < 1) {@ :lines = 1;};
+  IF (lines < 1) {@ :lines = 1};
   IF (!eof($file)) {
     WHILE ((lines > 0) && !eof($file)) {
       ECHO $read($file);
@@ -28,7 +42,7 @@ ALIAS pager (file) {
     IF (!eof($file)) {
       INPUT_CHAR "[Press any key, q to quit]" {
         IF ([$0] != [q]) {
-          pager $fd;
+          _proc.disp_file $fd;
         }{
           @ close($fd);
         };

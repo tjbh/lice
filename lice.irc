@@ -3,7 +3,7 @@
 # SVN: http://lice.googlecode.com/
 #
 # Version: 5.2.3
-# Released: xx/xx/2012
+# Released: 18/05/2012
 #
 #   IRCII Script Program. For use with ircii-EPIC5 clients.
 #   Copyright (C) 1993-2000 SrfRoG (cag@codehack.com)
@@ -47,7 +47,7 @@ EVAL IF (word(0 $info(v)) != [epic5] || V < 20100430 || info(i) < 1638) {
      ECHO;
      ECHO   ftp://epicsol.org/pub/epic (tarball);
      ECHO;
-     ECHO EPIC5 1.1.2 is the minimum recommended version for LiCe5, though any;
+     ECHO EPIC5 1.1.3 is the minimum recommended version for LiCe5, though any;
      ECHO version of EPIC5 will work. Bugs reported on earlier versions will;
      ECHO be ignored though!  You've been warned....;
      ECHO;
