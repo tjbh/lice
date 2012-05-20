@@ -61,6 +61,9 @@ IF (lice.get(db.status) == 1) {TIMER 2 uecho Warning: The LiCe database is alr
 # mark database as open
 @lice.set(db.status 1);
 
+# Erase old client state
+@lice.del(*CLIENT_INFORMATION);
+
 # restore database state.
 ALIAS lice.readdb {
   FE ($sort($dbmctl(ALL_KEYS $lice.fd))) dbi {
