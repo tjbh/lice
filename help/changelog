@@ -1,3 +1,10 @@
+*** Changes in version 5.2.4
+	- Fixed issue with /TOG Q, LiCe information was still being
+	  returned if you were CTCP VERSION'd. Thanks whitefang for
+	  reporting.
+	- /SENS T now accepts spaces. Reported by Q.
+	- Small documentation cleanups
+
 *** Changes in version 5.2.3 
 	- Optimised restoring the database on LiCe load - Much faster.
 	- Fixed database routine to ensure only valid data is written

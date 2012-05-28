@@ -35,7 +35,7 @@ ALIAS _proc.set_sensors (list) {
       #(P) {INPUT "Max deops per min to be considered flood [using: $main.deop]: " IF (isnumber($0) && [$0] > 0) {^ASSIGN main.deop $0}};
       (Q) {INPUT "server queue buffer size (max 500) [using: $lice.get(main.qbuff)]: " IF (isnumber($0) && [$0] > 0 && [$0] <= 500) {@lice.set(main.qbuff $0)}};
       (R) {INPUT "maximum number of stacked modes [using: $lice.get(main.mnm)]: " IF (isnumber($0) && [$0] > 0) {@lice.set(main.mnm $0)}};
-      (S) {INPUT "timestamp (strftime) format [using: $lice.get(main.tsfmt)]: " IF (@) {@lice.set(main.tsfmt $0)}};
+      (S) {INPUT "timestamp (strftime) format [using: $lice.get(main.tsfmt)]: " IF (@) {@lice.set(main.tsfmt $*)}};
       (T) {INPUT "minutes before dccs timeout [using: $tdiff($DCC_TIMEOUT)]: " IF (isnumber($0) && [$0] > 1) {^SET DCC_TIMEOUT ${[$0] * 60}}};
       (U) {INPUT "auto usermode [using: $lice.get(main.umode)]: " IF (@) {@lice.set(main.umode $0)}};
       #(X) {INPUT "modes/$tdiff($main.fint) [using: $main.mode]: " IF (isnumber($0) && [$0] > 0) {^ASSIGN main.mode $0}};

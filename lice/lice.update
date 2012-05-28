@@ -6,7 +6,6 @@
 # All code by SrfRoG, unless specified. Visit http://lice.codehack.com
 # ---------------------------------------------------------------------------
 # Updated for EPIC5 by tjh
-# Still broken though, I can't wait until I (?) fix this. It's the best feature!
 
 IF (word(2 $loadinfo()) != [pf]) {
   LOAD -pf $word(1 $loadinfo());
@@ -118,3 +117,4 @@ ALIAS _proc.update_s1 {
 
 ALIAS update {_proc.update_s1 $*};
 ALIAS upgrade {update $*};
+#tjh/12
