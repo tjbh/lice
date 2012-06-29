@@ -26,6 +26,7 @@ ALIAS help (topic, topic2, path) {
     RETURN;
   };
   IF (topic) { 
+    @ topic = tolower($topic);
     @ file = [$path$topic];
     @ cpath = path;
     IF (left(1 $word(2 $stat("$file"))) == 4) {

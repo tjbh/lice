@@ -1,7 +1,7 @@
 # /silence - a more efficient interface
 # Written by HSOC, slightly modified to support silence toggle by tjh
 # Updated for EPIC5 by tjh
-# TODO Clean up this mess!
+# Updated to support callerid by tjh 06/12
 
 IF (word(2 $loadinfo()) != [pf]) {
   LOAD -pf $word(1 $loadinfo());
@@ -39,6 +39,7 @@ ALIAS silence {
 
 ON ^272 * {iecho ---- End of Silence List;purge sil};
 
+# Verify server support for silence/callerid
 ALIAS _proc.silence {@:FUNCTION_RETURN = (MATCH(SILENCE $serverctl(GET $serverctl(FROM_SERVER) 005s))) > 0): 0 ? 1};
 ALIAS _proc.callerid {@:FUNCTION_RETURN = (MATCH(CALLERID $serverctl(GET $serverctl(FROM_SERVER) 005s))) > 0): 0 ? 1}
 
