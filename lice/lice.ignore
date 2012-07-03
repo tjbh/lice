@@ -39,12 +39,12 @@ ALIAS ignore {
 ALIAS protect {
   UNLESS (rmatch(*!*@*.* $igmask(*)) > 0) {
     //IGNORE *!*@*.* ALL;
-    IF (_proc.ssupport()) {
+    IF (_proc.silence()) {
       //^SILENCE +*@*;
     };
   }{
     //IGNORE *!*@*.* NONE;
-    IF (_proc.ssupport()) {
+    IF (_proc.silence()) {
       //^SILENCE -*@*;
     };
   };

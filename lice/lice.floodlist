@@ -24,7 +24,7 @@ ALIAS _proc.flood_nick (type,nick,uh,serv,cf) {
   UNLESS (rmatch(*!*@*.* $igmask(*))) {
      ^ASSIGN ignore.test 1;
      //^IGNORE *!*@* MSGS CTCPS INVITES NOTICES NOTES NICKS;
-     IF (_proc.ssupport()) {
+     IF (_proc.silence()) {
        //^SILENCE +*@*;
      };
      XECHO -W $winnum() $fmt.banner_alert() Alert: Isolating client due to flood for $lice.get(main.isolate)\s;
@@ -36,7 +36,7 @@ ALIAS _proc.flood_nick (type,nick,uh,serv,cf) {
   };
   IF (ismset(U) && cf != 1) {_proc.away_save LiCe licelogd $type FLOOD from $nick \($uh\)};
   IF (ignore.test == 1) {
-    IF (_proc.ssupport()) {
+    IF (_proc.silence()) {
       ^TIMER -REF SISOLATE $lice.get(main.isolate) //^SILENCE -*@*;
     };
     ^TIMER -REF ISOLATE $lice.get(main.isolate) //^IGNORE *!*@* NONE;
@@ -66,19 +66,5 @@ ALIAS _proc.flood_chan (type,nick,uh,serv,chan,hash) {
     _proc.ul_save;
   };
   IF (ismset(U)) {_proc.away_save LiCe licelogd [$chan] $type FLOOD from $nick \($uh\)};
-};
-
-ALIAS protect {
-  UNLESS (rmatch(*!*@*.* $igmask(*)) > 0) {
-    //IGNORE *!*@*.* ALL;
-    IF (_proc.ssupport()) {
-      //^SILENCE +*@*;
-    };
-  }{
-    //IGNORE *!*@*.* NONE;
-    IF (_proc.ssupport()) {
-      //^SILENCE -*@*;
-    };
-  };
 };
 #tjh/12
