@@ -53,7 +53,7 @@ ALIAS sensors {
   iecho Auto ban removal time (in seconds)         |  1  | 0   | $lice.get(main.auto_unban);
   iecho Auto ignore removal time (in seconds)      |  2  | -   | ${lice.get(main.auto_noig) > 0 ? lice.get(main.auto_noig) : [PERMANENT]};
   iecho Minutes idle before AutoAWAY               |  A  | 5   | $lice.get(main.agn);
-  iecho Seconds before creating channels           |  C  | 5   | $lice.get(main.cch);
+  iecho Seconds before creating channels           |  C  | 15  | $lice.get(main.cch);
   iecho Maximum simultaneaous dcc processes        |  D  | 10  | $lice.get(main.dcc_active_limit);
   iecho Minutes before netsplit data expires       |  E  | 5   | $lice.get(main.nst);
   iecho Flood after (how many lines?)              |  F  | 5   | $FLOOD_AFTER;

@@ -2,7 +2,7 @@
 #   LICE.BINDS v1.5.6 ircii script module for use with EPIC5
 #   Copyright (C) 2000 SrfRoG (cag@codehack.com)
 #   refurbished by UNKNOWN and HSOC to work with latest EPIC.4
-#   refurbished by tjh to work with latest EPIC5
+#   Refurbished cleaned and leaned by tjh to work with latest EPIC5
 #
 # ----------------------------------------------------------------------
 # Filename   : LICE.BINDS
@@ -11,7 +11,7 @@
 # Notes      : This module was made specifically for LiCe v4.x
 #            : tjh updated it to work specifically for LiCe v5.x
 # ----------------------------------------------------------------------
-# All code by SrfRoG, unless specified. Visit http://lice.muppetz.com
+# All originally by code by SrfRoG, unless specified. Visit http://lice.muppetz.com
 # ---------------------------------------------------------------------------
 
 IF (word(2 $loadinfo()) != [pf]) {
@@ -53,8 +53,7 @@ BIND ^Wi PARSE_COMMAND {
 BIND ^Wj PARSE_COMMAND {
   INPUT "Join channel [key, if needed]: " IF (@) {
     @ :chan = ischannel($0) ? [$0] : [#$0];
-    //JOIN $chan ${streln($1) ? [$1-] : []};
-    #win_new CHANNEL $chan BIND $chan NAME $chan;
+    //JOIN $chan ${strlen($1) ? [$1-] : []};
     win_new CHANNEL $chan NAME $chan;
     ^ON -WINDOW_KILL "$winnum($chan) %" {
       ^ASSIGN -chan_topic[$chanwin($1)$hash_32bit($1)];
