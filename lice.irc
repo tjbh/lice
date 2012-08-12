@@ -1334,10 +1334,12 @@ ON #-JOIN -13 * {
     IF (iscset(E $hash)) {_proc.note_get $0};
   }{
     UNLESS (strlen($temp.my_ip_address)) {@ temp.my_ip_address = nametoip($after(@ $2))};
-   ^TIMER -REF SYNC[$hash] $lice.get(main.cch) {
-      UNLESS (strlen($lice.get(chan[$hash_32bit($1)][S])) || !onchannel($servernick() $1)) {
-        leave $1;
-        WAIT -CMD WINDOW $winchan($1) CHANNEL "$1 $key($1)";
+    UNLESS (lice.get(main.cch) == 0) {
+      ^TIMER -REF SYNC[$hash] $lice.get(main.cch) {
+        UNLESS (strlen($lice.get(chan[$hash_32bit($1)][S])) || !onchannel($servernick() $1)) {
+          leave $1;
+          WAIT -CMD WINDOW $winchan($1) CHANNEL "$1 $key($1)";
+        };
       };
     };
   };
