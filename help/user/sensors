@@ -1,6 +1,10 @@
 Usage: SENSORS
   To change numeric sensors used by different protection routines.
  
+  If you're having problems with very slow channel sync and find
+  you are cycling from channels, set /sens c to 0
+
+
 Note: if bogus sensor values are selected, the program's
       performance/protection will suffer. If you dont have much IRC
       knowledge, stick with the default values provided.

@@ -5,6 +5,8 @@
 	- /SENS S now accepts spaces. Reported by Q.
 	- Fixed bug with /HELP Reported by whitefang.
 	- Documentation cleanups and fixes.
+	- Disable the channel cache sync check by setting 
+	  /sens c to 0
 
 *** Changes in version 5.2.3 
 	- Optimised restoring the database on LiCe load - Much faster.
