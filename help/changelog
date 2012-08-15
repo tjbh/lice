@@ -3,10 +3,12 @@
 	  returned if you were CTCP VERSION'd. Thanks whitefang for
 	  reporting.
 	- /SENS S now accepts spaces. Reported by Q.
-	- Fixed bug with /HELP Reported by whitefang.
+	- Fixed bug with /HELP reported by whitefang.
 	- Documentation cleanups and fixes.
-	- Disable the channel cache sync check by setting 
-	  /sens c to 0
+	- You can disable the channel cache sync check 
+	  by setting /SENS C to 0.  This has been a problem for some
+	  users joining and then parting channels, though the ideal
+	  fix is to set the /SENS C to a higher figure (say, 30)
 
 *** Changes in version 5.2.3 
 	- Optimised restoring the database on LiCe load - Much faster.
