@@ -53,7 +53,7 @@ ALIAS _proc.setup_ctog {
         UNLESS (pass($_c $lice.get(main.cset))) {@lice.set(main.cset ${lice.get(main.cset)##[$_c]})} 
         {@ lice.set(main.cset $strip($_c $lice.get(main.cset)))};
       };
-      XECHO -B Default Channel togs are now set to \"$lice.get(main.cset)\";
+      XECHO -B You are not on any channel. Default Channel togs are now set to \"$lice.get(main.cset)\";
     };
   };
 };
@@ -88,7 +88,7 @@ ALIAS _proc.ctog_do_locks (type,mode,hash,chan,serv) {
   };
 };
 ALIAS ctog {
-  UNLESS ((@) && (!$C)) {
+  UNLESS ((@) && (ischannel($C))) {
     _proc.setup_ctog;
     RETURN;
   };
