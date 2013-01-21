@@ -23,7 +23,7 @@ ALIAS pager {
    RETURN;
   };
   IF (fexist($0) == -1) {
-    XECHO -B  File note found: $0;
+    XECHO -B  File not found: $0;
     RETURN;
   };
   _proc.disp_file $open($0 R);
@@ -52,4 +52,4 @@ ALIAS _proc.disp_file (file) {
     @ close($fd);
   };
 };
-#tjh/12
+#tjh/13

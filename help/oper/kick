@@ -23,7 +23,7 @@ Usage: MK <nick1 nick2 ... > [:reason] 
    KBI - Kick + Ban + Ignore. Ignores the users you are kicking.
    KI  - Same as "/KBI".
 
-   Edit the file "~/.epic/kick.reasons" to customize the default reason.
+   Edit the file "~/.lice/kick.reasons" to customize the default reason.
  
 Examples:
 

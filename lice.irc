@@ -2,7 +2,7 @@
 # Website: http://lice.muppetz.com/
 # SVN: http://lice.googlecode.com/
 #
-# Version: 5.3.0
+# Version: 5.2.5
 # Released: 
 #
 #   IRCII Script Program. For use with ircii-EPIC5 clients.
@@ -101,7 +101,7 @@ LOAD -pf $LiCePath/lice/lice.defaults;
 LOAD $LiCePath/themes/default;
 
 # program information
-^ASSIGN id.v $decode(DFCODCCODE);
+^ASSIGN id.v $decode(DFCODCCODF);
 
 ALIAS lice (addon) {
   @ :ret = [];
@@ -786,7 +786,7 @@ ALIAS op {
   ^ASSIGN mode_list $*;
   _proc.loop_mode $winserv() + o $C mode_list;
 };
-ALIAS dhop
+ALIAS dhop {
   ^ASSIGN mode_list $*;
   _proc.loop_mode $winserv() - h $C mode_list;
 };
@@ -1310,7 +1310,6 @@ ON #-KICK -13 * {
 
 ### JOIN/PART PARSING ROUTINES
 ON #-CHANNEL_SYNC -13 * {
-iecho $2 $0;
    _proc.channel_remove $2 $0;
    _proc.channel_create $2 $hash_32bit($0) $0;
    XECHO -W $chanwin($0) $fmt.banner_chan() Channel $0 has synched in $1s \(Sets\: \+$lice.get(chan[$hash_32bit($0)][S])\);
@@ -1738,4 +1737,4 @@ main_init;
 
 # cag/00
 # HS/04-04
-# tjh/12
+# tjh/13
