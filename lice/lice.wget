@@ -36,7 +36,7 @@ ALIAS _proc.wget_close (sock) {
 };
 
 # This is the workhorse routine. Just feed it a nice URL and a path
-# to save the remove file locally. Redirects arent supported.
+# to save the remote file locally. Redirects arent supported.
 
 ALIAS _proc.wget_main (url,file) {
   IF (!strlen($file) || !match(http://% $url) || match(http://%:%@% $url)) {

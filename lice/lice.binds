@@ -145,7 +145,7 @@ BIND ^W0 PARSE_COMMAND {//^WINDOW SWAP 10};
 ALIAS echo.status {
   ^TIMER 5 {^STACK POP SET ${windowctl(GET 0 DOUBLE) ? [STATUS_FORMAT2] : [STATUS_FORMAT]}};
   ^STACK PUSH SET ${windowctl(GET 0 DOUBLE) ? [STATUS_FORMAT2] : [STATUS_FORMAT]};
-  ^SET ${windowctl(GET 0 DOUBLE) ? [STATUS_FORMAT2] : [STATUS_FORMAT]} [%R] ${@ ? [$*] : temp.last_msg};
+  //^SET ${windowctl(GET 0 DOUBLE) ? [STATUS_FORMAT2] : [STATUS_FORMAT]} [%R] ${@ ? [$*] : temp.last_msg};
   ^ASSIGN temp.last_msg $*;
 };
 ALIAS _proc.screen_pl {
