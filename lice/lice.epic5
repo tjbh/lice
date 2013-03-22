@@ -769,7 +769,7 @@ set command_mode off;
 
 # DCC_TIMEOUT
 
-addset dcc_timeout int;
+Addset dcc_timeout int;
 
 set dcc_timeout 3600;
 
@@ -876,3 +876,233 @@ on ?unknown_command "*" (cmd, args) {
 
 # Inform about SAVE's removal
 ALIAS SAVE {XECHO -B Save isn't needed in LiCe 5.2+ anymore! Please read /help changelog};
+if (word(2 $loadinfo()) != [pf]) { load -pf $word(1 $loadinfo()); return; };
+
+# AUTO_RECONNECT
+
+addset auto_reconnect bool;
+addset auto_reconnect_retries int;
+addset auto_reconnect_delay int;
+# whether reconnect is enabled at all
+set auto_reconnect on;
+# how many failed reconnect attempts in a row before giving up,
+# 0 means infinite
+set auto_reconnect_retries 0;
+# delay in seconds between reconnect attempts
+set auto_reconnect_delay 60;
+
+alias _reconn.svkey (ref, void) {
+  ^local gr;
+  @ gr = servergroup($ref);
+  if (gr == [<default>] || gr == []) {
+    return sv $ref;
+  };
+  return gr $gr;
+};
+
+alias _reconn.hook.disconn {
+  if ([$1] != [CLOSING] && getset(auto_reconnect) == [ON]) {
+    if (serverctl(GET $0 ADDRSLEFT)) {
+      return;
+    };
+    @ :egr = encode($_reconn.svkey($0));
+    if (reconn[$egr][lastserver] == []) {
+      xeval -s $0 {
+        fe ($tolower($mychannels($0))) i {
+          if ((:win = winchan($i)) != -1) {
+            push arr[$win] $i $key($i);
+          };
+        };
+      };
+      foreach arr i {
+        @ windowctl(SET $i TOPLINE 9 $arr[$i]);
+        ^assign -arr[$i];
+      };
+      @ reconn[$egr][retries] = getset(auto_reconnect_retries) - 1;
+    } else {
+      if (reconn[$egr][retries] > -1) {
+        @ reconn[$egr][retries]--;
+        if (reconn[$egr][retries] <= 0) {
+          _reconn.purge $0;
+          xecho -b Number of retries for server $servername($0) exceeded;
+          return;
+        };
+      };
+    };
+    @ reconn[$egr][lastserver] = [$0];
+    xecho -b Reconnecting to $servername($0) in $getset(auto_reconnect_delay) seconds. Type /rmreconnect to cancel.${ reconn[$egr][retries] != -1 ? [ \($reconn[$egr][retries] retries left\).] : [] };
+    ^timer -ref _reconn$egr $getset(auto_reconnect_delay) _reconn.server $egr;
+  };
+};
+
+fe (ERROR EOF) i {
+  on #-SERVER_STATUS 27 "% % $i" {
+    _reconn.hook.disconn $*;
+  };
+};
+
+on #-SERVER_STATUS 27 "% % CLOSING" {
+  if ([$1] != [EOF] && [$1] != [ERROR]) {
+    _reconn.purge $0;
+  };
+};
+
+on #-SERVER_STATUS 27 "% % ACTIVE" {
+  fe ($winrefs()) i {
+    if (winserv($i) == [$0]) {
+      fe ($windowctl(GET $i TOPLINE 9)) ch k {
+        window $i channel "$ch $k";
+      };
+    };
+  };
+  _reconn.purge $0;
+};
+
+on #-SERVER_STATUS 27 "% % DELETE" {
+  _reconn.sweep $0;
+};
+
+#_reconn.purge
+#ref: server reference
+#Remove all references to the server and the server group it is in
+
+alias _reconn.clearentry (name, void) {
+  ^assign -reconn[$name][timeout];
+  ^assign -reconn[$name][retries];
+  ^assign -reconn[$name][lastserver];
+  ^timer -delete _reconn$name;
+};
+
+alias _reconn.purge (ref, void) {
+  @ :gr  = _reconn.svkey($ref);
+  @ :egr = encode($gr);
+  _reconn.clearentry $egr;
+
+  if (word(0 $gr) == [gr]) {
+    # it is a server, but it suddenly gained a group
+    @ :str = encode(sv $ref);
+    _reconn.clearentry $str;
+  };
+  _reconn.clrtoplines $ref;
+};
+
+alias _reconn.clrtoplines (ref, void) {
+  fe ($winrefs()) i {
+    if (ref == -1 || winserv($i) == ref) {
+      @ windowctl(SET $i TOPLINE 9 );
+    };
+  };
+};
+
+alias _reconn.sweep (ref, void) {
+  ^local str,type,item,gr,svs;
+  _reconn.clrtoplines $ref;
+  @ str = encode(sv $ref);
+  _reconn.clearentry $str;
+  foreach reconn i {
+    @ str = decode($i);
+    @ type = word(0 $str);
+    @ item = word(1 $str);
+    if (type == [sv]) {
+      @ gr = servergroup($item);
+      # it is a server, but it suddenly gained a group
+      if (gr != [<default>] && gr != []) {
+        _reconn.clearentry $i;
+      };
+    } elif (type == [gr]) {
+      @ svs = serverctl(GMATCH $item);
+      # there are no servers || the only server is the one that's being deleted
+      if (svs == [] || svs == ref) {
+        _reconn.clearentry $i;
+      };
+    };
+  };
+};
+
+alias _reconn.server (sg,void) {
+  ^local win,found,str,type,item,lastsv,next,svs,i;
+
+  @ str = decode($sg);
+  @ type = word(0 $str);
+  @ item = word(1 $str);
+  @ lastsv = reconn[$sg][lastserver];
+  @ svs = serverctl(GMATCH $item);
+  if (lastsv == []) {
+    _reconn.clearentry $sg;
+    return;
+  };
+  if (type == [gr] && item != [] && item != [<default>]) {
+    fe ($svs) i {
+      if (isconnected($i)) {
+        _reconn.clearentry $sg;
+        return -1;
+      };
+    };
+  };
+  fe ($winrefs()) win {
+    if (winserv($win) == lastsv) {
+      PUSH found $win;
+    };
+  };
+  if (found != []) {
+    if (type == [gr]) {
+      @ next = _reconn.nextserv($lastsv $item);
+    } else {
+      @ next = lastsv;
+    };
+    if (next != -1 && !isconnected($next)) {
+      fe ($found) j {
+        window $j SERVER $next;
+      };
+    } else {
+      _reconn.clearentry $sg;
+    };
+  } else {
+    _reconn.clearentry $sg;
+  };
+};
+
+alias rmreconnect {
+  ^local i,st;
+  foreach reconn i {
+    @ :ref = reconn[$i][lastserver];
+    xecho -b Cancelling reconnect to $servername($ref) \(refnum $ref\);
+    _reconn.clearentry $i;
+    ^timer -delete _reconn$i;
+  };
+  fe ($serverctl(OMATCH *)) i {
+    @ st = serverctl(GET $i STATUS);
+    switch ($st) {
+      (dns) (connecting) (registering) (syncing) (ssl_connecting) {
+        xecho -b Disconnecting from $servername($i) \(refnum $i);
+        //^disconnect $i;
+      };
+    };
+  };
+};
+
+alias _reconn.nextserv (ref, group, void) {
+  if (group == [<default>]) {
+    return -1;
+  };
+  @ :servers = serverctl(GMATCH $group);
+  @ :num = numwords($servers);
+  if (num == 0) {
+    # shouldn't happen
+    return -1;
+  };
+  @ :found = findw($ref $servers);
+  if (found == -1) {
+    return $word(0 $servers);
+  };
+  @ num--;
+  if (num == found) {
+    return $word(0 $servers);
+  } else {
+    return $word(${found+1} $servers);
+  };
+};
+
+_reconn.clrtoplines -1;
+
+#weirdo & kreca'2k6
