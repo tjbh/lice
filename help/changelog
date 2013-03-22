@@ -1,5 +1,9 @@
 *** Changes in version 5.2.5
-	- Added AUTO_RECONNECT functionality from 'epic5/script/reconnect'. 
+	- Added AUTO_RECONNECT functionality from 'epic5/script/reconnect'.
+	- Small fix to /HELP. It will no longer leave your PWD in the 
+	  wrong place. This was causing console window managers like tmux 
+	  to open new windows in LiCe's help directory regardless of where
+          EPIC was started from.  
 
 *** Changes in version 5.2.4
 	- Fixed issue with /TOG Q, LiCe information was still being

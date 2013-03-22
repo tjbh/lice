@@ -16,6 +16,8 @@ IF (word(2 $loadinfo()) != [pf]) {
 PACKAGE LiCe;
 
 ALIAS help (topic, topic2, path) {
+  @ :temp.current_pwd = PWD;
+ 
   ^CD $LiCePath/help/;
   IF (!path) {@ path = LiCePath ## [/help/]};
   @ isdir = 0;
@@ -56,7 +58,7 @@ ALIAS help (topic, topic2, path) {
       IF (@) {help $tolower($0)};
     };
   };
-  ^CD $twiddle($LiCePath);
+  ^CD $temp.current_pwd;
 };
 
 #tjh/11
