@@ -1,3 +1,6 @@
+*** Changes in version 5.2.5
+	- Added AUTO_RECONNECT functionality from 'epic5/script/reconnect'. 
+
 *** Changes in version 5.2.4
 	- Fixed issue with /TOG Q, LiCe information was still being
 	  returned if you were CTCP VERSION'd. Thanks whitefang for
