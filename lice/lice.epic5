@@ -769,7 +769,7 @@ set command_mode off;
 
 # DCC_TIMEOUT
 
-Addset dcc_timeout int;
+addset dcc_timeout int;
 
 set dcc_timeout 3600;
 
