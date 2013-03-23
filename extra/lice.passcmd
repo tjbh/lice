@@ -1,0 +1,21 @@
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2013 whitefang (tyler@ionise.org)
+#
+# ---------------------------------------------------------------------------
+# All code by whitefang, unless specified. Visit http://lice.muppetz.com
+# ---------------------------------------------------------------------------
+
+ALIAS passcmd {
+  IF (@) {
+    ^ASSIGN pass.in $*;
+    UNLESS (match(\$pass $*)) {iecho The identifier '\$pass\' must be in the arguments.;RETURN};
+    INPUT -NOECHO "Password: " IF (@) {
+      @ pass.out = sar(g/\$pass/$*/$pass.in);
+      $pass.out;
+      purge pass;
+    };
+  } {uecho Usage: /PASSCMD <command>};
+};
+
+# tjbh/2013
