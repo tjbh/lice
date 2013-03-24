@@ -99,7 +99,7 @@ ALIAS ctog {
       @ :_o = strip($_t $_o);
       SWITCH ($_t) {
         (L) (T) {@lice.del(chan[$_c][$_t])}; 
-        (Q) {//IGNORE $C NONE;@lice.del(|hash_32bit($C));};
+        (Q) {//IGNORE $C NONE;@lice.del(|$hash_32bit($C));};
       };
     }{
       @ :_o #= pass(12ABCDEFGHIJKLMNOPQSTV $_t);
