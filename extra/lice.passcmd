@@ -12,7 +12,7 @@ ALIAS passcmd {
     UNLESS (match(\$pass $*)) {iecho The identifier '\$pass\' must be in the arguments.;RETURN};
     INPUT -NOECHO "Password: " IF (@) {
       @ pass.out = sar(g/\$pass/$*/$pass.in);
-      $pass.out;
+      /^$pass.out;
       purge pass;
     };
   } {uecho Usage: /PASSCMD <command>};

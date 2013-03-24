@@ -837,7 +837,7 @@ ALIAS mbar {iecho Your current MSG-togs are set to\: \"$lice.get(main.mset)\"};
 ALIAS dbar {iecho Your current DCC-togs are set to\: \"$lice.get(main.dset)\"};
 ALIAS wbar {iecho Your current WIN-togs are set to\: \"$lice.get(main.wset)\"};
 ALIAS hold SET HOLD_MODE TOGGLE;
-ALIAS log SET LOG TOGGLE;
+# ALIAS log SET LOG TOGGLE;
 ALIAS beep SET BEEP TOGGLE;
 ALIAS ansi SET DISPLAY_ANSI TOGGLE;
 ### END Small commands
