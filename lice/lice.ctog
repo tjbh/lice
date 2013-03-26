@@ -99,23 +99,26 @@ ALIAS ctog {
       @ :_o = strip($_t $_o);
       SWITCH ($_t) {
         (L) (T) {@lice.del(chan[$_c][$_t])}; 
-        (Q) {//IGNORE $C NONE;@lice.del(|$hash_32bit($C));};
+        (Q) {
+          @ ignorectl(DELETE $ignorectl(REFNUM $C));
+          @ lice.del(|$hash_32bit($C));
+        };
       };
     }{
       @ :_o #= pass(12ABCDEFGHIJKLMNOPQSTV $_t);
       SWITCH ($_t) {
         (L) (T) {_proc.ctog_do_locks ${(_t == [L]) ? [Mode] : [Topic]} $_t $_c $C $winserv()};
         (Q) {
-            //^IGNORE $C JOINS NICKS PARTS QUITS;
-            @lice.set(|$hash_32bit($C) $C JOINS NICKS PARTS QUITS);
-            ECHO $fmt.banner_alert() Ignoring JOINS NICKS PARTS and QUITS on $C;
-            };
+          //^IGNORE $C JOINS NICKS PARTS QUITS;
+          @ lice.set(|$hash_32bit($C) $C JOINS NICKS PARTS QUITS);
+          ECHO $fmt.banner_alert() Ignoring JOINS NICKS PARTS and QUITS on $C;
+        };
       };
     };
   };
   UNLESS (_o) {
-    @lice.del(chan[$_c][S]);
-    @ :_o = [disabled];
+  @ lice.del(chan[$_c][S]);
+  @ :_o = [disabled];
   }{
     @ lice.set(chan[$_c][S] $_o);
   };
