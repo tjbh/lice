@@ -109,9 +109,9 @@ ALIAS ctog {
       SWITCH ($_t) {
         (L) (T) {_proc.ctog_do_locks ${(_t == [L]) ? [Mode] : [Topic]} $_t $_c $C $winserv()};
         (Q) {
-          //^IGNORE $C JOINS NICKS PARTS QUITS;
-          @ lice.set(|$hash_32bit($C) $C JOINS NICKS PARTS QUITS);
-          ECHO $fmt.banner_alert() Ignoring JOINS NICKS PARTS and QUITS on $C;
+          @ ignorectl(ADD $C JOINS NICKS CTCPS NOTICES TOPICS PARTS);
+          @ lice.set(|$hash_32bit($C) $C JOINS NICKS CTCPS NOTICES TOPICS PARTS);
+          ECHO $fmt.banner_alert() Ignoring JOINS NICKS CTCPS NOTICES TOPICS and PARTS on $C;
         };
       };
     };
