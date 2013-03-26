@@ -37,31 +37,31 @@ IF (word(2 $loadinfo()) != [pf]) {
 
 # warning to people who dare use lame clients.
 EVAL IF (word(0 $info(v)) != [epic5] || V < 20120804 || info(i) < 1667) {
-     CLEAR;
-     ECHO;
-     ECHO;
-     ECHO;
-     ECHO The LiCe5 script needs the latest ircii-EPIC5 client, else it won't;
-     ECHO work as intended. Tell your administrator to upgrade your client, or;
-     ECHO you can obtain a copy of the source and compile it for yourself from:;
-     ECHO;
-     ECHO   ftp://epicsol.org/pub/epic (tarball);
-     ECHO;
-     ECHO EPIC5 1.1.4 is the minimum recommended version for LiCe5, though any;
-     ECHO version of EPIC5 will work. Bugs reported on earlier versions will;
-     ECHO be ignored though!  You've been warned....;
-     ECHO;
-     ECHO;
-     IF (word(0 $info(v)) == [epic5] || word(0 $info(v)) == [epic5]) {
-         ECHO You are using $word(0 $info(v)) release:$V commit_id:#$info(i);
-         ECHO You should have EPIC5 release:20120804 commit_id:#1667 [EPIC5-1.1.4] or greater;
-     };
-     IF (word(0 $info(v)) != [epic5]) {
-       ECHO You need EPIC5! You have $word(0 $info(v)) ! Bye...;
-       RETURN;
-     }; 
-     ECHO Pausing 10 seconds...;
-     PAUSE 10;
+  CLEAR;
+  ECHO;
+  ECHO;
+  ECHO;
+  ECHO The LiCe5 script needs the latest ircii-EPIC5 client, else it won't;
+  ECHO work as intended. Tell your administrator to upgrade your client, or;
+  ECHO you can obtain a copy of the source and compile it for yourself from:;
+  ECHO;
+  ECHO   ftp://epicsol.org/pub/epic (tarball);
+  ECHO;
+  ECHO EPIC5 1.1.4 is the minimum recommended version for LiCe5, though any;
+  ECHO version of EPIC5 will work. Bugs reported on earlier versions will;
+  ECHO be ignored though!  You've been warned....;
+  ECHO;
+  ECHO;
+  IF (word(0 $info(v)) == [epic5] || word(0 $info(v)) == [epic5]) {
+    ECHO You are using $word(0 $info(v)) release:$V commit_id:#$info(i);
+    ECHO You should have EPIC5 release:20120804 commit_id:#1667 [EPIC5-1.1.4] or greater;
+  };
+  IF (word(0 $info(v)) != [epic5]) {
+    ECHO You need EPIC5! You have $word(0 $info(v)) ! Bye...;
+    RETURN;
+  }; 
+  ECHO Pausing 10 seconds...;
+  PAUSE 10;
 };
 
 # Make sure there's nothing else loaded.
