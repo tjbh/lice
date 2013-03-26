@@ -71,16 +71,16 @@ ALIAS _proc.ctog_do_locks (type,mode,hash,chan,serv) {
   INPUT "Enter $type lock for $ch($chan)\: " {
     IF (@) {
       IF (tmp.mode == [L]) {
-        @lice.set(chan[$tmp.hash][L] $pass(0123456789mnstipal $*));
+        @ lice.set(chan[$tmp.hash][L] $pass(0123456789mnstipal $*));
         IF (ischanop($N $tmp.chan)) {XQUOTE -S $tmp.serv MODE $tmp.chan +$lice.get(chan[$tmp.hash][L])}
       }{
-        @lice.set(chan[$tmp.hash][T] $*);
+        @ lice.set(chan[$tmp.hash][T] $*);
         IF (ischanop($N $tmp.chan)) {XQUOTE -S $tmp.serv TOPIC $tmp.chan :$lice.get(chan[$tmp.hash][T])};
       };
       XECHO -B $tmp.type lock $tmp.chan now: $lice.get(chan[$tmp.hash][$tmp.mode]);
     }{
-      @lice.set(chan[$tmp.hash][S] $strip($tmp.mode $chan[$tmp.hash][S]));
-      @lice.del(chan[$tmp.hash][$tmp.mode]);
+      @ lice.set(chan[$tmp.hash][S] $strip($tmp.mode $chan[$tmp.hash][S]));
+      @ lice.del(chan[$tmp.hash][$tmp.mode]);
       XECHO -B Toggles for $tmp.chan now: +$lice.get(chan[$tmp.hash][S]);
     };
     purge tmp;
