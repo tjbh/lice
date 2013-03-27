@@ -1388,7 +1388,7 @@ ALIAS _proc.channel_create (serv,hash,chan) {
   XEVAL -S $serv {
    UNLESS (onchannel($servernick() $chan)) {RETURN};
    @lice.set(chan[$hash][S] ${strlen($lice.get(chan[$hash][S])) ? lice.get(chan[$hash][S]) : lice.get(main.cset)});
-   IF (iscset(Q $hash)) {//^IGNORE $chan CTCPS TOPICS JOINS NICKS PARTS};
+   IF (iscset(Q $hash)) {//^IGNORE $chan CTCPS TOPICS NOTICES JOINS NICKS PARTS};
    IF (iscset(E $hash)) {_proc.note_get $chan};
    IF (ischanop($servernick($serv) $chan)) {
       IF (iscset(L $hash) && strlen($lice.get(chan[$hash][L]))) {QUOTE MODE $chan $lice.get(chan[$hash][L])};
