@@ -100,7 +100,7 @@ ALIAS ctog {
       SWITCH ($_t) {
         (L) (T) {@lice.del(chan[$_c][$_t])}; 
         (Q) {
-          @ ignorectl(DELETE $ignorectl(REFNUM $C));
+          @ ignorectl(DELETE $C);
           @ lice.del(|$hash_32bit($C));
         };
       };
