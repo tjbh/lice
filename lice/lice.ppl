@@ -54,7 +54,7 @@ ALIAS ppl {
     IF (!match($ppl.h $1!$3@$4) || !match($ppl.s $5) || !match($ppl.n $stripcrap(ALL $7-)) || (ppl.k < [$6] && isdigit($6)) ) {RETURN};
     @ ppl.m++;
     XECHO -C $cparse(%W$[2]2\%n$_dots(11 $left(9 $1))$_rdots(11 $strip(-+=~ $3))%B@%n$4$_rdots(${word(0 $geom()) - (27 + strlen($4) + [${ismset(T)?[8]:[0]}])} $5)%C$6%n);
-#    XECHO -C 16$[2]2$_dots(11 $left(9 $1))$_rdots(11 $strip(-+=~ $3))12@$4$_rdots(${word(0 $geom()) - (26 + strlen($4))} $5)${isdigit($6) ? [$6] : []};
+    # XECHO -C 16$[2]2$_dots(11 $left(9 $1))$_rdots(11 $strip(-+=~ $3))12@$4$_rdots(${word(0 $geom()) - (26 + strlen($4))} $5)${isdigit($6) ? [$6] : []};
   };
   @ ppl.i = ppl.l = ppl.m = ppl.o = ppl.a = ppl.v = 0;
   //WHO $ppl.c -END {

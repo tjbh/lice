@@ -79,7 +79,7 @@ ALIAS _proc.ctog_do_locks (type,mode,hash,chan,serv) {
       };
       XECHO -B $tmp.type lock $tmp.chan now: $lice.get(chan[$tmp.hash][$tmp.mode]);
     }{
-      @ lice.set(chan[$tmp.hash][S] $strip($tmp.mode $chan[$tmp.hash][S]));
+      @ lice.set(chan[$tmp.hash][S] $strip($tmp.mode $lice.get(chan[$tmp.hash][S])));
       @ lice.del(chan[$tmp.hash][$tmp.mode]);
       XECHO -B Toggles for $tmp.chan now: +$lice.get(chan[$tmp.hash][S]);
     };
@@ -117,8 +117,8 @@ ALIAS ctog {
     };
   };
   UNLESS (_o) {
-  @ lice.del(chan[$_c][S]);
-  @ :_o = [disabled];
+    @ lice.del(chan[$_c][S]);
+    @ :_o = [disabled];
   }{
     @ lice.set(chan[$_c][S] $_o);
   };
