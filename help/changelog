@@ -1,9 +1,21 @@
 *** Changes in version 5.2.5
+	- Improved handling of /CTOG when you're not in a channel.
+	- /CTOG now works with channel names like '##freebsd'.
+	- Fixed a typo that stopped /DHOP for working.
+	- Tiny fix for the status bar not being drawn correctly on restart 
+	  of client.
 	- Added AUTO_RECONNECT functionality from 'epic5/script/reconnect'.
-	- Small fix to /HELP. It will no longer leave your PWD in the 
-	  wrong place. This was causing console window managers like tmux 
-	  to open new windows in LiCe's help directory regardless of where
-          EPIC was started from.  
+	- Small fix to /HELP. It will no longer leave your PWD in the wrong
+          place. This was causing console window managers like tmux to open new 
+	  windows in LiCe's help directory regardless of where EPIC was started.
+	- Fixed bug with /CTOG Q not being removed from the database. This
+	  caused the channel to be ignored again on restart.
+        - Restored /CTOG Q to ignore the same types that LiCe has historically
+	  ignored.
+	- Fixed /NOIG formatting when timestamps are enabled.
+	- Fixed /PPL formatting when timestamps are enabled.
+	- Fixed /CTOG T stripping all your channel sets if you entered nothing
+	  in the prompt.
 
 *** Changes in version 5.2.4
 	- Fixed issue with /TOG Q, LiCe information was still being
