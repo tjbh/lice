@@ -37,7 +37,7 @@ ALIAS help (topic, topic2, path) {
       ^CD $newpath;
       IF (fexist($newpath$topic) == 1) {_proc.disp_file $open($newpath$topic R);};
       echo.recursive $glob(*);
-      XECHO;
+      # XECHO;
       INPUT "Topic? " {
         IF (@) {
           IF (fexist($newpath$0) != -1) {
