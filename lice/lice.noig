@@ -22,7 +22,7 @@ ALIAS noig {
     //IGNORE;
     RETURN;
   };
-  ECHO ---- Ignore Pattern $repeat(${word(0 $geom()) - [${ismset(T)?[40]:[32]}]} -) Types ----;
+  ECHO ---- Ignore Pattern $repeat(${word(0 $geom()) - (ismset(T) ? (strlen($strftime($lice.get(main.tsfmt))) + 35):[32])} -) Types ----; 
   @ :cnt = 1;
   FE ($list) patt {
     UNLESS (5 + strlen($igtype($patt)) + strlen($patt) > word(0 $geom())) {
