@@ -953,7 +953,7 @@ ALIAS cecho {
 ALIAS echo.recursive {
   @ :wordlist = [$*]; 
   @ :_c = numwords($*);
-  @ :_w = word(0 $geom()) - (ismset(T) ? 8 : 0);
+  @ :_w = word(0 $geom()) - (ismset(T) ? strlen($lice.get(main.tsfmt)) + 3 : 0);
   @ :words_per_line = _w / 11;
   FE ($wordlist) _x {
     @ :total++;
