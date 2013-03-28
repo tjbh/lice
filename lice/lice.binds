@@ -143,13 +143,16 @@ BIND ^W9 PARSE_COMMAND {//^WINDOW SWAP 9};
 BIND ^W0 PARSE_COMMAND {//^WINDOW SWAP 10};
 # creates a window dedicated to shell
 ALIAS echo.status {
+  @ temp.status_set = windowctl(GET 0 DOUBLE) ? [STATUS_FORMAT2] : [STATUS_FORMAT];
+  @ temp.status_data = getset($temp.status_set);
   ^TIMER 5 {
-    @ :backup_status = [${windowctl(GET 0 DOUBLE) ? [STATUS_FORMAT2] : [STATUS_FORMAT]}];
-    ^STACK POP SET $backup_status;
-    @ lice.set(*$backup_status);
+    ^STACK POP SET $temp.status_set;
+    @ lice.set(*$temp.status_set $temp.status_data);
+    ^ASSIGN -temp.status_set;
+    ^ASSIGN -temp.status_data;
   };
-  ^STACK PUSH SET ${windowctl(GET 0 DOUBLE) ? [STATUS_FORMAT2] : [STATUS_FORMAT]};
-  //^SET ${windowctl(GET 0 DOUBLE) ? [STATUS_FORMAT2] : [STATUS_FORMAT]} [%R] ${@ ? [$*] : temp.last_msg};
+  ^STACK PUSH SET $temp.status_set;
+  //^SET $temp.status_set [%R] ${@ ? [$*] : temp.last_msg};
   ^ASSIGN temp.last_msg $*;
 };
 ALIAS _proc.screen_pl {
