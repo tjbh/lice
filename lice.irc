@@ -1300,18 +1300,19 @@ ON #-KICK -13 * {
     RETURN;
   };
   IF (nick != [$1] && [$0]!=[$1] && ischanop($nick $2)) {
-     @ :hash = hash_32bit($2);
-     @ :mode = get_cookie(User $2 $1 $hash);
-     @ :test = _proc.mass_check($userhost($1) $hash);
-     IF (test && !(mode & 2) && (iscset(C $hash) || iscset(F $hash))) {
-        _proc.flood_chan KICK $1 $userhost($1) $serv $2 $hash;
-     };
-     IF (iscset(P $hash) && !(mode & 4)) {
-        @ :mode = get_cookie(User $2 $0 $hash);
-        IF (mode & 64) {_proc.quote_add $serv INVITE $0 $2};
-        IF (mode & 128) {_proc.quote_add $serv KICK $2 $1 :$0: $randread($main.reason_revenge)};
-        _proc.quote_flush $serv;
-     };
+    @ :hash = hash_32bit($2);
+    @ :mode = get_cookie(User $2 $1 $hash);
+    # XXX - Should we always kick for KICK floods?
+    # @ :test = _proc.mass_check($userhost($1) $hash);
+    # IF (test && !(mode & 2) && (iscset(C $hash) || iscset(F $hash))) {
+    #   _proc.flood_chan KICK $1 $userhost($1) $serv $2 $hash;
+    # };
+    IF (iscset(P $hash) && !(mode & 4)) {
+      @ :mode = get_cookie(User $2 $0 $hash);
+      IF (mode & 64) {_proc.quote_add $serv INVITE $0 $2};
+      IF (mode & 128) {_proc.quote_add $serv KICK $2 $1 :$0: $randread($main.reason_revenge)};
+      _proc.quote_flush $serv;
+    };
   };
   _proc.cookies_remove $2 $0;
 };
