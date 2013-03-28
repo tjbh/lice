@@ -121,6 +121,7 @@ ALIAS fmt.whois_mid {
     (Channels) 	{RETURN 14³15³14[ 16c15hannels14]   $sar(g/@/10@/${sar(g/+/10+/$1-)})}
     (Server) 	{RETURN 15³15À14[   16s15erver14]15Ä¿ $1 14[$2-14]}
     (Away) 	{RETURN 14³ [     16a15way14] ³ $1-}
+    (Security) 	{RETURN 14³ 14[ 16s15ecurity14] 15³ $1-}
     (Signon) 	{RETURN 14³ [   16s15ignon14] 15³ $1-}
     (Idle) 	{RETURN 15³ 14[     16i15dle14] 15³ $1-}
     (Operator) 	{RETURN 14³ [ 16o15perator14] ³ $1 $tolower($2-)}
