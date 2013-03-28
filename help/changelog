@@ -12,10 +12,17 @@
 	  caused the channel to be ignored again on restart.
         - Restored /CTOG Q to ignore the same types that LiCe has historically
 	  ignored.
+	- Added "Security" line to whois format in "echoes" theme.
+	- Any binds that temporarily put information in your status bar (like
+	  ^Wu for client uptime) would overwrite the correct STATUS_FORMAT if
+	   double line status bars were not used. This has been fixed.
 	- Fixed /NOIG formatting when timestamps are enabled.
 	- Fixed /PPL formatting when timestamps are enabled.
 	- Fixed /CTOG T stripping all your channel sets if you entered nothing
 	  in the prompt.
+	- /HELP, /NOIG, /PPL, /THEME, /PIC, netsplit list, and the tab 
+	  completion list now format correctly with any length of timestamp
+	  format set by /SENSORS S. 
 
 *** Changes in version 5.2.4
 	- Fixed issue with /TOG Q, LiCe information was still being
