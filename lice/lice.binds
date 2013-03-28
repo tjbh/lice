@@ -143,7 +143,11 @@ BIND ^W9 PARSE_COMMAND {//^WINDOW SWAP 9};
 BIND ^W0 PARSE_COMMAND {//^WINDOW SWAP 10};
 # creates a window dedicated to shell
 ALIAS echo.status {
-  ^TIMER 5 {^STACK POP SET ${windowctl(GET 0 DOUBLE) ? [STATUS_FORMAT2] : [STATUS_FORMAT]}};
+  ^TIMER 5 {
+    @ :backup_status = [${windowctl(GET 0 DOUBLE) ? [STATUS_FORMAT2] : [STATUS_FORMAT]}];
+    ^STACK POP SET $backup_status;
+    @ lice.set(*$backup_status);
+  };
   ^STACK PUSH SET ${windowctl(GET 0 DOUBLE) ? [STATUS_FORMAT2] : [STATUS_FORMAT]};
   //^SET ${windowctl(GET 0 DOUBLE) ? [STATUS_FORMAT2] : [STATUS_FORMAT]} [%R] ${@ ? [$*] : temp.last_msg};
   ^ASSIGN temp.last_msg $*;
