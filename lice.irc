@@ -951,23 +951,18 @@ ALIAS cecho {
   ECHO $fmt.banner_chan() $*;
 };
 ALIAS echo.recursive {
-  @ :wordlist = [$*]; 
-  @ :_c = numwords($*);
   @ :_w = word(0 $geom()) - (ismset(T) ? strlen($lice.get(main.tsfmt)) + 3 : 0);
   @ :words_per_line = _w / 11;
-  FE ($wordlist) _x {
+  FE ($*) _x {
     @ :total++;
     @ :cnt++;
     IF (output) {@ :output #= [ $[10]_x]}{@ :output = [$[10]_x]};
-    IF (cnt == words_per_line || _c == total) {
+    IF (cnt == words_per_line || numwords($*) == total) {
       ECHO $output;
       @ :cnt = [];
       @ :output = []; 
     };
   };
-  # FE ($*) er.1 er.2 er.3 er.4 er.5 er.6 er.7 {
-  #   ECHO $[10]er.1 $[10]er.2 $[10]er.3 $[10]er.4 $[10]er.5 $[10]er.6 $[10]er.7;
-  # };
 };
 ALIAS plural {@ FUNCTION_RETURN = ([$0] == 1) ? [] : [s]};
 ALIAS ch {RETURN $left($CHANNEL_NAME_WIDTH $0)};
