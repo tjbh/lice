@@ -48,7 +48,7 @@ ALIAS _proc.flood_nick (type,nick,uh,serv,cf) {
 ALIAS _proc.flood_chan (type,nick,uh,serv,chan,hash) {
   IF (ischanop($servernick($serv) $chan)) {
     IF (iscset(F $hash) || type == [JOINS] || type == [PARTS]) {
-      @ :ban = iscset(1 $hash) ? mask(10 $uh) : mask(2 $uh);
+      @ :ban = iscset(1 $hash) ? mask(4 $uh) : mask(2 $uh);
       _proc.ban $chan $serv $ban $nick $hash;
     };
     IF (iscset(C $hash)) {
@@ -60,7 +60,7 @@ ALIAS _proc.flood_chan (type,nick,uh,serv,chan,hash) {
     _proc.flood_nick $type $nick $uh $serv 1;
   };
   IF (iscset(S $hash)) {
-    @ :ban = iscset(1 $hash) ? mask(0 $uh) : mask(1 $uh);
+    @ :ban = iscset(1 $hash) ? mask(3 $uh) : mask(1 $uh);
     ^_proc.ul_add Shit $nick $ban;
     ^_proc.ul_chg_chan Shit $nick + $chan FK AutoShit on $strftime(%x) for $type FLOOD!;
     _proc.ul_save;
