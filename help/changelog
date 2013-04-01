@@ -23,7 +23,12 @@
 	- /HELP, /NOIG, /PPL, /THEME, /PIC, netsplit list, and the tab 
 	  completion list now format correctly with any length of timestamp
 	  format set by /SENSORS S. 
-
+	- KICK flood detection is now handled exclusively by the ON FLOOD hook
+	  which respects /CTOG O & /CTOG V. Thanks Sebek for reporting this.
+	- Fixed masks used by flood protection when banning or adding to 
+	  shitlist.
+	- Removed /CTOG 2 (banning cycle dorks). JOIN/PART floods are still
+	  handled by LiCe's standard flood protection.
 *** Changes in version 5.2.4
 	- Fixed issue with /TOG Q, LiCe information was still being
 	  returned if you were CTCP VERSION'd. Thanks whitefang for
