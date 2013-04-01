@@ -551,16 +551,7 @@ ON ^GENERAL_NOTICE "% %.% *" {mecho $fmt.notice($0 [$1] $2-)};
 #    }
 #}
 ON ^INVITE * {ECHO $fmt.banner_invite() $fmt.invite($*)};
-ON ^JOIN * {
-    @ :hash = hash_32bit($1);
-    @ :test = _proc.cyc_check($after(@ $2) $hash);
-    IF (test && iscset(2 $hash) && !match($2 $X %@$temp.my_ip_address) && ischanop($servernick() $1)) {
-       UNLESS (stampa) {^ASSIGN stampa 3};
-       @ :ban = iscset(1 $hash) ? mask(10 $2) : mask(2 $2);
-       _proc.ban $1 $servernum() $ban $0 $hash;
-    };
-    XECHO -W $chanwin($1) $fmt.banner_join() $fmt.join($*);
-};
+ON ^JOIN * {XECHO -W $chanwin($1) $fmt.banner_join() $fmt.join($*)};
 ON ^KICK * {
   XECHO -W $chanwin($2) $fmt.banner_kick() ${([$0] == servernick($servernum())) ? fmt.kick_me($*) : fmt.kick($*)};
 };
@@ -571,16 +562,7 @@ ON ^MODE * {
     ECHO $fmt.banner_mode() $fmt.mode_me($*);
   };
 };
-ON ^PART * {
-    @ :hash = hash_32bit($1);
-    @ :test = _proc.cyc_check($after(@ $userhost()) $hash);
-    IF (test && iscset(2 $hash) && !match($userhost() $X %@$temp.my_ip_address) && ischanop($servernick() $1)) {
-       UNLESS (stampa) {^ASSIGN stampa 3};
-       @ :ban = iscset(1 $hash) ? mask(10 $userhost()) : mask(2 $userhost());
-       _proc.ban $1 $servernum() $ban $0 $hash;
-    };
-    XECHO -W $chanwin($1) $fmt.banner_leave() $fmt.leave($*);
-};
+ON ^PART * {XECHO -W $chanwin($1) $fmt.banner_leave() $fmt.leave($*)};
 ON ^MODE "% % %bb *" {XECHO -W $chanwin($1) $fmt.banner_mode() $fmt.mode_bans($*)};
 ON ^MODE "*.* #% *" {XECHO -W $chanwin($1) $fmt.banner_mode() $fmt.mode_server($*)};
 ON ^MSG * {
