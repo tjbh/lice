@@ -3,7 +3,7 @@
 # SVN: http://lice.googlecode.com/
 #
 # Version: 5.2.5
-# Released: 
+# Released: 04/01/13 
 #
 #   IRCII Script Program. For use with ircii-EPIC5 clients.
 #   Copyright (C) 1993-2000 SrfRoG (cag@codehack.com)
@@ -1730,3 +1730,4 @@ main_init;
 # cag/00
 # HS/04-04
 # tjh/13
+# tjbh/13

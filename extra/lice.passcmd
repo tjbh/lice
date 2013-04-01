@@ -18,4 +18,4 @@ ALIAS passcmd {
   } {uecho Usage: /PASSCMD <command>};
 };
 
-# tjbh/2013
+# tjbh/13

@@ -68,3 +68,4 @@ ALIAS _proc.flood_chan (type,nick,uh,serv,chan,hash) {
   IF (ismset(U)) {_proc.away_save LiCe licelogd [$chan] $type FLOOD from $nick \($uh\)};
 };
 #tjh/12
+#tjbh/13
