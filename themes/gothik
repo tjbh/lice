@@ -1,0 +1,334 @@
+#
+# Description: gothik color theme.
+# Author: whitefang (tyler@ionise.org)
+# Credits: Cosmetics from gothik.irc for ScrollZ by jamie & yb.
+#
+
+PACKAGE LiCe
+
+ALIAS uptime {RETURN $before(m $pass(012345679dhm  $tdiff2(${time() - F})))m}
+
+# Status sets - please be careful!
+SET CLOCK ON
+SET CLOCK_24HOUR OFF
+SET INPUT_PROMPT 16ÔÍ14ú¾Í15gothik14úÍ> 
+SET STATUS_AWAY 14[15away14!10$STATUS_USER114]ú
+SET STATUS_CHANNEL 14[15%C
+SET STATUS_CHANOP 14@
+SET STATUS_CLOCK %T
+SET STATUS_CPU_SAVER {%L Save Mode}
+SET STATUS_DOES_EXPANDOS ON
+SET -STATUS_FORMAT
+SET STATUS_FORMAT1 11ÕÍ10Í14Íú%@%*14[16%N%#14]ú%A%M14Í10ÍÍ14Í10Í14Í%>Í10Í14ÍÍÍ10ÍÍ14Íú\(16u15p14!10%514\)úÍ10Í11Í¸
+SET STATUS_FORMAT2 10³ 14ú%C%+14:%4ú%QÍ10Äú11ú  15ú10úÄ14úÄÍ%>10Í14Í10Í11Í10Í14Íú(16w15in14!15%R%F14)ú(16t15ime14!15%T14ú16l15ag14!15%214)úÍ10Í11Í16ù
+SET STATUS_HOLD  [..more..]
+SET STATUS_HOLD_LINES  (%B)
+SET STATUS_INSERT  
+SET STATUS_MAIL 14[16m15ail14!10%M146]ú
+SET STATUS_MODE 14!15+%+
+SET STATUS_NICKNAME %N
+SET STATUS_NOTIFY 14ú16a15ct14!10%F
+SET STATUS_NO_REPEAT OFF
+SET STATUS_OPER 14*
+SET STATUS_OVERWRITE (ow)
+SET STATUS_QUERY 14[16q15uery14!15%Q14]
+SET STATUS_SERVER %S
+SET STATUS_TRUNCATE_RHS ON
+SET STATUS_UMODE 14!15+%#
+SET STATUS_USER4 10$numonchannel()14]
+SET STATUS_USER5 $before(m $pass(012345679dhm  $tdiff2(${time() - F})))m
+SET STATUS_VOICE +
+SET STATUS_WINDOW ^^^^^
+
+# bah!
+^WINDOW DOUBLE ON
+
+# Event formats
+# XXX - fmt.action[_me] needs work.
+ALIAS fmt.action	RETURN ${iscurchan($1)?[16ú $0]:[12ú 16$014/02]##ch($1)} $2-
+ALIAS fmt.action_me	RETURN 14\[11$014!10act14\] 16ú $0 $2-
+
+# XXX - fmt.auto_reply[_other] needs work.
+ALIAS fmt.auto_reply	RETURN 2<16$02> $2-
+ALIAS fmt.auto_reply_other RETURN 2<16$0:$1\2> $2-
+
+# XXX - fmt.cant_join needs to be done.
+ALIAS fmt.cant_join	RETURN You can't join $ch($0) \($1-\)
+
+ALIAS fmt.channel_nick {
+  @ :_x = rand(21)
+  @ :nick = [12$202]
+  SWITCH ($_x) {
+    (0)  {@ :_o = [really is that wacky $nick]}
+    (1)  {@ :_o = [sneezes and turns into $nick]}
+    (2)  {@ :_o = [who once was hellr4z0r on dalnet is now $nick]}
+    (3)  {@ :_o = [morphs into $nick]}
+    (4)  {@ :_o = [magically turns into $nick]}
+    (5)  {@ :_o = [turns into a cute little $nick]}
+    (6)  {@ :_o = [becomes $nick in a last ditch effort to get laid]}
+    (7)  {@ :_o = [pretends to be $nick]}
+    (8)  {@ :_o = [does a little social engineering as $nick]}
+    (9)  {@ :_o = [is the unimaginative pathetic fuck we all call $nick]}
+    (10) {@ :_o = [shape shifts into $nick]}
+    (11) {@ :_o = [decides that $nick is a much more appropriate nick]}
+    (12) {@ :_o = [has an identity crisis complex and turns into $nick]}
+    (13) {@ :_o = [needs attention and becomes $nick]}
+    (14) {@ :_o = [types /nick $nick]}
+    (15) {@ :_o = [is that same bastard $nick who called your mama a hippo last version]}
+    (16) {@ :_o = [tries to be sneaky as $nick - Haha tricked ya!]}
+    (17) {@ :_o = [sings "it's black, it's white, ooh, yah yah yah" and becomes $nick]}
+    (18) {@ :_o = [hopes to trick you into a response by becoming $nick]}
+    (19) {@ :_o = [attends religious services as $nick]}
+    (20) {@ :_o = [is still a stupid irc addict as $nick]}
+  }
+  RETURN 12n02ick: 12$1 02$_o
+}
+ALIAS fmt.channel_signoff  RETURN 12S02ignoff: 12$114/02$ch($0) 14\(15$2-14\)
+ALIAS fmt.ctcp_channel	RETURN $toupper($2) requested by 16$014 \(15$after(! $uh($0))14\)15 to $ch($1)
+ALIAS fmt.ctcp_me	RETURN $toupper($2) requested by 16$014 \(15$after(! $uh($0))14\)15 to you
+
+# XXX - fmt.ctcp_server needs real world testing
+ALIAS fmt.ctcp_server	RETURN $toupper($2) requested by 16$014 \(15$uh($0)14\)15 to $1
+
+ALIAS fmt.dcc_chat	RETURN 14ú 02!12$002­ $1-
+ALIAS fmt.invite	RETURN 16$015 invites you to 10$ch($1)14 \(15esc-k to join14\)
+ALIAS fmt.join {
+  @ :_x = rand(24)
+  @ :chan = [14\[15$ch($1)14\]02]
+  SWITCH ($_x) {
+    (0)  {@ :_o = [zooms into $chan on a moped]}
+    (1)  {@ :_o = [appears from a mushroom cloud into $chan]}
+    (2)  {@ :_o = [was tripped into $chan]}
+    (3)  {@ :_o = [slip-slides into $chan *weeeeeeee*]}
+    (4)  {@ :_o = [takes up a corner in $chan *garruff*]}
+    (5)  {@ :_o = [sets up a cake stand in $chan]}
+    (6)  {@ :_o = [starts a seminar in $chan - "Culinary uses of Playdough"]}
+    (7)  {@ :_o = [rides into $chan on a unicycle]}
+    (8)  {@ :_o = [disco dances into $chan]}
+    (9)  {@ :_o = [falls from the sky into $chan]}
+    (10) {@ :_o = [searches $chan naked, for any signs of life]}
+    (11) {@ :_o = [offers lesbian support group guidelines to $chan]}
+    (12) {@ :_o = [starts a gang fight in $chan]}
+    (13) {@ :_o = [searches for elvis in $chan]}
+    (14) {@ :_o = [peeps into $chan - I wanna be a cowboy, you can be my cowgirl]}
+    (15) {@ :_o = [slides into $chan and asks for a scrollz bin]}
+    (16) {@ :_o = [runs into $chan - Donations Being Accepted]}
+    (17) {@ :_o = [joins $chan and notices.. yep, STILL the same people from the last version of gothik]}
+    (18) {@ :_o = [enters $chan ..looks kinda like you, musn't have a life either]}
+    (19) {@ :_o = [offers lesbian support group guidelines to $chan]}
+    (20) {@ :_o = [starts a gang fight in $chan]}
+    (21) {@ :_o = [skips into $chan like a gay fuckstump yo!]}
+    (22) {@ :_o = [strolls into $chan to idle like everyone else]}
+    (23) {@ :_o = [follows the force into $chan]}
+  }
+  RETURN 12j02oin: 12$0 14\(02$214\)02 $_o 
+}
+ALIAS fmt.kick {
+  @ :_x = rand(16)
+  @ :chan = [14\[15$ch($2)14\]02]
+  @ :nick = [12$002]
+  SWITCH ($_x) {
+    (0)  {@ :_o = [chases $nick out of $chan with a used strap on]}
+    (1)  {@ :_o = [escourts $nick to the door of $chan]}
+    (2)  {@ :_o = [trips $nick out of $chan - *drops fries* oh no!]}
+    (3)  {@ :_o = [giggles and kicks $nick off $chan]}
+    (4)  {@ :_o = [dropkicks $nick out of $chan with a kamakazi samurai kick]}
+    (5)  {@ :_o = [lifts $nick out of $chan with a forklift - courtesy of SmS]}
+    (6)  {@ :_o = [kicks $nick from $chan - A reminder to brush your teeth children!]}
+    (7)  {@ :_o = [shoves $nick out of $chan like a fifth grader]}
+    (8)  {@ :_o = [calls upon the powers of grayskull and kicks $nick out of $chan I HAVE THE POWER!]}
+    (9)  {@ :_o = [removes that annoying twit $nick from $chan]}
+    (10) {@ :_o = [removes $nick from $chan - Remember, once a gino always a gino! ]}
+    (11) {@ :_o = [breaks their foot off up in some $nick ass then shoves um out of $chan]}
+    (12) {@ :_o = [forces $nick out of $chan - Wanted: Full CD's for Morphine!]}
+    (13) {@ :_o = [flicks $nick from $chan - Common Courtesy: Shower at least once during the weekend]}
+    (14) {@ :_o = [beats $nick out of $chan - OJ Simpson can get away with it, so can I!]}
+    (15) {@ :_o = [kicks $nick out of $chan - If you wanna..]}
+  } 
+  RETURN 12k02ick: 12$1 02$_o 14\(15$3-14\)
+}
+ALIAS fmt.kick_me	RETURN 12You 02were kicked off 12$ch($2) 02by $1 14\(15$3-14\)
+ALIAS fmt.leave	{
+  IF ([$0] == servernick()) {RETURN Aww you left 16$ch($1).} 
+  @ :_x = rand(17)
+  @ :chan = [14\[15$ch($1)14\]02]
+  SWITCH ($_x) {
+    (0)  {@ :_o = [has a hissy fit, and leaves $chan]}
+    (1)  {@ :_o = [was tricked into leaving $chan]}
+    (2)  {@ :_o = [has issues and leaves $chan]}
+    (3)  {@ :_O = [leaves $chan and runs away crying.]}
+    (4)  {@ :_o = [feels rejected, and stomps out of $chan]}
+    (5)  {@ :_o = [can't handle the scroll and leaves $chan]}
+    (6)  {@ :_o = [leaves $chan while doing a handstand, skills baby skills]}
+    (7)  {@ :_o = [is afraid of being smurfed, therefore leaving $chan was very appropriate]}
+    (8)  {@ :_o = [was abducted from $chan]}
+    (9)  {@ :_o = [recites a scroll of recall and disappears from $chan]}
+    (10) {@ :_o = [has left $chan *sniff*]}
+    (11) {@ :_o = [burps and strolls out of $chan]}
+    (12) {@ :_o = [gallops like an clubfooted midget out of $chan]}
+    (13) {@ :_o = [rolls out of $chan like caren]}
+    (14) {@ :_o = [is depressed and seeks your attention.. NOW DEPARTING $chan Notice me?]}
+    (15) {@ :_o = [accidently types /l and disappears from $chan]}
+    (16) {@ :_o = [leaves $chan in a hurry]}
+  }
+  RETURN 12p02art: 12$0 14\(15$214\) 02$_o 
+}
+ALIAS fmt.mode		RETURN 13m06ode 13$ch($1) 14\[15$2-14\] 06by $0
+ALIAS fmt.mode_bans	RETURN 13m06ode 13$ch($1) 14\[15stacked $214\] 06by $0
+ALIAS fmt.mode_me	RETURN 13m06ode 13$1 14\[15$2-14\] 06by $0
+ALIAS fmt.mode_server	RETURN $fmt.mode($*)
+ALIAS fmt.msg		RETURN 14\[11$014!10$after(! $uh($0))14\] $1-
+
+# XXX - fmt.msg_group needs to be done
+ALIAS fmt.msg_group	RETURN 12[ 10$uh($0)\ 12] \($1:$S\) $2-
+
+ALIAS fmt.notice	RETURN 14-15$014- $1-
+
+# XXX - fmt.notify[_*] needs to be done
+ALIAS fmt.notify_signoff   RETURN Signoff detected: $0 ${ismset(T)?[]:ts()}
+ALIAS fmt.notify_signon RETURN Signon detected: $0 ${ismset(T)?[]:ts()}
+ALIAS fmt.notify_signon_uh RETURN Signon detected: $0 \($1\) ${ismset(T)?[]:ts()}
+ALIAS fmt.public	RETURN 14<15$014> $2-
+
+# XXX - what is this?
+ALIAS fmt.public_msg	RETURN 2\($0:$ch($1)\2\) $2-
+
+ALIAS fmt.public_other	RETURN 14<15$014:$ch($1)> $2-
+ALIAS fmt.public_notice RETURN 14-15$014:$ch($1)- $2-
+
+# XXX - fmt.notice_group needs to be done
+ALIAS fmt.notice_group  RETURN 12- 13$uh($0)\ 12- [$1] $2-
+
+# XXX - Major work still to be done on fmt.sc[_*]
+ALIAS fmt.sc_top {
+  @ temp.sc_chan = [$0]
+  ECHO   16Ú--Ä15ÄÄ16ù--Ä14ÄÄÄÄ¿
+  ECHO  16Ú³úÄÍ15ÑÍ16Í15ÍÍÍ14ÍÍÍÍÑÄú[gothik]ú15Ä16Ø15Ä16ù14Ä´  16ÕÍÍÍ15ÍÍÍÍ16Í15ÍÍÍÍÍ14ÍÍÍÍÄ15ú16ú 14ú  15ú14ÄÍÍ15ÍÍ16Í¸
+  RETURN  15³16ÀÃÄÄ15Ù  16ú 15úÄ16Ä15Ä14ÄÃ-ÄÄÄÄÄÄÄ15ÄÄ-Ä16ÃÄ15ÄÄÄÄ15ÄÙ16ù15ú   14ÃÄÄÄÄ15ÄÄÄÄ16ÄÄ15ÄÄÂ14Ä Ä-ÄÄÄÄÄ-Ä16ÄÙù´
+}
+ALIAS fmt.sc_max	RETURN 5
+ALIAS fmt.sc_mid (list) {
+  FE ($list) xx {
+    @ :cnt++
+    # ECHO $cnt
+    @ :mod = pass(@+% $xx)
+    IF (strlen($mod)) {
+      @ :spc = [16] ## mod ## []
+      @ :nic = mid(0 9 $strip(@+% $xx))
+    }{
+      @ :spc = [ ]
+      @ :nic = mid(0 9 $xx)
+    }
+    @ :len = 10 - strlen($nic)
+    @ :ret #= spc ## nic ## pad($len " ")
+    IF (cnt < 5) {@ :ret #= [16ú ]} {@ :cnt = []} 
+  }
+  IF (numwords($list) < 5) {
+    @ :_x = 4 - numwords($list)
+    WHILE (_x) {
+      @ :_x-- 
+      @ :ret #= pad(11 " ") ## [16ú ]
+    }
+    UNLESS (_x) {@ :ret #= pad(11 " ")}
+  }
+  RETURN  14³ 16³ $ret14³ 16³
+}
+ALIAS fmt.sc_bot {
+  @ :_c = ch($temp.sc_chan)
+  IF (strlen($_c) > 12) {@ :_c = [$[12]_c]}
+  SWITCH ($@_c) {
+    (0)  {@ :_cp = [bugbugbugbug14úØ]}
+    (1)  {@ :_cp = [buncha punks14úØ]}
+    (2)  {@ :_cp = [$_c14úÍÍ15ÍÍÍ16Í15ÍÍ14ÍÍØ]}
+    (3)  {@ :_cp = [$_c14úÍÍ15ÍÍ16ÍÍ15ÍÍ14ÍØ]}
+    (4)  {@ :_cp = [$_c14úÍÍ15ÍÍ16Í15ÍÍ14ÍØ]}
+    (5)  {@ :_cp = [$_c14úÍÍ15Í16ÍÍ15Í14ÍØ]}
+    (6)  {@ :_cp = [$_c14úÍÍ15Í16Í15Í14ÍØ]}
+    (7)  {@ :_cp = [$_c14úÍÍ15ÍÍ14ÍØ]}
+    (8)  {@ :_cp = [$_c14úÍÍ15Í14ÍØ]}
+    (9)  {@ :_cp = [$_c14úÍÍ15Í14Ø]}
+    (10) {@ :_cp = [$_c14úÍ15Í14Ø]}
+    (11) {@ :_cp = [$_c14úÍØ]}
+    (12) {@ :_cp = [$_c14úØ]}
+  }
+  ^ASSIGN -temp.sc_chan
+  ECHO 16ÚùÄÁÄ15ÄÄÄ16Ä15ÄÄÄÄ14ÄÄÄÁÄÄ-ÄÄÄ¿     16ú  15úù-Ä16Ä15ÄÄÄ16ù14ÄÏÍ ÍÍÍ ÍÍ15ÍÍÍÍ16ÏÍ15ÍÍÍÍÍ14ÍÍÍÍÍÍ¾ 16³
+  ECHO 16ÔÍ15Í14ú16u15sers14!10$_cpÍú16t15otal14!10$pad(-3 0 $5)14ú16o15ps14!10$pad(-3 0 $1)14ú16n15onops14!10$pad(-3 0 $4)14ú16v15oiced14!10$pad(-3 0 $3)14úÍÍÑÍ16ù
+  RETURN                        14ÀÄ16ú14ÄÍÍÍÍÍÍÍÍÍÍ15ÍÍÄú16ú 15úÄÍ16Í15ÍÍÍÍÍÍÍ14ÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¾
+}
+
+ALIAS fmt.send_action	RETURN 10ú 16$servernick()${iscurchan($0)?[]:[14/10]##ch($0)} $1-
+ALIAS fmt.send_action_me   RETURN 14\[10act14!11$014\] 16ú $servernick() $1-
+ALIAS fmt.send_dcc_chat	RETURN 14¯ 02­12$002! $1-
+ALIAS fmt.send_msg	RETURN 14¯ \[10msg14!11$014\] $1-
+ALIAS fmt.send_notice	RETURN 14->15$014- $1-
+ALIAS fmt.send_public	RETURN 10<15$servernick()10${iscurchan($0)?[]:[\:]##ch($0)}\> $1-
+
+# XXX - fmt.server_notice needs to be done
+ALIAS fmt.server_notice	RETURN #$0# $2-
+
+# XXX - what is this?
+ALIAS fmt.talk_reply	RETURN $0:
+
+# XXX - do I have to?
+ALIAS fmt.titlebar      RETURN $0: $1-
+
+ALIAS fmt.topic		RETURN $0 has set the topic on channel $ch($1) to $2-
+
+# XXX - can we get topic set by in?
+ALIAS fmt.topic_set	RETURN Topic for $ch($0)\: $1-
+
+# XXX - fmt.usercmd needs to be done
+ALIAS fmt.usercmd	RETURN Friend !$1 request: $uh($0)
+
+# XXX - fmt.wallop[_*] needs to be done
+ALIAS fmt.wallop	RETURN 12\( 11$0@$servername()\ 12\) $4-
+ALIAS fmt.wallop_me	RETURN 14>> 12- 13$servernick() 12- WallOp:$0\\($1\) $2-
+ALIAS fmt.wallop_server	RETURN Wallop: #$0# $2-
+
+ALIAS fmt.whois_bot	RETURN ÔÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÄ ú úúúÄ Ä
+
+# XXX - still needs Domain, Shitlist, Userlist, Security, Signon, Spoof, Notes, Identity 
+ALIAS fmt.whois_mid {
+  IF (temp.whois_user) {
+    ECHO  ³ ÀÄÃÙ user ú $temp.whois_user16@15$temp.whois_host
+    ^ASSIGN -temp.whois_user
+    ^ASSIGN -temp.whois_host
+  }
+  SWITCH ($0) {
+    (Ircname)   {RETURN  ³  ÚÁ. name ú $1-}
+    (Channels)  {RETURN  ³  . ³ chan ú $1-}
+    (Server)    {RETURN ÚùÄ-³Ä¿ serv ú $1-}
+    (Away)      {RETURN  ³    ³ away ú $1-}
+    (Idle)      {RETURN  ³  Ú-Ù idle ú $1-}
+    (Operator)  {RETURN  ³    ³ oper ú irc operator}
+  } 
+}
+ALIAS fmt.whois_top {
+  @ temp.whois_user = [$2]
+  @ temp.whois_host = [$3]
+  ECHO    Ú--ÄÄÄ¿
+  RETURN  ÚÄ³úÄÑÍÍÑú\[whois: $1\]úÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ ÍÍÍÍÍÍÄúú ú úÄÄÍÍÄú ú
+}
+# Banner for this theme
+^SET BANNER 16ú15ú14ú
+
+# Event banner colors
+ALIAS fmt.banner_info	RETURN $G
+ALIAS fmt.banner_party	RETURN $G
+ALIAS fmt.banner_join	RETURN $G
+ALIAS fmt.banner_leave	RETURN $G
+ALIAS fmt.banner_signon	RETURN $G
+ALIAS fmt.banner_signoff	RETURN $G
+ALIAS fmt.banner_invite	RETURN 14úg02o12th02i14kú
+ALIAS fmt.banner_mode	RETURN $G
+ALIAS fmt.banner_kick	RETURN $G
+ALIAS fmt.banner_nick	RETURN $G
+ALIAS fmt.banner_ctcp	RETURN 14úg10o11th10i14kú
+ALIAS fmt.banner_dcc	RETURN $G
+ALIAS fmt.banner_alert	RETURN $G
+ALIAS fmt.banner_userlist	RETURN $G
+ALIAS fmt.banner_server	RETURN $G
+ALIAS fmt.banner_chan	RETURN $G
+ALIAS fmt.banner_usage	RETURN $G
+ALIAS fmt.banner_tip	RETURN 16+++
