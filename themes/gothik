@@ -4,9 +4,20 @@
 # Credits: Cosmetics from gothik.irc for ScrollZ by jamie & yb.
 #
 
-PACKAGE LiCe
+PACKAGE LiCeTheme
 
-ALIAS uptime {RETURN $before(m $pass(012345679dhm  $tdiff2(${time() - F})))m}
+ALIAS gothik.uptime {
+  @ :_x = tdiff2(${time() - F})
+  @ :_d = before(d $_x)
+  @ sar(r/$(_d)d//_x) 
+  @ :_h = before(h $_x)
+  @ sar(r/$(_h)h//_x)
+  @ :_m = before(m $_x)
+  @ sar(r/$(_m)//_x)
+  @ :_o = pad(-3 0 $(_d)d) ## pad(-3 0 $(_h)h) ## pad(-3 0 $(_m)m)
+  @ sar(gr/ /./_o)
+  RETURN $_o
+}
 
 # Status sets - please be careful!
 SET CLOCK ON
@@ -36,7 +47,7 @@ SET STATUS_SERVER %S
 SET STATUS_TRUNCATE_RHS ON
 SET STATUS_UMODE 14!15+%#
 SET STATUS_USER4 10$numonchannel()14]
-SET STATUS_USER5 $before(m $pass(012345679dhm  $tdiff2(${time() - F})))m
+SET STATUS_USER5 $gothik.uptime()
 SET STATUS_VOICE +
 SET STATUS_WINDOW ^^^^^
 
@@ -302,6 +313,7 @@ ALIAS fmt.whois_mid {
     (Away)      {RETURN  ³    ³ away ú $1-}
     (Idle)      {RETURN  ³  Ú-Ù idle ú $1-}
     (Operator)  {RETURN  ³    ³ oper ú irc operator}
+    (*)         {RETURN $0-}
   } 
 }
 ALIAS fmt.whois_top {
