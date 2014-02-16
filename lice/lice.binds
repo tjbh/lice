@@ -208,7 +208,8 @@ ON ^WINDOW_CREATE * {
   //^WINDOW DOUBLE ${iswset(D)?[ON]:[OFF]} BEEP_ALWAYS ${iswset(B)?[ON]:[OFF]};
 };
 ALIAS win_new {
-  //^WINDOW NEW ${@ ? (strlen($1) ? [$*] : [NAME $0]) : []} HIDE;
+  //^WINDOW NEW_HIDE;
+  //^WINDOW $word(1 $windowctl(REFNUMS)) DOUBLE ${iswset(D)?[ON]:[OFF]} ${@ ? (strlen($1) ? [$*] : [NAME $0]) : []};
   //^WINDOW SWAP LAST;
 };
 # Binds that make our lives easier.
