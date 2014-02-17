@@ -1,3 +1,6 @@
+*** Changes in version 5.2.6 - xx/xx/14
+	- Made window creation faster
+
 *** Changes in version 5.2.5 - 04/01/13
 
 	- Improved handling of /CTOG when you're not in a channel.
