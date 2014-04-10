@@ -188,7 +188,6 @@ ON ^SWITCH_WINDOWS * {
   //^WINDOW $3 LEVEL ALL;
   @ :chan = chanwin($3);
   IF (ischannel($chan)) {fmt.titlebar ${STATUS_DOES_EXPANDOS == [ON] ? [$$chan_topic[$3$hash_32bit($chan)]] : [$chan_topic[$3$hash_32bit($chan)]]}};
-  ^RLAG;
 };
 ON ^SWITCH_CHANNELS * {
   @ :win = chanwin($2);
