@@ -1,9 +1,9 @@
 # LiCe5 - srfrog's LiCe4 ported and enhanced for epic5 by tjh [tim@muppetz.com]
-# Website: http://lice.muppetz.com/
-# SVN: http://lice.googlecode.com/
+# Homepage: http://lice.muppetz.com/
+# git: https://github.com/tjbh/lice
 #
-# Version: 5.2.5
-# Released: 04/01/13 
+# Version: 5.2.6
+# Released: 04/11/14
 #
 #   IRCII Script Program. For use with ircii-EPIC5 clients.
 #   Copyright (C) 1993-2000 SrfRoG (cag@codehack.com)
@@ -101,7 +101,7 @@ LOAD -pf $LiCePath/lice/lice.defaults;
 LOAD $LiCePath/themes/default;
 
 # program information
-^ASSIGN id.v $decode(DFCODCCODF);
+^ASSIGN id.v $decode(DFCODCCODG);
 
 ALIAS lice (addon) {
   @ :ret = [];
@@ -1729,5 +1729,5 @@ main_init;
 
 # cag/00
 # HS/04-04
-# tjh/13
+# tjh/14
 # tjbh/13
