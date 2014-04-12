@@ -233,6 +233,7 @@ BIND ^[c PARSE_COMMAND CLEAR;
 # I never doubted it's goodness for a second - tjh
 BIND ^[r PARSE_COMMAND {msg_completion /RTAB};
 BIND ^[` PARSE_COMMAND {protect};
+BIND ^[\\ PARSE_COMMAND {rlag};
 
 # Shortened Commands
 ALIAS ig {ignore $*};

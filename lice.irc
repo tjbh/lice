@@ -1627,7 +1627,7 @@ ALIAS main_init {
   IF (lice.get(main.theme) != [default]) {LOAD $which($LiCePath/themes/$lice.get(main.theme))};
 
   # Read all settings from the database
-  lice.readdb;
+  lice.load_db;
 
   # load notify list from db
   //^NOTIFY $lice.get(lice.notify);

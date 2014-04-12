@@ -7,7 +7,7 @@
 #
 # This file opens the database file in which variables are stored and creates
 # some aliases to easily manage the variables in the DB.
-# It also handles the reload of all settings (lice.readdb)
+# It also handles the reload of all settings (lice.load_db)
 #
 # Autosave of 
 #	* /SETs
@@ -64,20 +64,18 @@ IF (lice.get(db.status) == 1) {TIMER 2 uecho Warning: The LiCe database is alr
 # Erase old client state
 @lice.del(*CLIENT_INFORMATION);
 
-# restore database state.
-ALIAS lice.readdb {
-  FE ($sort($dbmctl(ALL_KEYS $lice.fd))) dbi {
+# Read all sets, ignores, Chanlog assigns and servers from the database.
+ALIAS lice.load_db {
+  FE ($numsort($dbmctl(ALL_KEYS $lice.fd))) dbi {
     @ :type = left(1 $dbi);
     SWITCH ($type) {
       (\\*) {
-        @ :val = lice.get($dbi);
-        UNLESS (val == [<unset>]) {
-          //^SET $after(* $dbi) $val;
-        };
-      };
+       @ :val = lice.get($dbi);
+       IF ((getsets($after(* $dbi))) && (val != [<unset>])) {//^SET $after(* $dbi) $val};
+       };
       (|) {//^IGNORE $lice.get($dbi)};
-      (!) {^ASSIGN Chanlog$after(! $dbi) $lice.get($dbi)};
-      (&) {//^SERVER -ADD $lice.get($dbi)};
+      (!) {//^ASSIGN Chanlog$after(! $dbi) $lice.get($dbi)};
+      (&) {iecho $dbi;//^SERVER -ADD $lice.get($dbi)};
     };
   };
 };
@@ -90,7 +88,7 @@ ALIAS lice.saveservers {
       @lice.del($ls);
     };
   };
-  FE ($serverctl(GMATCH *)) id {
+  FE ($numsort($serverctl(GMATCH *))) id {
     # work around epic5 bug - $serverctl(GMATCH *)) currently returns servers that have been deleted!
     IF (serverctl(GET $id NAME)) {
       @lice.add(&server$(id) $serverctl(GET $id FULLDESC));
@@ -107,7 +105,7 @@ ALIAS notify {
 # Auto save of servers
 ALIAS server {
   //SERVER $*;
-  IF (([$0] =~ [-D*]) || ([$0] =~ [-U*])) {lice.saveservers};
+  IF (([$0] =~ [-D*]) || ([$0] =~ [-U*]) || ([$0] =~ [-A*])) {lice.saveservers};
 };
 ^ON ^CONNECT * {^TIMER 5 {lice.saveservers}};
 
