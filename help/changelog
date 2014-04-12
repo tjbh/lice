@@ -1,3 +1,8 @@
+*** Changes in version 5.2.7 - xx/xx/xx
+	- Added esc-\ to update lag indicator
+	- Fixed (really!) order servers are loaded/saved in so it's
+	  always consistant.
+
 *** Changes in version 5.2.6 - 04/11/14
 	- Made window creation faster
 	- Fix for compatibility with EPIC5-1.1.8
