@@ -75,7 +75,7 @@ ALIAS lice.load_db {
        };
       (|) {//^IGNORE $lice.get($dbi)};
       (!) {//^ASSIGN Chanlog$after(! $dbi) $lice.get($dbi)};
-      (&) {iecho $dbi;//^SERVER -ADD $lice.get($dbi)};
+      (&) {//^SERVER -ADD $lice.get($dbi)};
     };
   };
 };
