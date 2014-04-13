@@ -71,7 +71,8 @@ ALIAS lice.load_db {
     SWITCH ($type) {
       (\\*) {
        @ :val = lice.get($dbi);
-       IF ((getsets($after(* $dbi))) && (val != [<unset>])) {//^SET $after(* $dbi) $val};
+       @ :set = after(* $dbi);
+       IF ((getsets($set)) && (val != [<unset>])) {//^SET $set $val};
        };
       (|) {//^IGNORE $lice.get($dbi)};
       (!) {//^ASSIGN Chanlog$after(! $dbi) $lice.get($dbi)};
@@ -105,8 +106,8 @@ ALIAS notify {
 # Auto save of servers
 ALIAS server {
   //SERVER $*;
-  IF (([$0] =~ [-D*]) || ([$0] =~ [-U*]) || ([$0] =~ [-A*])) {lice.saveservers};
+  IF (rmatch($0 -D* -U* -A*)) {lice.saveservers};
 };
 ^ON ^CONNECT * {^TIMER 5 {lice.saveservers}};
 
-#tjh/12
+#tjh/14
