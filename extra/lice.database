@@ -89,7 +89,7 @@ ALIAS dblist {
     RETURN;
   };
   XECHO;
-  XECHO $repeat(15  ) [Database: $lice.save_path/lice.db;
+  XECHO $repeat(15  ) [Database: $lice.save_path/lice.db];
   @ :endfile = :position = :matchcount = 0;
   XECHO Variable $repeat(37  ) Value;
   XECHO $repeat(70 =);

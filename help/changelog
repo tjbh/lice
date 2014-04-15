@@ -1,7 +1,8 @@
 *** Changes in version 5.2.7 - xx/xx/xx
 	- Added esc-\ to update lag indicator
-	- Fixed (really!) order servers are loaded/saved in so it's
+	- Fixed (really!) the order servers are loaded/saved in so it's
 	  always consistant.
+	- More optimisations to database routines
 
 *** Changes in version 5.2.6 - 04/11/14
 	- Made window creation faster

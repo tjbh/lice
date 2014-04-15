@@ -17,7 +17,7 @@ PACKAGE LiCe;
 
 ALIAS et {
   IF (!windowctl(GET 0 CHANNELS)) {
-    uecho You're not on a channel in this window!
+    XECHO -B You're not on a channel in this window.;
   }{
     IF (!ischanop($servernick() $C)) {
       XECHO -B $C: You're not channel operator;

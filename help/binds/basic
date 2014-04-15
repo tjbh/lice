@@ -13,6 +13,9 @@
 Esc-r
    to remove nicks from your current server tablist.
 
+Esc-\
+   quickly update the lag indicator in the status bar.
+
 Ctrl-l
    will refresh all your screens.
 
