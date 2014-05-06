@@ -2,8 +2,8 @@
 # Homepage: http://lice.muppetz.com/
 # git: https://github.com/tjbh/lice
 #
-# Version: 5.2.6
-# Released: 04/11/14
+# Version: 5.2.7
+# Released: XX/XX/14
 #
 #   IRCII Script Program. For use with ircii-EPIC5 clients.
 #   Copyright (C) 1993-2000 SrfRoG (cag@codehack.com)
@@ -26,7 +26,7 @@
 # All code by SrfRoG, UNLESS specified. Visit http://lice.muppetz.com
 # ---------------------------------------------------------------------------
 #
-#   Lots of code change and modifications by tjh.
+#   Lots of code change and modifications by tjh & whitefang.
 #   Most routines are all SrfRoG original though, just updated or
 #   modified to work with epic5.
 
@@ -101,7 +101,7 @@ LOAD -pf $LiCePath/lice/lice.defaults;
 LOAD $LiCePath/themes/default;
 
 # program information
-^ASSIGN id.v $decode(DFCODCCODG);
+^ASSIGN id.v $decode(DFCODCCODE);
 
 ALIAS lice (addon) {
   @ :ret = [];
@@ -395,10 +395,11 @@ ON #-IDLE 13 '\$lice.get(main.agn)' {
   FE ($myservers()) server {
     @ :serv = servernum($server);
     XEVAL -S $serv {
-      IF (A || !lice.get(main.agn) || isset(X) || !isconnected($serv)) {RETURN};
-      @ quiet.test = quiet.test ? quiet.test : 1;
-      AWAY Gone since $strftime(${time() - (lice.get(main.agn) * 60)} %c);
-      IF (ismset(U)) {_proc.away_save LiCe licelogd [$server] Changed to AWAY status after $0 min$plural($0) of inactivity.};
+      UNLESS (isaway($serv) || !lice.get(main.agn) || isset(X) || !isconnected($serv)) {
+        @ quiet.test = quiet.test ? quiet.test : 1;
+        AWAY Gone since $strftime(${time() - (lice.get(main.agn) * 60)} %c);
+        IF (ismset(U)) {_proc.away_save LiCe licelogd [$server] Changed to AWAY status after $0 min$plural($0) of inactivity.};
+      };
     };
   };
   XECHO -C $fmt.banner_alert() Auto: Away after $0 minute$plural($0) of inactivity.;

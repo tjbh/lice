@@ -2,11 +2,13 @@
 	- Added esc-\ to update lag indicator
 	- Fixed (really!) the order servers are loaded/saved in so it's
 	  always consistant.
+	- Fixed bug where you wouldn't be set auto-away on other servers if
+	  you were already marked away on one.
 	- More optimisations to database routines
 
 *** Changes in version 5.2.6 - 04/11/14
 	- Made window creation faster
-	- Fix for compatibility with EPIC5-1.1.8
+	- Fix for compatibility with EPIC5-1.1.8+
 
 *** Changes in version 5.2.5 - 04/01/13
 	- Improved handling of /CTOG when you're not in a channel.

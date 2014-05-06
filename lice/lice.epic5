@@ -876,7 +876,6 @@ on ?unknown_command "*" (cmd, args) {
 
 # Inform about SAVE's removal
 ALIAS SAVE {XECHO -B Save isn't needed in LiCe 5.2+ anymore! Please read /help changelog};
-if (word(2 $loadinfo()) != [pf]) { load -pf $word(1 $loadinfo()); return; };
 
 # AUTO_RECONNECT
 
