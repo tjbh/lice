@@ -392,17 +392,19 @@ ON ^353 * {
 };
 ##
 ON #-IDLE 13 '\$lice.get(main.agn)' {
-  FE ($myservers()) server {
-    @ :serv = servernum($server);
-    XEVAL -S $serv {
-      UNLESS (isaway($serv) || !lice.get(main.agn) || isset(X) || !isconnected($serv)) {
-        @ quiet.test = quiet.test ? quiet.test : 1;
-        AWAY Gone since $strftime(${time() - (lice.get(main.agn) * 60)} %c);
-        IF (ismset(U)) {_proc.away_save LiCe licelogd [$server] Changed to AWAY status after $0 min$plural($0) of inactivity.};
+  UNLESS (!lice.get(main.agn) || isset(X)) {
+    FE ($myservers()) server {
+      @ :serv = servernum($server);
+      XEVAL -S $serv {
+        UNLESS (isaway($serv) || !isconnected($serv)) {
+          @ quiet.test = quiet.test ? quiet.test : 1;
+          AWAY Gone since $strftime(${time() - (lice.get(main.agn) * 60)} %c);
+          IF (ismset(U)) {_proc.away_save LiCe licelogd [$server] Changed to AWAY status after $0 min$plural($0) of inactivity.};
+        };
       };
     };
+    XECHO -C $fmt.banner_alert() Auto: Away after $0 minute$plural($0) of inactivity.;
   };
-  XECHO -C $fmt.banner_alert() Auto: Away after $0 minute$plural($0) of inactivity.;
 };
 ON #-INVITE 13 * {
   IF (isset(I) || iscset(I $hash_32bit($1))) {
