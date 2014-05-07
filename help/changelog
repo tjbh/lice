@@ -2,8 +2,8 @@
 	- Added esc-\ to update lag indicator
 	- Fixed (really!) the order servers are loaded/saved in so it's
 	  always consistant.
-	- Fixed bug where you wouldn't be set auto-away on other servers if
-	  you were already marked away on one.
+	- Optimised auto-away routine & fixed bug where you wouldn't get set
+	  away automatically on servers if you were already away on one.
 	- More optimisations to database routines
 
 *** Changes in version 5.2.6 - 04/11/14
