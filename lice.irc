@@ -101,7 +101,7 @@ LOAD -pf $LiCePath/lice/lice.defaults;
 LOAD $LiCePath/themes/default;
 
 # program information
-^ASSIGN id.v $decode(DFCODCCODE);
+^ASSIGN id.v $decode(DFCODCCODH);
 
 ALIAS lice (addon) {
   @ :ret = [];
