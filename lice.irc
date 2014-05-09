@@ -2,7 +2,7 @@
 # Homepage: http://lice.muppetz.com/
 # git: https://github.com/tjbh/lice
 #
-# Version: 5.2.7
+# Version: 5.3.0
 # Released: XX/XX/14
 #
 #   IRCII Script Program. For use with ircii-EPIC5 clients.
@@ -101,7 +101,7 @@ LOAD -pf $LiCePath/lice/lice.defaults;
 LOAD $LiCePath/themes/default;
 
 # program information
-^ASSIGN id.v $decode(DFCODCCODH);
+^ASSIGN id.v $decode(DFCODDCODA);
 
 ALIAS lice (addon) {
   @ :ret = [];
@@ -152,7 +152,7 @@ ON #-305 13 * {
 ON #-306 13 * {
   @ :serv = serverctl(FROM_SERVER);
   UNLESS (gone_away[$serv]) {
-    @ gone_away[$serv] = time()
+    @ gone_away[$serv] = time();
   };
   IF (ismset(M)) {
     iecho Saving all incoming messages...;

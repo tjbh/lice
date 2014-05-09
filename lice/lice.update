@@ -21,20 +21,20 @@ PACKAGE LiCe;
 # directories as necessary.
 ALIAS _proc.update_checkpath (rpath) {
   @ :path = urldecode($rpath);
-  @ :path = mid(2 256 $mid(0 $rindex(/ $path) $path));
+  @ :path = mid(0 $rindex(/ $path) $path);
   @ temp.update_mess = split(/ $urldecode($path));
-  @ :step = $lice.save_path;
+  @ :step = LiCePath ## [/];
   @ :segm = [];
   DO {
     @ :step #= segm ## [/];
     IF (fexist($step) == -1 && !mkdir($step)) {XECHO -C $fmt.banner_info() Created dir: $step};
-  } WHILE (:segm = shift(temp.update_mess))
+  } WHILE (:segm = shift(temp.update_mess));
 };
 
 # this routine copies the local file to its new location in the load path
 ALIAS _proc.update_copyfile (t_file) {
   _proc.update_checkpath $t_file;
-  @ :l_file = lice.save_path ## mid(2 256 $urldecode($t_file));
+  @ :l_file = urldecode($t_file);
   @ :rv = rename($l_file $l_file\.old);
   @ :rv = rename($t_file $l_file);
   RETURN $rv;
@@ -46,7 +46,7 @@ ALIAS _proc.update_copyfile (t_file) {
 ALIAS _proc.update_s3 {
   IF (strlen($update_requests)) {
     @ :r_file = shift(update_requests);
-    @ :l_file = [~/] ## urlencode($r_file);
+    @ :l_file = LiCePath ## [/] ## urlencode($r_file);
     ^ON ^HOOK "WGET_STATUS $l_file DONE %" {
       @ :rv = _proc.update_copyfile($1);
       UNLESS (rv) {
@@ -92,7 +92,7 @@ ALIAS _proc.update_s2 {
     @ :r_file = word(0 $line);
     @ :r_size = word(1 $line);
     IF (!strlen($r_file) || !isnumber($r_size)) {CONTINUE};
-    @ :l_size = fsize(lice.save_path/$r_file);
+    @ :l_size = fsize($LiCePath/$r_file);
     IF (r_size != l_size) {PUSH update_requests $r_file};
   };
   @close($fd);
