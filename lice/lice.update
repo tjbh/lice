@@ -14,6 +14,7 @@ IF (word(2 $loadinfo()) != [pf]) {
 
 PACKAGE LiCe;
 
+# Todo - Document the format of lice_updates.txt for easy reference
 ^ASSIGN update.site http://lice.muppetz.com/sites/lice.muppetz.com/files/LiCe/updates/$id.v;
 ^ASSIGN update.list $lice.save_path/.lice_updates.txt;
 
@@ -23,11 +24,10 @@ ALIAS _proc.update_checkpath (rpath) {
   @ :path = urldecode($rpath);
   @ :path = mid(0 $rindex(/ $path) $path);
   @ temp.update_mess = split(/ $urldecode($path));
-  @ :step = LiCePath ## [/];
   @ :segm = [];
   DO {
     @ :step #= segm ## [/];
-    IF (fexist($step) == -1 && !mkdir($step)) {XECHO -C $fmt.banner_info() Created dir: $step};
+    IF (fexist($step) == -1 && mkdir($step)) {XECHO -C $fmt.banner_info() Created dir: $step};
   } WHILE (:segm = shift(temp.update_mess));
 };
 
@@ -117,4 +117,4 @@ ALIAS _proc.update_s1 {
 
 ALIAS update {_proc.update_s1 $*};
 ALIAS upgrade {update $*};
-#tjh/12
+#tjh/14

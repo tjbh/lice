@@ -36,7 +36,7 @@ IF (word(2 $loadinfo()) != [pf]) {
 };
 
 # warning to people who dare use lame clients.
-EVAL IF (word(0 $info(v)) != [epic5] || V < 20120804 || info(i) < 1667) {
+EVAL IF (word(0 $info(v)) != [epic5] || V < 20140413 || info(i) < 1793) {
   CLEAR;
   ECHO;
   ECHO;
@@ -47,14 +47,14 @@ EVAL IF (word(0 $info(v)) != [epic5] || V < 20120804 || info(i) < 1667) {
   ECHO;
   ECHO   ftp://epicsol.org/pub/epic (tarball);
   ECHO;
-  ECHO EPIC5 1.1.4 is the minimum recommended version for LiCe5, though any;
+  ECHO EPIC5 1.1.11 is the minimum recommended version for LiCe5, though any;
   ECHO version of EPIC5 will work. Bugs reported on earlier versions will;
   ECHO be ignored though!  You've been warned....;
   ECHO;
   ECHO;
-  IF (word(0 $info(v)) == [epic5] || word(0 $info(v)) == [epic5]) {
+  IF (word(0 $info(v)) == [epic5]) {
     ECHO You are using $word(0 $info(v)) release:$V commit_id:#$info(i);
-    ECHO You should have EPIC5 release:20120804 commit_id:#1667 [EPIC5-1.1.4] or greater;
+    ECHO You should have EPIC5 release:20140413 commit_id:#1793 [EPIC5-1.1.11] or greater;
   };
   IF (word(0 $info(v)) != [epic5]) {
     ECHO You need EPIC5! You have $word(0 $info(v)) ! Bye...;

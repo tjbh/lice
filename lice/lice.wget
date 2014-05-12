@@ -60,6 +60,9 @@ ALIAS _proc.wget_main (url,file) {
 
   WAIT =$sock;
 
+  # Turn on full line buffering
+  @dccctl(SET $dccctl(DESCMATCH $host) FULL_LINE_BUFFER 1);
+
   UNLESS (sock) {
     HOOK WGET_STATUS $wget.file ERROR $host\:$port Connection Failed;
     RETURN;
@@ -81,11 +84,9 @@ ALIAS _proc.wget_main (url,file) {
       IF (wget.fd == -1) {_proc.wget_error $0 open() Call Failed};
     };
   };
-
   ^ON #^DCC_RAW 668 "$sock % D *" {
     IF (wget.fd < 0) {RETURN};
     @ wget.size += write($wget.fd $3-);
-    HOOK WGET_STATUS $wget.file READ $wget.size;
   };
   ^ON #^DCC_RAW 668 "$sock % C" {_proc.wget_close $0};
   //DCC RAW $sock $host GET $path HTTP/1.0;
@@ -95,6 +96,5 @@ ALIAS _proc.wget_main (url,file) {
   //DCC RAW $sock $host User-Agent: LiCe/$id.v wget;
   //DCC RAW $sock $host Pragma: no-cache;
   //DCC RAW $sock $host Cache-Control: no-cache$chr(10 10);
-  HOOK WGET_STATUS $wget.file READ 0;
 };
-#tjh/09
+#tjh/14
