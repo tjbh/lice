@@ -1,5 +1,5 @@
-*** Changes in version 5.3.0 - xx/xx/xx
-	- Fixed /UPDATE to once again be able to download patches to LiCe!
+*** Changes in version 5.2.7 - xx/xx/xx
+	- Fixes to /update
 	- Added esc-\ to update lag indicator
 	- Fixed (really!) the order servers are loaded/saved in so it's
 	  always consistant.

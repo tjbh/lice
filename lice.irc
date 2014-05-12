@@ -2,7 +2,7 @@
 # Homepage: http://lice.muppetz.com/
 # git: https://github.com/tjbh/lice
 #
-# Version: 5.3.0
+# Version: 5.2.7
 # Released: XX/XX/14
 #
 #   IRCII Script Program. For use with ircii-EPIC5 clients.
@@ -101,7 +101,7 @@ LOAD -pf $LiCePath/lice/lice.defaults;
 LOAD $LiCePath/themes/default;
 
 # program information
-^ASSIGN id.v $decode(DFCODDCODA);
+^ASSIGN id.v $decode(DFCODCCODH);
 
 ALIAS lice (addon) {
   @ :ret = [];
