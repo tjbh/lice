@@ -11,7 +11,7 @@ IF (word(2 $loadinfo()) != [pf]) {
 PACKAGE LiCe;
 
 ALIAS silence {
-  UNLESS (_proc.silence()) {iecho This server does not support silence.; RETURN};
+  UNLESS (_proc.silence()) {iecho $S does not support silence.; RETURN};
   IF (match($left(1 $0) + -)) {
      @ sil.sign = left(1 $0);
      @ sil.dork = rest(1 $0);
@@ -23,9 +23,6 @@ ALIAS silence {
      }{//SILENCE $0}
   }{
   @ sil.cnt = 1;
-
-#   IF ([$0] == '') {@ sil.pers = [$N]} {@ sil.pers = [$0]};
-# I'm not happy with this. $N can not be correct, but it *seems* to work.
   @ sil.pers = (@ ? [$0] : [$N]);
   iecho ---- Silence List for $sil.pers@$S;
   ^ON ^271 * {
@@ -41,6 +38,17 @@ ON ^272 * {iecho ---- End of Silence List;purge sil};
 
 # Verify server support for silence/callerid
 ALIAS _proc.silence {@:FUNCTION_RETURN = (MATCH(SILENCE $serverctl(GET $serverctl(FROM_SERVER) 005s))) > 0): 0 ? 1};
-ALIAS _proc.callerid {@:FUNCTION_RETURN = (MATCH(CALLERID $serverctl(GET $serverctl(FROM_SERVER) 005s))) > 0): 0 ? 1}
+ALIAS _proc.callerid {@:FUNCTION_RETURN = (MATCH(CALLERID $serverctl(GET $serverctl(FROM_SERVER) 005s))) > 0): 0 ? 1};
 
-#tjh/12
+ALIAS accept {
+  UNLESS (_proc.callerid()) {iecho $S does not support callerid.; RETURN};
+  UNLESS (@) {
+    iecho ---- Accept List for $N@$S;
+    //QUOTE ACCEPT *;
+  }{
+    //QUOTE ACCEPT $0;
+  };
+};
+ALIAS callerid {accept};
+    
+#tjh/14
