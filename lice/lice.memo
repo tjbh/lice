@@ -26,11 +26,11 @@ ALIAS memo {
   }{
     INPUT_CHAR "Review saved memos (y/n/h) ? " UNLESS ([$0]==[N]) {
       IF ([$0]==[Y]) {
-      pager $open($lice.save_path/Memos R);
+      pager $lice.save_path/Memos;
       }{
         uecho Usage: /MEMO [text ...];
       };
     };
   };
 };
-#tjh/12
+#tjh/14
