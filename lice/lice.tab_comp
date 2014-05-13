@@ -99,4 +99,27 @@ ALIAS tab_completion {
     word_completion $curpos();
   };
 };
-#tjh/09
+
+# Alias to remove tab entries
+ALIAS rtab {
+  IF ([$0]) {
+    UNLESS (tabnick[$winserv()]) {
+      uecho Tablist\: Currently Empty;
+      RETURN;
+    };
+    IF ([$0]==[*] || [$0]==[-a]) {
+      uecho Tablist\: Removing \"$tabnick[$winserv()]\";
+      ^ASSIGN -tabnick[$winserv()];
+    }{
+      IF (match($0 $tabnick[$winserv()])) {
+        @ tabnick[$winserv()] = remw($0 $tabnick[$winserv()]);
+        uecho Tablist\: Removed \"$0\";
+      };
+    };
+  };
+  {
+  uecho Usage\: /RTAB <nick> [esc+r to cycle current server tablist]
+  };
+};
+
+#tjh/14

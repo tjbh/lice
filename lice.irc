@@ -484,23 +484,6 @@ ON #^CHANNEL_NICK -13 * {_proc.cookies_remove $0 $1};
 #
 # Custom Formats
 #
-ALIAS rtab {
- IF ([$0]) {
-    UNLESS (tabnick[$winserv()]) {
-       uecho Tablist\: Currently Empty;
-       RETURN;
-    };
-    IF ([$0]==[*] || [$0]==[-a]) {
-       uecho Tablist\: Removing \"$tabnick[$winserv()]\";
-       ^ASSIGN -tabnick[$winserv()];
-    }{
-     IF (match($0 $tabnick[$winserv()])) {
-        @ tabnick[$winserv()] = remw($0 $tabnick[$winserv()]);
-        uecho Tablist\: Removed \"$0\";
-     };
-    };
- }{uecho Usage\: /RTAB <nick> [esc+r to cycle current server tablist]};
-};
 ON ^ACTION * {
   IF (ischannel($1)) {
     XECHO -W $chanwin($1) $fmt.action($*);

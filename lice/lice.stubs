@@ -88,6 +88,7 @@ STUB ALIAS reln $LiCePath/lice/lice.rel;
 STUB ALIAS relnk $LiCePath/lice/lice.rel;
 STUB ALIAS relw $LiCePath/lice/lice.rel;
 STUB ALIAS relwk $LiCePath/lice/lice.rel;
+STUB ALIAS rtab $LiCePath/lice/lice.tab_comp;
 STUB ALIAS reuser $LiCePath/lice/lice.refriend;
 STUB ALIAS rdcc $LiCePath/lice/lice.rdcc;
 STUB ALIAS scan $LiCePath/extra/lice.scan;
@@ -164,4 +165,4 @@ STUB ALIAS _proc.split_info $LiCePath/lice/lice.splitlist;
 STUB ALIAS _proc.split_jump $LiCePath/lice/lice.splitlist;
 STUB ALIAS _proc.wget_main $LiCePath/lice/lice.wget;
 
-#tjh/11
+#tjh/14
