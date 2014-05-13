@@ -27,6 +27,10 @@ ALIAS _proc.flood_nick (type,nick,uh,serv,cf) {
      IF (_proc.silence()) {
        //^SILENCE +*@*;
      };
+     IF (_proc.callerid() && !count(g $usermode())) {
+       //MODE $N +g;
+     };
+   };
      XECHO -W $winnum() $fmt.banner_alert() Alert: Isolating client due to flood for $lice.get(main.isolate)\s;
   };
   //^IGNORE $mask(3 $nick!$uh) $type REASON "$type FLOOD" ${lice.get(main.auto_noig) > 0 ? [TIMEOUT $lice.get(main.auto_noig)] : []};
@@ -38,6 +42,9 @@ ALIAS _proc.flood_nick (type,nick,uh,serv,cf) {
   IF (ignore.test == 1) {
     IF (_proc.silence()) {
       ^TIMER -REF SISOLATE $lice.get(main.isolate) //^SILENCE -*@*;
+    };
+    IF (_proc.callerid()) {
+      ^TIMER -REF CIDISOLATE $lice.get(main.isolate) //MODE $N -g;
     };
     ^TIMER -REF ISOLATE $lice.get(main.isolate) //^IGNORE *!*@* NONE;
     ^ASSIGN -ignore.test;
@@ -67,5 +74,5 @@ ALIAS _proc.flood_chan (type,nick,uh,serv,chan,hash) {
   };
   IF (ismset(U)) {_proc.away_save LiCe licelogd [$chan] $type FLOOD from $nick \($uh\)};
 };
-#tjh/12
+#tjh/14
 #tjbh/13
