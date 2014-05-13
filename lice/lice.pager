@@ -15,7 +15,6 @@ IF (word(2 $loadinfo()) != [pf]) {
 
 PACKAGE LiCe;
 
-
 # Proper pager alias - tjh - May 2012
 ALIAS pager {
   UNLESS (@) {
@@ -52,4 +51,4 @@ ALIAS _proc.disp_file (file) {
     @ close($fd);
   };
 };
-#tjh/13
+#tjh/14

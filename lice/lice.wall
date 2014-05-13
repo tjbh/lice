@@ -23,7 +23,7 @@ ALIAS wall {
     }{
       ^LOCAL wall.chan $C;
       ^LOCAL wall.msg $*;
-    }
+    };
     UNLESS (ischanop($N $wall.chan)) {ECHO $fmt.banner_alert() Warning: You are not channel operator on $ch($wall.chan)};
     IF (left(1 $R) == [u]) {
       @ :wall.many = numwords($chops($wall.chan));

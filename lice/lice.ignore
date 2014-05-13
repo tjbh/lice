@@ -42,13 +42,21 @@ ALIAS protect {
     IF (_proc.silence()) {
       //^SILENCE +*@*;
     };
+    IF (_proc.callerid() && !count(g $usermode())) {
+      ^ASSIGN callerid.test = 1;
+      //MODE $N +g;
+    };
   }{
     //IGNORE *!*@*.* NONE;
     IF (_proc.silence()) {
       //^SILENCE -*@*;
     };
+    IF (_proc.callerid() && count(g $usermode()) && callerid.test) {
+      //MODE $N -g;
+      ^ASSIGN -callerid.test;
+    };
   };
 };
 
 #HS/03
-#tjh/12
+#tjh/14
