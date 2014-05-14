@@ -35,6 +35,7 @@ STUB ALIAS unban $LiCePath/lice/lice.remove_list;
 STUB ALIAS wall $LiCePath/lice/lice.wall;
 
 # general user commands
+STUB ALIAS accept $LiCePath/lice/lice.serverignore;
 STUB ALIAS adcc $LiCePath/lice/lice.adcc;
 STUB ALIAS dcc $LiCePath/lice/lice.adcc;
 STUB ALIAS alarm $LiCePath/lice/lice.alarm;
@@ -99,7 +100,7 @@ STUB ALIAS se $LiCePath/lice/lice.show_list;
 STUB ALIAS sensors $LiCePath/lice/lice.sensors;
 STUB ALIAS si $LiCePath/lice/lice.show_list;
 STUB ALIAS signoff $LiCePath/lice/lice.signoff;
-STUB ALIAS silence $LiCePath/lice/lice.silence;
+STUB ALIAS silence $LiCePath/lice/lice.serverignore;
 STUB ALIAS tab_completion $LiCePath/lice/lice.tab_comp;
 STUB ALIAS theme $LiCePath/lice/lice.theme;
 STUB ALIAS tlm $LiCePath/lice/lice.rel;
@@ -131,6 +132,7 @@ STUB ALIAS _proc.ul_m2a $LiCePath/lice/lice.userlist;
 STUB ALIAS party $LiCePath/lice/lice.party;
 
 # proc's
+STUB ALIAS _proc.callerid $LiCePath/lice/lice.serverignore;
 STUB ALIAS _proc.ban $LiCePath/lice/lice.banlist;
 STUB ALIAS _proc.dcc_queue_check $LiCePath/lice/lice.dcclist;
 STUB ALIAS _proc.dcc_queue_load $LiCePath/lice/lice.dcclist;
@@ -158,8 +160,7 @@ STUB ALIAS _proc.note_set $LiCePath/lice/lice.note;
 STUB ALIAS _proc.note_wget $LiCePath/lice/lice.note;
 STUB ALIAS _proc.open_log  $LiCePath/lice/lice.chanlog;
 STUB ALIAS _proc.redraw_tl $LiCePath/lice/lice.theme;
-STUB ALIAS _proc.silence $LiCePath/lice/lice.silence;
-STUB ALIAS _proc.callerid $LiCePath/lice/lice.silence;
+STUB ALIAS _proc.silence $LiCePath/lice/lice.serverignore;
 STUB ALIAS _proc.split_save $LiCePath/lice/lice.splitlist;
 STUB ALIAS _proc.split_info $LiCePath/lice/lice.splitlist;
 STUB ALIAS _proc.split_jump $LiCePath/lice/lice.splitlist;

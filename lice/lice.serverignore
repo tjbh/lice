@@ -1,7 +1,13 @@
-# /silence - a more efficient interface
-# Written by HSOC, slightly modified to support silence toggle by tjh
-# Updated for EPIC5 by tjh
-# Updated to support callerid by tjh 06/12
+#
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2014 tjh (tim@muppetz.com)
+#
+# ---------------------------------------------------------------------------
+# All code by tjh, unless specified. Visit http://lice.muppetz.com
+# ---------------------------------------------------------------------------
+
+# Silence support Written by HSOC, slightly modified to support silence toggle by tjh
+# CallerID/Accept support added by tjh
 
 IF (word(2 $loadinfo()) != [pf]) {
   LOAD -pf $word(1 $loadinfo());
@@ -10,6 +16,7 @@ IF (word(2 $loadinfo()) != [pf]) {
 
 PACKAGE LiCe;
 
+### Silence
 ALIAS silence {
   UNLESS (_proc.silence()) {iecho $S does not support silence.; RETURN};
   IF (match($left(1 $0) + -)) {
@@ -36,10 +43,7 @@ ALIAS silence {
 
 ON ^272 * {iecho ---- End of Silence List;purge sil};
 
-# Verify server support for silence/callerid
-ALIAS _proc.silence {@:FUNCTION_RETURN = (MATCH(SILENCE $serverctl(GET $serverctl(FROM_SERVER) 005s))) > 0): 0 ? 1};
-ALIAS _proc.callerid {@:FUNCTION_RETURN = (MATCH(CALLERID $serverctl(GET $serverctl(FROM_SERVER) 005s))) > 0): 0 ? 1};
-
+### CallerID
 ALIAS accept {
   UNLESS (_proc.callerid()) {iecho $S does not support callerid.; RETURN};
   UNLESS (@) {
@@ -49,6 +53,10 @@ ALIAS accept {
     //QUOTE ACCEPT $0;
   };
 };
-ALIAS callerid {accept};
-    
+
+### Server Support Checks
+ALIAS _proc.silence {@:FUNCTION_RETURN = (MATCH(SILENCE $serverctl(GET $serverctl(FROM_SERVER) 005s))) > 0): 0 ? 1};
+ALIAS _proc.callerid {@:FUNCTION_RETURN = (MATCH(CALLERID $serverctl(GET $serverctl(FROM_SERVER) 005s))) > 0): 0 ? 1};
+
 #tjh/14
+
