@@ -777,7 +777,7 @@ ALIAS quiet {
 ALIAS ar {
   IF (@) {@lice.set(main.buf $*)};
   IF (lice.get(main.buf)) {
-    iecho Auto-reply buffer activates on words matching $lice.get(main.buf);
+    iecho Auto-reply buffer activates on word$plural($numwords($lice.get(main.buf))) matching $lice.get(main.buf);
   }{
     iecho Auto-reply buffer is empty;
   };
