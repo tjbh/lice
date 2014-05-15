@@ -75,7 +75,10 @@ ALIAS lice.load_db {
        IF ((getsets($set)) && (val != [<unset>])) {//^SET $set $val};
        };
       (|) {//^IGNORE $lice.get($dbi)};
-      (!) {_proc.startlog $logctl(NEW) $lice.save_path/logs/$tolower($lice.get($dbi))\.log $lice.get($dbi)};
+      (!) {
+       @ :chan = lice.get($dbi);
+       //^LOG NEW NAME $chan FILENAME $lice.save_path/logs/$tolower($chan)\.log ADD $chan ON MANGLE ALL;
+       };
       (&) {//^SERVER -ADD $lice.get($dbi)};
     };
   };

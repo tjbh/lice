@@ -19,13 +19,6 @@ PACKAGE LiCe;
 
 @ mkdir($lice.save_path/logs);
 
-ALIAS _proc.startlog (ref, file, chn) {
-  //^LOG $ref NAME $chn;
-  //^LOG $ref FILENAME $file;
-  //^LOG $ref ADD $chn;
-  //^LOG $ref ON;
-};   
-
 ALIAS chanlog {
   UNLESS (@) {
     uecho Usage: /CHANLOG -a <channel>;
@@ -36,7 +29,6 @@ ALIAS chanlog {
   @ :opts = [];
   WHILE (opts = getopt(optopt optarg "a:d:l::" $*)) {
     @ :chan = optarg;
-    @ :file = [$lice.save_path/logs/$tolower($chan)\.log];
     @ :hash = hash_32bit($chan);
     SWITCH ($opts) {
       (a) {
@@ -46,9 +38,9 @@ ALIAS chanlog {
           RETURN;
           };
         };
-        _proc.startlog $logctl(NEW) $file $chan;
+        //^LOG NEW NAME $chan FILENAME $lice.save_path/logs/$tolower($chan)\.log ADD $chan ON MANGLE ALL;
         @lice.set(![$hash][C] $chan);
-        iecho Chanlog: logging $chan to $file;
+        iecho Chanlog: logging $chan to $lice.save_path/logs/$tolower($chan)\.log;
         CONTINUE;
       };
       (d) {
