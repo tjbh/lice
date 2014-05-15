@@ -38,9 +38,10 @@ ALIAS chanlog {
           RETURN;
           };
         };
-        //^LOG NEW NAME $chan FILENAME $lice.save_path/logs/$tolower($chan)\.log ADD $chan ON MANGLE ALL;
+        @ :file = [$lice.save_path/logs/$tolower($chan)\.log];
+        //^LOG NEW NAME $chan FILENAME $file ADD $chan ON MANGLE ALL;
         @lice.set(![$hash][C] $chan);
-        iecho Chanlog: logging $chan to $lice.save_path/logs/$tolower($chan)\.log;
+        iecho Chanlog: logging $chan to $file;
         CONTINUE;
       };
       (d) {
