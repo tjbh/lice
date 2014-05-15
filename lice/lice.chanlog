@@ -30,6 +30,7 @@ ALIAS chanlog {
   WHILE (opts = getopt(optopt optarg "a:d:l::" $*)) {
     @ :chan = optarg;
     @ :hash = hash_32bit($chan);
+    UNLESS (ischannel(chan)) {@chan = [#] ## chan};
     SWITCH ($opts) {
       (a) {
         FE ($logctl(REFNUMS ALL)) logs {
@@ -38,10 +39,9 @@ ALIAS chanlog {
           RETURN;
           };
         };
-        @ :file = [$lice.save_path/logs/$tolower($chan)\.log];
-        //^LOG NEW NAME $chan FILENAME $file ADD $chan ON MANGLE ALL;
+        _proc.startlog $chan;
         @lice.set(![$hash][C] $chan);
-        iecho Chanlog: logging $chan to $file;
+        iecho Chanlog: logging $chan to $lice.save_path/logs/$tolower($chan)\.log;
         CONTINUE;
       };
       (d) {
@@ -66,5 +66,10 @@ ALIAS chanlog {
   };
 };
 
+ALIAS _proc.startlog (channel) {
+  //^LOG NEW NAME $channel FILENAME $lice.save_path/logs/$tolower($channel)\.log ADD $channel ON MANGLE ALL REWRITE "$$strftime(%b %d %X): $$0 $$1-";
+};
+
 #Hacked into LiCe before epic supported logging by tjbh/2000 - wolf script
+#Rewrite for epic's logging by tjh
 #tjh/14

@@ -160,6 +160,7 @@ STUB ALIAS _proc.silence $LiCePath/lice/lice.serverignore;
 STUB ALIAS _proc.split_save $LiCePath/lice/lice.splitlist;
 STUB ALIAS _proc.split_info $LiCePath/lice/lice.splitlist;
 STUB ALIAS _proc.split_jump $LiCePath/lice/lice.splitlist;
+STUB ALIAS _proc.startlog $LiCePath/lice/lice.chanlog;
 STUB ALIAS _proc.wget_main $LiCePath/lice/lice.wget;
 
 #tjh/14

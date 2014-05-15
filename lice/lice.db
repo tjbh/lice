@@ -77,7 +77,7 @@ ALIAS lice.load_db {
       (|) {//^IGNORE $lice.get($dbi)};
       (!) {
        @ :chan = lice.get($dbi);
-       //^LOG NEW NAME $chan FILENAME $lice.save_path/logs/$tolower($chan)\.log ADD $chan ON MANGLE ALL;
+       _proc.startlog $chan;
        };
       (&) {//^SERVER -ADD $lice.get($dbi)};
     };
