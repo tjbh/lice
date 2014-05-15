@@ -1618,15 +1618,6 @@ ALIAS main_init {
   # load notify list from db
   //^NOTIFY $lice.get(lice.notify);
   
-  # start logging channels
-  FOREACH chanlog hash {
-    @ :chan = chanlog[$hash][C];
-    _proc.open_log $chan;
-    _proc.log_p $chan;
-    _proc.log_k $chan;
-    _proc.log_j $chan;
-  };
-
   # MSG/DCC/TOPIC window
   IF (iswset(W)) {^WINDOW NEW NAME MW LEVEL NONE DOUBLE OFF NOSERV STATUS_FORMAT " Message Window %>-- Type /WTOG W to finish -- " LAST};
   IF (iswset(C)) {^WINDOW NEW NAME CW LEVEL NONE DOUBLE OFF NOSERV STATUS_FORMAT " Chatting Window %>-- Type /WTOG C to finish -- " LAST};

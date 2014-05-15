@@ -147,9 +147,6 @@ STUB ALIAS _proc.join_usr1 $LiCePath/lice/lice.joinlist;
 STUB ALIAS _proc.join_usr2 $LiCePath/lice/lice.joinlist;
 STUB ALIAS _proc.join_ip $LiCePath/lice/lice.joinlist;
 STUB ALIAS _proc.join_rest $LiCePath/lice/lice.joinlist;
-STUB ALIAS _proc.log_j $LiCePath/lice/lice.chanlog;
-STUB ALIAS _proc.log_k $LiCePath/lice/lice.chanlog;
-STUB ALIAS _proc.log_p $LiCePath/lice/lice.chanlog;
 STUB ALIAS _proc.loop_kick $LiCePath/lice/lice.looplist;
 STUB ALIAS _proc.loop_mode $LiCePath/lice/lice.looplist;
 STUB ALIAS _proc.loop_send $LiCePath/lice/lice.looplist;
@@ -164,6 +161,7 @@ STUB ALIAS _proc.silence $LiCePath/lice/lice.serverignore;
 STUB ALIAS _proc.split_save $LiCePath/lice/lice.splitlist;
 STUB ALIAS _proc.split_info $LiCePath/lice/lice.splitlist;
 STUB ALIAS _proc.split_jump $LiCePath/lice/lice.splitlist;
+STUB ALIAS _proc.startlog $LiCePath/lice/lice.chanlog;
 STUB ALIAS _proc.wget_main $LiCePath/lice/lice.wget;
 
 #tjh/14
