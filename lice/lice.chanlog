@@ -25,7 +25,7 @@ ALIAS chanlog {
   UNLESS (@) {
     uecho Usage: /CHANLOG -a <channel>;
     uecho Usage: /CHANLOG -d <channel>;
-    uecho Usage: /CHANLOG -l <channel>;
+    uecho Usage: /CHANLOG -l;
     RETURN;
   };
   @ :opts = [];
@@ -62,12 +62,15 @@ ALIAS chanlog {
         iecho Chanlog: no longer logging $chan;
       };
       (l) {
-        iecho - Channel $repeat(21 -) Path $repeat(40 -) Size $repeat(8 -);
+        iecho +$repeat(5 -) Logging $repeat(2 -)+$repeat(51 -)+$repeat(14 -)+;
+        iecho | Channel $repeat(6  ) | Path $repeat(44  ) | Size $repeat(8  )|;
+        iecho +$repeat(16 -)+$repeat(51 -)+$repeat(14 -)+;
         FE ($logctl(REFNUMS ALL)) logs {
           @ :chan = logctl(GET $logs NAME);
-          @ :dotspin1 = (30 - strlen($chan));
-          @ :dotspin2 = (44 - strlen($lice.save_path/logs/$tolower($chan)\.log));
-          iecho $logctl(GET $logs NAME) $repeat($dotspin1  ) $lice.save_path/logs/$tolower($chan)\.log $repeat($dotspin2  ) $fsize( $lice.save_path/logs/$tolower($chan)\.log);
+          @ :file = lice.save_path ## [/logs/] ## tolower($chan) ## [\.log];
+          @ :pad1 = (15 - strlen($chan));
+          @ :pad2 = (50 - strlen($file));
+          iecho   $logctl(GET $logs NAME) $repeat($pad1  ) $file $repeat($pad2  ) $fsize($file);
         };
       };
     }};
