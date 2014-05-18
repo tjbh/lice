@@ -35,26 +35,24 @@ ALIAS chanlog {
     @ :hash = hash_32bit($chan);
     SWITCH ($opts) {
       (a) {
-        FE ($logctl(REFNUMS ALL)) logs {
-          IF ((logctl(GET $logs NAME)) == [$chan]) {
+        IF (lice.get(![$hash][C]) == [$chan]) {
           iecho Already logging $chan;
           RETURN;
-          };
         };
         _proc.startlog $chan;
         @lice.set(![$hash][C] $chan);
         iecho Chanlog: logging $chan to $lice.save_path/logs/$tolower($chan)\.log;
       };
       (d) {
-        @ rmlog = 0;
-        FE ($logctl(REFNUMS ALL)) logs {
-          IF ((logctl(GET $logs NAME)) == [$chan]) {
-            @ rmlog = logs;
-          };
-        };
-        UNLESS (rmlog) {
+        UNLESS (lice.get(![$hash][C]) == [$chan]) {
           iecho $chan isn't being logged, unable to delete;
           RETURN;
+        };
+        FE ($logctl(REFNUMS ALL)) logs {
+          IF ((logctl(GET $logs NAME)) == [$chan]) {
+            @ :rmlog = logs;
+            CONTINUE;
+          };
         };
         //^LOG $rmlog KILL;
         @lice.del(![$hash][C]);
