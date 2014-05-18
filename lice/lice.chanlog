@@ -30,8 +30,8 @@ ALIAS chanlog {
   };
   @ :opts = [];
   WHILE (opts = getopt(optopt optarg "a:d:l::" $*)) {
-    @ :chan = optarg;
-    UNLESS (ischannel($chan)) {@ chan = [#] ## chan};
+    @ :chan = stripcrap(ALL $optarg);
+    UNLESS (ischannel($chan)) {@ :chan = [#] ## chan};
     @ :hash = hash_32bit($chan);
     SWITCH ($opts) {
       (a) {
