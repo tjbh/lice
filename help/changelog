@@ -5,12 +5,12 @@
 	  always consistant.
 	- Optimised auto-away routine & fixed bug where you wouldn't get set
 	  away automatically on servers if you were already away on one.
-	- More optimisations to database routines
+	- More optimisations to database routines.
 	- Flood routine and self protect [esc-`] will now use the server side
 	  CallerID feature, if your server supports it. (usermode +g)
 	- We now use epic's built in logging function instead of many ON's for
 	  the chanlog feature. Log file formats have changed slightly because 
-	  of this.
+	  of this. Timestamp used is /SENS S value.
 
 *** Changes in version 5.2.6 - 04/11/14
 	- Made window creation faster

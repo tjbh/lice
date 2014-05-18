@@ -8,3 +8,4 @@ Options and Operation:
 	-l	Lists the channels being logged & gives 
 		log information.
 
+Note: /SENS S is used for the log timestamp format.
