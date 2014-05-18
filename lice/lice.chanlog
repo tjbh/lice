@@ -44,7 +44,6 @@ ALIAS chanlog {
         _proc.startlog $chan;
         @lice.set(![$hash][C] $chan);
         iecho Chanlog: logging $chan to $lice.save_path/logs/$tolower($chan)\.log;
-        CONTINUE;
       };
       (d) {
         @ rmlog = 0;
@@ -78,7 +77,13 @@ ALIAS chanlog {
 };
 
 ALIAS _proc.startlog (channel) {
-  //^LOG NEW NAME $channel FILENAME $lice.save_path/logs/$tolower($channel)\.log ADD $channel MANGLE ALL REWRITE "$$strftime(%b %d %X): $$1-" ON;
+  //^LOG NEW NAME $channel FILENAME $lice.save_path/logs/$tolower($channel)\.log ADD $channel MANGLE ALL REWRITE "$$strftime($lice.get(main.tsfmt)): $$1-" ON;
+};
+
+ALIAS _proc.uplogtsfmt {
+  FE ($logctl(REFNUMS ALL)) logs {
+    //^LOG $logs REWRITE "$$strftime($lice.get(main.tsfmt)): $$1-";
+  };
 };
 
 #Hacked into LiCe beautifully, before epic supported logging, by tjbh/2000 - wolf script
