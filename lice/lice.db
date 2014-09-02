@@ -67,8 +67,7 @@ IF (lice.get(db.status) == 1) {TIMER 2 uecho Warning: The LiCe database is alr
 # Read all sets, ignores, Chanlog assigns and servers from the database.
 ALIAS lice.load_db {
   FE ($numsort($dbmctl(ALL_KEYS $lice.fd))) dbi {
-    @ :type = left(1 $dbi);
-    SWITCH ($type) {
+    SWITCH ($left(1 $dbi)) {
       (\\*) {
        @ :val = lice.get($dbi);
        @ :set = after(* $dbi);
@@ -87,8 +86,7 @@ ALIAS lice.load_db {
 # save servers routine
 ALIAS lice.saveservers {
   FE ($dbmctl(ALL_KEYS $lice.fd)) ls {
-    @ :sid= after(& $ls);
-    UNLESS (strlen($sid) == 0) {
+    UNLESS (strlen($after(& $ls)) == 0) {
       @lice.del($ls);
     };
   };

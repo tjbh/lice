@@ -53,7 +53,7 @@ ALIAS THEME {
 # Redraw the toplines. If activate is set, also redisplay (called from lice.wtog for /wtog t)
 ALIAS _proc.redraw_tl (activate) {
   FOR win in ($windowctl(REFNUMS)) {
-    IF (activate) {WINDOW $win TOPLINES 1};
+    IF (activate) {//^WINDOW $win TOPLINES 1};
     @ :hash = hash_32bit($winchan($win));
     IF ([$chan_topic[$win$hash]] == []) {
       @windowctl(SET $win TOPLINE 1  -- LiCe Titlebar [tm] --);
@@ -62,4 +62,4 @@ ALIAS _proc.redraw_tl (activate) {
     };
   };
 };
-#tjh/12
+#tjh/14

@@ -36,10 +36,8 @@ IF (word(2 $loadinfo()) != [pf]) {
 };
 
 # warning to people who dare use lame clients.
-EVAL IF (word(0 $info(v)) != [epic5] || V < 20140413 || info(i) < 1793) {
+EVAL IF (word(0 $info(v)) != [epic5] || V < 20140413 || info(i) < 1794) {
   CLEAR;
-  ECHO;
-  ECHO;
   ECHO;
   ECHO The LiCe5 script needs the latest ircii-EPIC5 client, else it won't;
   ECHO work as intended. Tell your administrator to upgrade your client, or;
@@ -51,17 +49,16 @@ EVAL IF (word(0 $info(v)) != [epic5] || V < 20140413 || info(i) < 1793) {
   ECHO version of EPIC5 will work. Bugs reported on earlier versions will;
   ECHO be ignored though!  You've been warned....;
   ECHO;
-  ECHO;
   IF (word(0 $info(v)) == [epic5]) {
     ECHO You are using $word(0 $info(v)) release:$V commit_id:#$info(i);
-    ECHO You should have EPIC5 release:20140413 commit_id:#1793 [EPIC5-1.1.11] or greater;
+    ECHO You should have EPIC5 release:20140413 commit_id:#1794 [EPIC5-1.1.11] or greater;
   };
   IF (word(0 $info(v)) != [epic5]) {
     ECHO You need EPIC5! You have $word(0 $info(v)) ! Bye...;
     RETURN;
   }; 
-  ECHO Pausing 10 seconds...;
-  PAUSE 10;
+  ECHO Pausing 5 seconds...;
+  PAUSE 5;
 };
 
 # Make sure there's nothing else loaded.
@@ -805,7 +802,7 @@ ALIAS mbar {iecho Your current MSG-togs are set to\: \"$lice.get(main.mset)\"};
 ALIAS dbar {iecho Your current DCC-togs are set to\: \"$lice.get(main.dset)\"};
 ALIAS wbar {iecho Your current WIN-togs are set to\: \"$lice.get(main.wset)\"};
 ALIAS hold SET HOLD_MODE TOGGLE;
-# ALIAS log SET LOG TOGGLE;
+ALIAS log SET LOG TOGGLE;
 ALIAS beep SET BEEP TOGGLE;
 ALIAS ansi SET DISPLAY_ANSI TOGGLE;
 ### END Small commands
@@ -1638,7 +1635,7 @@ ALIAS main_init {
     ^SET CLIENT_INFORMATION $lice();
   };
   IF (isdset(R)) {^SET MIRC_BROKEN_DCC_RESUME ON};
-  IF (ismset(B)) {^ON #-MSG 617 * {IF (A) {BEEP}}};
+  IF (ismset(B)) {^ON #-MSG 617 * {IF (A) {//BEEP}}};
 
   # If we have saved messages, put them back into the save buffer
   IF (ismset(E)) {
