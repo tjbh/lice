@@ -155,10 +155,10 @@ ON #-306 13 * {
     iecho Saving all incoming messages...;
   };
   ^SET STATUS_USER1 $temp.nrm;
-  IF (!quiet.test && !ismset(Q) && servername($winserv()) == S) {
+  IF (!quiet_test && !ismset(Q) && servername($winserv()) == S) {
      DESCRIBE ${C?C:T?T:N} is gone. $A;
   };
-  ^ASSIGN -quiet.test;
+  ^ASSIGN -quiet_test;
 };
 ON ^275 * {ECHO $fmt.whois_mid(Security $1-)};
 ON ^276 * {ECHO $fmt.whois_mid(Notice $1-)};
@@ -387,20 +387,19 @@ ON ^353 * {
   };
   IF (strlen($names.list)) {ECHO $fmt.sc_mid($names.list)};
 };
-##
 ON #-IDLE 13 '\$lice.get(main.agn)' {
-  UNLESS (!lice.get(main.agn) || isset(X)) {
-    FE ($myservers()) server {
-      @ :serv = servernum($server);
-      XEVAL -S $serv {
-        UNLESS (isaway($serv) || !isconnected($serv)) {
-          @ quiet.test = quiet.test ? quiet.test : 1;
-          AWAY Gone since $strftime(${time() - (lice.get(main.agn) * 60)} %c);
-          IF (ismset(U)) {_proc.away_save LiCe licelogd [$server] Changed to AWAY status after $0 min$plural($0) of inactivity.};
-        };
+  IF (!lice.get(main.agn) || isset(X)) {RETURN};
+  FE ($myservers()) server {
+    @ :serv = servernum($server);
+    XEVAL -S $serv {
+      IF (!isaway($serv) && isconnected($serv)) {
+        @ quiet_test = 1;
+        @ :server_list = server_list ? server_list ## [, $server] : server;
+        AWAY Gone since $strftime(${time() - (lice.get(main.agn) * 60)} %c);
+        IF (server == rightw(1 $myservers())) {XECHO -C $fmt.banner_alert() Auto: Away after $0 minute$plural($0) of inactivity on $server_list\.};
+        IF (ismset(U)) {_proc.away_save LiCe licelogd [$server] Changed to AWAY status after $0 min$plural($0) of inactivity.};
       };
     };
-    XECHO -C $fmt.banner_alert() Auto: Away after $0 minute$plural($0) of inactivity.;
   };
 };
 ON #-INVITE 13 * {
