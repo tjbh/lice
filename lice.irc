@@ -392,7 +392,7 @@ ON #-IDLE 13 '\$lice.get(main.agn)' {
   FE ($myservers()) server {
     @ :serv = servernum($server);
     XEVAL -S $serv {
-      IF (!isaway($serv) && isconnected($serv)) {
+      IF (!isaway($serv)) {
         @ quiet_test = 1;
         @ :server_list = server_list ? server_list ## [, $server] : server;
         AWAY Gone since $strftime(${time() - (lice.get(main.agn) * 60)} %c);
