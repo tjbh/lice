@@ -387,6 +387,7 @@ ON ^353 * {
   };
   IF (strlen($names.list)) {ECHO $fmt.sc_mid($names.list)};
 };
+##
 ON #-IDLE 13 '\$lice.get(main.agn)' {
   IF (!lice.get(main.agn) || isset(X)) {RETURN};
   FE ($myservers()) server {
@@ -396,7 +397,7 @@ ON #-IDLE 13 '\$lice.get(main.agn)' {
         @ quiet_test = 1;
         @ :server_list = server_list ? server_list ## [, $server] : server;
         AWAY Gone since $strftime(${time() - (lice.get(main.agn) * 60)} %c);
-        IF (server == rightw(1 $myservers())) {XECHO -C $fmt.banner_alert() Auto: Away after $0 minute$plural($0) of inactivity on $server_list\.};
+        IF (server == rightw(1 $myservers())) {XECHO -C $fmt.banner_alert() Auto \($server_list\): Away after $0 minute$plural($0) of inactivity.};
         IF (ismset(U)) {_proc.away_save LiCe licelogd [$server] Changed to AWAY status after $0 min$plural($0) of inactivity.};
       };
     };
