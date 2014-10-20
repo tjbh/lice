@@ -1,4 +1,4 @@
-Latest update: 11th May 2012
+Latest update: 20th Oct 2014
 ============================
 
 This is a list of random bits and pieces I'll be working on for
@@ -12,9 +12,6 @@ Feel free to email me, tim@muppetz.com with any thing else you'd like to see!
 * Fix broken /adcc - Nearly. - DONE(?)
 * Update /noig to not display /ctog Q channels.
 * Make autocompelte work for HELP
-* Optimise server save routine. Write into lice.servers how many servers their are
-then delete them all using lice.del serverX ServerX+1 etc. Before rewrting.
-This will save CPU time etc.
 * Add NOTE into dbmctl
-* Use epic's built in log function, rather than the chanlog ^ON method?
+[DONE] Use epic's built in log function, rather than the chanlog ^ON method?
 * Rebuild the themes...

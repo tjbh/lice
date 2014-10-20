@@ -5,7 +5,6 @@
 	- Auto-away now notifies what servers you were set away on.
 	- There will now only be one entry in your away log when you are 
 	  automatically set away on multiple servers at the same time.
-	- Fixes to /UPDATE. It works for real now.
 	- Added Esc-\ to update lag indicator.
 	- Fixed (really!) the order servers are loaded/saved in so it's
 	  always consistant.
