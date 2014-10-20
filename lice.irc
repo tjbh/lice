@@ -377,14 +377,14 @@ ON #-IDLE 13 '\$lice.get(main.agn)' {
     XEVAL -S $serv {
       IF (!isaway($serv)) {
         @ quiet_test[$serv] = 1;
-        @ :server_list = server_list ? server_list ## [, $server] : server;
+        @ :server_list = server_list ? server_list ## [, $server] : server;       
         AWAY Gone since $strftime(${time() - (lice.get(main.agn) * 60)} %c);
-        IF (server == rightw(1 $myservers())) {
-          XECHO -C $fmt.banner_alert() Auto \($server_list\): Away after $0 minute$plural($0) of inactivity.;
-          IF (ismset(U)) {_proc.away_save LiCe licelogd [$server_list] Changed to AWAY status after $0 min$plural($0) of inactivity.};
-        };
       };
     };
+  };
+  IF (server_list) {
+    XECHO -C $fmt.banner_alert() Auto \($server_list\): Away after $0 minute$plural($0) of inactivity.;
+    IF (ismset(U)) {_proc.away_save LiCe licelogd [$server_list] Changed to AWAY status after $0 min$plural($0) of inactivity.};
   };
 };
 ON #-INVITE 13 * {
