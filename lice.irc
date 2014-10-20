@@ -377,7 +377,7 @@ ON #-IDLE 13 '\$lice.get(main.agn)' {
     XEVAL -S $serv {
       IF (!isaway($serv)) {
         @ quiet_test[$serv] = 1;
-        @ :server_list = server_list ? server_list ## [, $server] : server;       
+        @ :server_list = server_list ? server_list ## [, $server] : server;
         AWAY Gone since $strftime(${time() - (lice.get(main.agn) * 60)} %c);
       };
     };
