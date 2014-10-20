@@ -1,6 +1,12 @@
 *** Changes in version 5.2.7 - xx/xx/xx
-	- Fixes to /update
-	- Added esc-\ to update lag indicator
+	- Moved pre-5.1.0 changes to extra/changelog.legacy
+	- Fixed bug where auto-away could send messages to channels if you
+	  were connected to multiple servers.
+	- Auto-away now notifies what servers you were set away on.
+	- There will now only be one entry in your away log when you are 
+	  automatically set away on multiple servers at the same time.
+	- Fixes to /UPDATE. It works for real now.
+	- Added Esc-\ to update lag indicator.
 	- Fixed (really!) the order servers are loaded/saved in so it's
 	  always consistant.
 	- Optimised auto-away routine & fixed bug where you wouldn't get set
