@@ -30,10 +30,7 @@
 #   Most routines are all SrfRoG original though, just updated or
 #   modified to work with epic5.
 
-IF (word(2 $loadinfo()) != [pf]) {
-  LOAD -pf $word(1 $loadinfo());
-  RETURN;
-};
+IF (word(2 $loadinfo()) != [pf]) {LOAD -pf $word(1 $loadinfo());RETURN};
 
 # warning to people who dare use lame clients.
 EVAL IF (word(0 $info(v)) != [epic5] || V < 20140413 || info(i) < 1794) {
@@ -99,7 +96,6 @@ LOAD $LiCePath/themes/default;
 
 # program information
 ^ASSIGN id.v $decode(DFCODCCODH);
-
 ALIAS lice (addon) {
   @ :ret = [];
   SWITCH ($addon) {
@@ -138,27 +134,17 @@ ON ^301 * {
 };
 ON #-305 13 * {
   @ :serv = serverctl(FROM_SERVER);
-  IF (gone_away[$serv] > 0) {
-    iecho You were gone for $tdiff(${time() - gone_away[$serv]});
-  };
-  IF (temp.nrm > 0) {
-    iecho You have $temp.nrm message$plural($temp.nrm) waiting;
-  };
+  IF (gone_away[$serv] > 0) {iecho You were gone for $tdiff(${time() - gone_away[$serv]})};
+  IF (temp.nrm > 0) {iecho You have $temp.nrm message$plural($temp.nrm) waiting};
   ^ASSIGN -gone_away[$serv];
 };
 ON #-306 13 * {
   @ :serv = serverctl(FROM_SERVER);
-  UNLESS (gone_away[$serv]) {
-    @ gone_away[$serv] = time();
-  };
-  IF (ismset(M)) {
-    iecho Saving all incoming messages...;
-  };
+  UNLESS (gone_away[$serv]) {@ gone_away[$serv] = time()};
+  IF (ismset(M)) {iecho Saving all incoming messages...};
   ^SET STATUS_USER1 $temp.nrm;
-  IF (!quiet_test && !ismset(Q) && servername($winserv()) == S) {
-     DESCRIBE ${C?C:T?T:N} is gone. $A;
-  };
-  ^ASSIGN -quiet_test;
+  IF (!quiet_test[$serv] && !ismset(Q) && servername($winserv()) == S) {DESCRIBE ${C?C:T?T:N} is gone. $A};
+  ^ASSIGN -quiet_test[$serv];
 };
 ON ^275 * {ECHO $fmt.whois_mid(Security $1-)};
 ON ^276 * {ECHO $fmt.whois_mid(Notice $1-)};
@@ -211,9 +197,7 @@ ON ^332 * {
   UNLESS (win == -1) {
     @ :hash = hash_32bit($1);
     @ chan_topic[$win$hash] = [$1-];
-    IF (iscurchan($1) && iswset(T)) {
-      @windowctl(SET $win TOPLINE 1 $fmt.titlebar($chan_topic[$win$hash]));
-    };
+    IF (iscurchan($1) && iswset(T)) {@windowctl(SET $win TOPLINE 1 $fmt.titlebar($chan_topic[$win$hash]))};
   };
 };
 ON ^333 * {XECHO -W $chanwin($1) $fmt.banner_chan() $fmt.topic_set($1 Set by $2 on $strftime($3 %c))};
@@ -240,9 +224,7 @@ ALIAS _proc.display_list (name,chan,item,who,when) {
   IF (onchannel($servernick() $chan)) {
     @ :list = left(1 $name) ## serv;
     @ :hash = hash_32bit($chan);
-    IF (matchitem($list\-$hash *$item*) < 0) {
-       @ setitem($list\-$hash $numitems($list\-$hash) $item); 
-    };
+    IF (matchitem($list\-$hash *$item*) < 0) {@ setitem($list\-$hash $numitems($list\-$hash) $item)};
     IF (list_mutex[$list$hash]) {RETURN};
   };
   UNLESS (temp[$name]) {
@@ -273,7 +255,7 @@ ON ^368 * {
 };
 ON ^369 * {
   IF (temp.whois_away > 0) {
-    @temp.whois_away--;
+    @ temp.whois_away--;
     IF (ismset(O)) {_proc.note_wget $1};
     IF (aliasctl(ALIAS EXISTS fmt.whois_bot)) {ECHO $fmt.whois_bot(Whowas $*);};  
   };
@@ -394,11 +376,13 @@ ON #-IDLE 13 '\$lice.get(main.agn)' {
     @ :serv = servernum($server);
     XEVAL -S $serv {
       IF (!isaway($serv)) {
-        @ quiet_test = 1;
+        @ quiet_test[$serv] = 1;
         @ :server_list = server_list ? server_list ## [, $server] : server;
         AWAY Gone since $strftime(${time() - (lice.get(main.agn) * 60)} %c);
-        IF (server == rightw(1 $myservers())) {XECHO -C $fmt.banner_alert() Auto \($server_list\): Away after $0 minute$plural($0) of inactivity.};
-        IF (ismset(U)) {_proc.away_save LiCe licelogd [$server] Changed to AWAY status after $0 min$plural($0) of inactivity.};
+        IF (server == rightw(1 $myservers())) {
+          XECHO -C $fmt.banner_alert() Auto \($server_list\): Away after $0 minute$plural($0) of inactivity.;
+          IF (ismset(U)) {_proc.away_save LiCe licelogd [$server_list] Changed to AWAY status after $0 min$plural($0) of inactivity.};
+        };
       };
     };
   };
