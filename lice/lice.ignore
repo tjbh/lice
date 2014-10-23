@@ -15,7 +15,7 @@ IF (word(2 $loadinfo()) != [pf]) {
 PACKAGE LiCe;
 
 ALIAS ignore {
-  @ :types = strlen($1) ? [$1-] : [MSGS WALLS WALLOPS INVITES NOTICES NOTES CTCPS TOPICS NICKS JOINS PARTS CRAP];
+  @ :types = strlen($1) ? [$1-] : [MSGS WALLS WALLOPS INVITES NOTICES SNOTES CTCPS TOPICS NICKS JOINS PARTS CRAP];
   SWITCH ($0) {
     () {
       uecho Usage: IGNORE < nick | n!u@h pattern > [[-|+]Ignore types] [reason <your reason>] [timeout <time in secs>];
@@ -43,7 +43,7 @@ ALIAS protect {
       //^SILENCE +*@*;
     };
     IF (_proc.callerid() && !count(g $usermode())) {
-      ^ASSIGN callerid.test = 1;
+      ^ASSIGN callerid_test = 1;
       //MODE $N +g;
     };
   }{
@@ -51,9 +51,9 @@ ALIAS protect {
     IF (_proc.silence()) {
       //^SILENCE -*@*;
     };
-    IF (_proc.callerid() && count(g $usermode()) && callerid.test) {
+    IF (_proc.callerid() && count(g $usermode()) && callerid_test) {
       //MODE $N -g;
-      ^ASSIGN -callerid.test;
+      ^ASSIGN -callerid_test;
     };
   };
 };
