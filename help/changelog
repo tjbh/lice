@@ -16,6 +16,7 @@
 	- We now use epic's built in logging function instead of many ON's for
 	  the chanlog feature. Log file formats have changed slightly because 
 	  of this. Timestamp used is /SENS S value.
+	- Reverted /noig to use original LiCe4 code and formatting
 
 *** Changes in version 5.2.6 - 04/11/14
 	- Made window creation faster
