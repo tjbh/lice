@@ -15,7 +15,7 @@ IF (word(2 $loadinfo()) != [pf]) {
 PACKAGE LiCe;
 
 ALIAS ignore {
-  @ :types = strlen($1) ? [$1-] : [ALL CRAP -PUBLIC];
+  @ :types = strlen($1) ? [$1-] : [MSGS WALLS WALLOPS INVITES NOTICES NOTES CTCPS TOPICS NICKS JOINS PARTS CRAP];
   SWITCH ($0) {
     () {
       uecho Usage: IGNORE < nick | n!u@h pattern > [[-|+]Ignore types] [reason <your reason>] [timeout <time in secs>];
