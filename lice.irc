@@ -1466,7 +1466,13 @@ ON #-DCC_REQUEST -9 "% SEND % % % % %" {
 ^ON ^PUBLIC_OTHER '% % *\\\\[\$lice.get(main.buf)\\\\]*' {_proc.reply_action $userhost() $*};
 ALIAS _proc.reply_action (uh,nick,chan,text) {
   IF (ismset(H)) {
-    FE ($lice.get(main.buf)) arw {@ :text = sar(gi/$arw/${arw}/$text)};
+    FE ($lice.get(main.buf)) arw {
+      FE ($findws($arw $text)) hlword {
+        @ :hlstring = hloutput ? hloutput : text;
+        @ :hloutput = chngw($hlword $word($hlword $hlstring) $hlstring);
+      };
+    };
+    @ :text = hloutput;
   };
   @ :cwin = winchan($chan);
   IF (cwin == -1) {
