@@ -1467,12 +1467,10 @@ ON #-DCC_REQUEST -9 "% SEND % % % % %" {
 ALIAS _proc.reply_action (uh,nick,chan,text) {
   IF (ismset(H)) {
     FE ($lice.get(main.buf)) arw {
-      FE ($findws($arw $text)) hlword {
-        @ :hlstring = hloutput ? hloutput : text;
-        @ :hloutput = chngw($hlword $word($hlword $hlstring) $hlstring);
+      FE ($pattern(*${arw}* $text)) hlword {
+        @ :text = sar(g/$hlword/${hlword}/$text)
       };
     };
-    @ :text = hloutput;
   };
   @ :cwin = winchan($chan);
   IF (cwin == -1) {
