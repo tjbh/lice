@@ -1470,7 +1470,7 @@ ALIAS _proc.reply_action (uh,nick,chan,text) {
       FE ($pattern(*${arw}* $text)) hlword {
         @ :hlw = mid($substr($arw $hlword) $strlen($arw) $hlword);
         IF (!strlen($pattern($encode($hlw) $seen))) {
-          @ text = sar(cg/$hlw/${hlw}/$text);
+          @ :text = sar(cg/$hlw/${hlw}/$text);
           @ push(:seen $encode($hlw));
         };
       };
