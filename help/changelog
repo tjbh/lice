@@ -18,6 +18,9 @@
 	  of this. Timestamp used is /SENS S value.
 	- Reverted /noig to use original LiCe4 code and formatting, updated 
 	  default ignore types to match LiCe4's
+	- Fixed issue where /MTOG H would change the case of the text to match
+	  the auto-reply case. This broke URL's that contained the auto-reply
+	  string, if the URL's case was different. Reported by z2e
 
 *** Changes in version 5.2.6 - 04/11/14
 	- Made window creation faster
