@@ -1468,7 +1468,8 @@ ALIAS _proc.reply_action (uh,nick,chan,text) {
   IF (ismset(H)) {
     FE ($lice.get(main.buf)) arw {
       FE ($pattern(*${arw}* $text)) hlword {
-        @ :text = sar(g/$mid($substr($arw $hlword) $strlen($arw) $hlword)/${mid($substr($arw $hlword) $strlen($arw) $hlword)}/$text)
+        @ :hlw = mid($substr($arw $hlword) $strlen($arw) $hlword);
+        @ :text = sar(g/$hlw/${hlw}/$text)
       };
     };
   };
