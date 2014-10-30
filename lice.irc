@@ -1469,7 +1469,7 @@ ALIAS _proc.reply_action (uh,nick,chan,text) {
     FE ($lice.get(main.buf)) arw {
       FE ($pattern(*${arw}* $text)) hlword {
         @ :rep = mid($substr($arw $hlword) $strlen($arw) $hlword);
-        @ :text = sar(g/$/${rep}/$text)
+        @ :text = sar(g/$rep/${rep}/$text)
       };
     };
   };
