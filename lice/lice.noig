@@ -19,11 +19,10 @@ ALIAS noig {
     //IGNORE;
     RETURN;
   };
- @ :screen = word(0 $geom());
-  iecho ---- Ignore Pattern $repeat(${screen - 47} -) Types ----------------;
+  iecho ---- Ignore Pattern ------ Types ----------------;
   @ :cnt = 1;
   FE ($list) patt {
-    iecho [$[2]cnt] $patt $repeat(${screen - strlen($igtype($patt)) - strlen($patt) - 10}  ) $igtype($patt);
+    iecho [$[2]cnt] $[20]patt $igtype($patt);
     @cnt++;
   };
   INPUT "Select # to unignore, * for all (ENTER cancels): " IF (@) {
