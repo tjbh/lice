@@ -192,7 +192,7 @@ ON ^SWITCH_WINDOWS * {
 ON ^SWITCH_CHANNELS * {
   @ :win = chanwin($2);
   UNLESS (isnumber($win)) {RETURN};
-  UNLESS (!(iswset(T)) || win == -1) {
+  IF (iswset(T) || win != -1) {
     @ :hash = hash_32bit($2);
     IF ([$chan_topic[$win$hash]] == []) {
       @windowctl(SET $win TOPLINE 1  -- LiCe Titlebar [tm] --);
