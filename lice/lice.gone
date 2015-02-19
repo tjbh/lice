@@ -15,14 +15,15 @@ IF (word(2 $loadinfo()) != [pf]) {
 PACKAGE LiCe;
 
 ALIAS gone {
-  @ quiet.test = ismset(Q);
+  @ :serv = serverctl(FROM_SERVER);
+  @ quiet_test[$serv] = ismset(Q);
   @ :gone.msg = randread($main.reason_gone);
   UNLESS (strlen($gone.msg)) {@ :gone.msg = [http://lice.muppetz.com]};
   SWITCH ($0) {
     () {AWAY $gone.msg};
     (-a) {AWAY -all ${strlen($1)?[$1-]:gone.msg}};
     (-q) {
-      @ quiet.test = 1;
+      @ quiet_test[$serv] = 1;
       AWAY ${strlen($1)?[$1-]:gone.msg};
     };
     (*) {AWAY $*};
