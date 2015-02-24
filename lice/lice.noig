@@ -22,7 +22,9 @@ ALIAS noig {
   iecho ---- Ignore Pattern ------ Types ----------------;
   @ :cnt = 1;
   FE ($list) patt {
-    iecho [$[2]cnt] $[20]patt $igtype($patt);
+    IF (ischannel($patt) && iscset(Q $hash_32bit($patt))) {^ASSIGN ctog_check [Set by /CTOG Q]};
+    iecho [$[2]cnt] $[20]patt $igtype($patt) $ctog_check;
+    ^ASSIGN -ctog_check;
     @cnt++;
   };
   INPUT "Select # to unignore, * for all (ENTER cancels): " IF (@) {

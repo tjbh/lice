@@ -21,6 +21,7 @@
 	- Fixed issue where /MTOG H would change the case of the text to match
 	  the auto-reply case. This broke URL's that contained the auto-reply
 	  string, if the URL's case was different. Reported by z2e
+	- /NOIG now highlights ignores set by /CTOG Q
 
 *** Changes in version 5.2.6 - 04/11/14
 	- Made window creation faster
