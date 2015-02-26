@@ -32,7 +32,7 @@ ALIAS noig {
       @lice.del(|$hash_32bit($word($cnt $list)));
       //IGNORE $word($cnt $list) NONE;
     };
-    IF ([$0]==[*]) {FE ($list) patt {//IGNORE $patt NONE}};
+    IF ([$0]==[*]) {FE ($list) patt {//IGNORE $patt NONE;@lice.del(|$hash_32bit($patt))}};
   };
 };
 #tjh/15
