@@ -3,7 +3,7 @@
 # git: https://github.com/tjbh/lice
 #
 # Version: 5.2.7
-# Released: XX/XX/15
+# Released: 15/07/15
 #
 #   IRCII Script Program. For use with ircii-EPIC5 clients.
 #   Copyright (C) 1993-2000 SrfRoG (cag@codehack.com)
@@ -33,14 +33,14 @@
 IF (word(2 $loadinfo()) != [pf]) {LOAD -pf $word(1 $loadinfo());RETURN};
 
 # warning to people who dare use lame clients.
-EVAL IF (word(0 $info(v)) != [epic5] || V < 20140413 || info(i) < 1794) {
+EVAL IF (word(0 $info(v)) != [epic5] || V < 20140711 || info(i) < 1810) {
   CLEAR;
   ECHO;
   ECHO The LiCe5 script needs the latest ircii-EPIC5 client, else it won't;
   ECHO work as intended. Tell your administrator to upgrade your client, or;
   ECHO you can obtain a copy of the source and compile it for yourself from:;
   ECHO;
-  ECHO   ftp://epicsol.org/pub/epic (tarball);
+  ECHO   http://ftp.epicsol.org/pub/epic/EPIC5-PRODUCTION/; 
   ECHO;
   ECHO EPIC5 1.1.11 is the minimum recommended version for LiCe5, though any;
   ECHO version of EPIC5 will work. Bugs reported on earlier versions will;
@@ -48,7 +48,7 @@ EVAL IF (word(0 $info(v)) != [epic5] || V < 20140413 || info(i) < 1794) {
   ECHO;
   IF (word(0 $info(v)) == [epic5]) {
     ECHO You are using $word(0 $info(v)) release:$V commit_id:#$info(i);
-    ECHO You should have EPIC5 release:20140413 commit_id:#1794 [EPIC5-1.1.11] or greater;
+    ECHO You should have EPIC5 release:20140711 commit_id:#1810 [EPIC5-1.1.11] or greater;
   };
   IF (word(0 $info(v)) != [epic5]) {
     ECHO You need EPIC5! You have $word(0 $info(v)) ! Bye...;
@@ -1464,6 +1464,7 @@ ON #-DCC_REQUEST -9 "% SEND % % % % %" {
 ^ON ^PUBLIC '% % *\\\\[\$lice.get(main.buf)\\\\]*' {_proc.reply_action $userhost() $*};
 ^ON ^PUBLIC_MSG '% % *\\\\[\$lice.get(main.buf)\\\\]*' {_proc.reply_action $userhost() $*};
 ^ON ^PUBLIC_OTHER '% % *\\\\[\$lice.get(main.buf)\\\\]*' {_proc.reply_action $userhost() $*};
+^ON ^ACTION '% % *\\\\[\$lice.get(main.buf)\\\\]*' {_proc.reply_action $userhost() $*};
 ALIAS _proc.reply_action (uh,nick,chan,text) {
   IF (ismset(H)) {
     FE ($lice.get(main.buf)) arw {

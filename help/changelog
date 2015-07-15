@@ -1,4 +1,7 @@
-*** Changes in version 5.2.7 - xx/xx/xx
+*** Changes in version 5.2.7 - 15/07/15
+	- We now use epic's built in logging function instead of many ON's for
+	  the chanlog feature. Log file formats have changed slightly because
+	  of this. Timestamp used is /SENS S value.
 	- Moved pre-5.1.0 changes to extra/changelog.legacy
 	- Fixed bug where auto-away could send messages to channels if you
 	  were connected to multiple servers.
@@ -13,15 +16,14 @@
 	- More optimisations to database routines.
 	- Flood routine and self protect [esc-`] will now use the server side
 	  CallerID feature, if your server supports it. (usermode +g)
-	- We now use epic's built in logging function instead of many ON's for
-	  the chanlog feature. Log file formats have changed slightly because 
-	  of this. Timestamp used is /SENS S value.
 	- Reverted /noig to use original LiCe4 code and formatting, updated 
 	  default ignore types to match LiCe4's
 	- Fixed issue where /MTOG H would change the case of the text to match
 	  the auto-reply case. This broke URL's that contained the auto-reply
 	  string, if the URL's case was different. Reported by z2e
+	- Fixed /NOIG * not removing entries from the database.
 	- /NOIG now highlights ignores set by /CTOG Q
+	- EPIC5-1.1.11 now minimum recommended version.
 
 *** Changes in version 5.2.6 - 04/11/14
 	- Made window creation faster

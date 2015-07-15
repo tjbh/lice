@@ -25,6 +25,10 @@ Usage: MTOG [message toggle letter(s)] 
    this.  The disk log is deleted as soon as you disable this.
    All messages on disk are obfuscated.
 
+H
+  Highlight your auto-reply word(s) in public messages. This is a CPU
+  intensive setting so defaults to off.
+
 M
    Record all incoming MSGs (not server MSGs) when you are AWAY.
 
