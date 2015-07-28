@@ -7,6 +7,7 @@ Usage: AR [auto reply word(s) ...] 
      the nick of the person that said it (them) will be high-
      lighted, and added to your TAB list. Then, you can just
      press 'TAB' key to reply to that person via MSG.
+     Note: auto reply does not trigger on actions.
 
    By default, LiCe will make your current nick the auto-reply
    word.

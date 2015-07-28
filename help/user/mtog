@@ -27,7 +27,7 @@ Usage: MTOG [message toggle letter(s)] 
 
 H
   Highlight your auto-reply word(s) in public messages. This is a CPU
-  intensive setting so defaults to off.
+  intensive setting so defaults to off. Note: Doesn't apply to actions
 
 M
    Record all incoming MSGs (not server MSGs) when you are AWAY.

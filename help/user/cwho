@@ -1,6 +1,6 @@
 Usage: CWHO [[flag] [nick!user@host pattern]] 
-   Fast WHO list of your current channel, or the channel specified if
-   you're on more than one, using the LiCe cache.
+   Fast WHO list of your current channel, using the
+   using the LiCe cache.
 
 Flags:
 	-a	ALL. Display all users matching n!u@h (default)

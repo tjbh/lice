@@ -1,5 +1,7 @@
  *** Changes in version 5.2.8 - 15/07/15
 	- More optimisations to database routines.
+	- Lots of little help file updates
+
 *** Changes in version 5.2.7 - 15/07/15
 	- We now use epic's built in logging function instead of many ON's for
 	  the chanlog feature. Log file formats have changed slightly because
