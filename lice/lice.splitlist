@@ -61,7 +61,6 @@ ON #-JOIN -81 * {
  UNLESS (numitems(NSL) == 0) { 
   @ :chan = [$1];
   @ :hash = hash_32bit($chan);
-  #UNLESS (dcnt[$hash]) {@ dcnt[$hash] = 1}
   @ :split = matchitem(NSL % $chan *$0*);
   IF (split > -1 && isset(Q) && !iscset(Q $hash)) {@dcnt[$hash]++};
   IF (dcnt[$hash] == 5) {
@@ -84,8 +83,7 @@ ALIAS _proc.split_info {
     @ :si.t = getitem(NSL $si.c);
     iecho [$[2]{si.c + 1}] $word(0 $si.t) detected on $ch($word(1 $si.t)) \($tdiff2(${time() - word(2 $si.t)}) ago\);
     echo.recursive $restw(3 $si.t);
-    #IF (ismset(V)) {iecho Press "Esc-e", to connect to $word(0 $si.t).}
     IF (ismset(V)) {iecho Press "Esc\-${si.c + 1}", to connect to $word(0 $si.t).};
   };
 };
-#tjh/09
+#tjh/15

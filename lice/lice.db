@@ -74,10 +74,7 @@ ALIAS lice.load_db {
        IF ((getsets($set)) && (val != [<unset>])) {//^SET $set $val};
        };
       (|) {//^IGNORE $lice.get($dbi)};
-      (!) {
-       @ :chan = lice.get($dbi);
-       _proc.startlog $chan;
-       };
+      (!) {_proc.startlog $lice.get($dbi)};
       (&) {//^SERVER -ADD $lice.get($dbi)};
     };
   };
@@ -111,4 +108,4 @@ ALIAS server {
 };
 ^ON ^CONNECT * {^TIMER 5 {lice.saveservers}};
 
-#tjh/14
+#tjh/15

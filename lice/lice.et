@@ -22,15 +22,16 @@ ALIAS et {
     IF (!ischanop($servernick() $C)) {
       XECHO -B $C: You're not channel operator;
     }{
-    ^PARSEKEY ERASE_LINE;
-    @ topic = ischannel($0) ? afterw($0 $chan_topic[$chanwin($0)$hash_32bit($0)]) : afterw($C $chan_topic[$chanwin($C)$hash_32bit($C)]);
-    @ lchan = ischannel($0) ? *0 : C;
-    INPUT "Topic: "
-      IF ((@) && [$*] != [$topic]) {
-        TOPIC $lchan $*;
-      };
-    XTYPE -literal $topic;
-    }};
+      ^PARSEKEY ERASE_LINE;
+      @ topic = ischannel($0) ? afterw($0 $chan_topic[$chanwin($0)$hash_32bit($0)]) : afterw($C $chan_topic[$chanwin($C)$hash_32bit($C)]);
+      @ lchan = ischannel($0) ? *0 : C;
+      INPUT "Topic: "
+        IF ((@) && [$*] != [$topic]) {
+          TOPIC $lchan $*;
+        };
+      XTYPE -literal $topic;
+      }  
+    };
   };
 };
-#tjh/10
+#tjh/15

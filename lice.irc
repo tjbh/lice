@@ -1464,7 +1464,6 @@ ON #-DCC_REQUEST -9 "% SEND % % % % %" {
 ^ON ^PUBLIC '% % *\\\\[\$lice.get(main.buf)\\\\]*' {_proc.reply_action $userhost() $*};
 ^ON ^PUBLIC_MSG '% % *\\\\[\$lice.get(main.buf)\\\\]*' {_proc.reply_action $userhost() $*};
 ^ON ^PUBLIC_OTHER '% % *\\\\[\$lice.get(main.buf)\\\\]*' {_proc.reply_action $userhost() $*};
-^ON ^ACTION '% % *\\\\[\$lice.get(main.buf)\\\\]*' {_proc.reply_action $userhost() $*};
 ALIAS _proc.reply_action (uh,nick,chan,text) {
   IF (ismset(H)) {
     FE ($lice.get(main.buf)) arw {
@@ -1696,5 +1695,5 @@ main_init;
 
 # cag/00
 # HS/04-04
-# tjh/14
-# tjbh/13
+# tjh/15
+# tjbh/15
