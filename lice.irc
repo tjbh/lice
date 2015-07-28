@@ -2,8 +2,8 @@
 # Homepage: http://lice.muppetz.com/
 # git: https://github.com/tjbh/lice
 #
-# Version: 5.2.7
-# Released: 15/07/15
+# Version: 5.2.8
+# Released: XX/0X/15
 #
 #   IRCII Script Program. For use with ircii-EPIC5 clients.
 #   Copyright (C) 1993-2000 SrfRoG (cag@codehack.com)
@@ -95,7 +95,7 @@ LOAD -pf $LiCePath/lice/lice.defaults;
 LOAD $LiCePath/themes/default;
 
 # program information
-^ASSIGN id.v $decode(DFCODCCODH);
+^ASSIGN id.v $decode(DFCODCCODI);
 ALIAS lice (addon) {
   @ :ret = [];
   SWITCH ($addon) {
@@ -1629,29 +1629,9 @@ ALIAS main_init {
   IF (isdset(R)) {^SET MIRC_BROKEN_DCC_RESUME ON};
   IF (ismset(B)) {^ON #-MSG 617 * {IF (A) {//BEEP}}};
 
-  # If we have saved messages, put them back into the save buffer
-  IF (ismset(E)) {
-    IF ((numitems(AM) == 0) && (fexist($lice.save_path/lice.awaylog) == 1)) {
-      @ awayfd = open($lice.save_path/lice.awaylog R);
-      @ :mcount = 0;
-      WHILE (!eof($awayfd)) {
-        ^ASSIGN message $read($awayfd);
-        IF (!eof($awayfd) && leftw(1 $message) == [+]) {
-          @ setitem(AM $mcount $decode($rightw(1 $message)));
-          @ mcount++;
-          CONTINUE;
-        };
-        IF (!eof($awayfd) && leftw(1 $message) == [-]) {
-          @ delitem(AM $finditem(AM $decode($rightw(1 $message))));
-          @ mcount--;
-        };
-      };
-      @ temp.nrm = numitems(AM);
-      IF (temp.nrm != 0) {ECHO $fmt.banner_alert() Loaded $temp.nrm saved message$plural($temp.nrm)};
-    @ close($awayfd);
-    };
-    @ awayfd = open($lice.save_path/lice.awaylog W);
-  };
+  # If we have saved messages, put them back into the saved buffer
+  IF (ismset(E)) {_proc.play_restore};
+
   ^SET STATUS_USER $lice.get(main.set);
   ^SET STATUS_USER1 $temp.nrm;
   ^SET STATUS_USER2 ??;

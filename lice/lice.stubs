@@ -155,6 +155,7 @@ STUB ALIAS _proc.note_get $LiCePath/lice/lice.note;
 STUB ALIAS _proc.note_rem $LiCePath/lice/lice.note;
 STUB ALIAS _proc.note_set $LiCePath/lice/lice.note;
 STUB ALIAS _proc.note_wget $LiCePath/lice/lice.note;
+STUB ALIAS _proc.play_restore $LiCePath/lice/lice.play;
 STUB ALIAS _proc.redraw_tl $LiCePath/lice/lice.theme;
 STUB ALIAS _proc.silence $LiCePath/lice/lice.serverignore;
 STUB ALIAS _proc.split_save $LiCePath/lice/lice.splitlist;
@@ -163,4 +164,4 @@ STUB ALIAS _proc.split_jump $LiCePath/lice/lice.splitlist;
 STUB ALIAS _proc.startlog $LiCePath/lice/lice.chanlog;
 STUB ALIAS _proc.wget_main $LiCePath/lice/lice.wget;
 
-#tjh/14
+#tjh/15

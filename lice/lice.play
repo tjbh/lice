@@ -146,4 +146,27 @@ ALIAS _proc.play_save {
   @ close($fd);
   ^SET STATUS_USER1 $temp.nrm;
 };
-#tjh/14
+ALIAS _proc.play_restore {
+  IF ((numitems(AM) == 0) && (fexist($lice.save_path/lice.awaylog) == 1)) {
+    @ awayfd = open($lice.save_path/lice.awaylog R);
+    @ :mcount = 0;
+    WHILE (!eof($awayfd)) {
+      ^ASSIGN message $read($awayfd);
+      IF (!eof($awayfd) && leftw(1 $message) == [+]) {
+        @ setitem(AM $mcount $decode($rightw(1 $message)));
+        @ mcount++;
+        CONTINUE;
+      };
+      IF (!eof($awayfd) && leftw(1 $message) == [-]) {
+        @ delitem(AM $finditem(AM $decode($rightw(1 $message))));
+        @ mcount--;
+      };
+    };
+    @ temp.nrm = numitems(AM);
+    IF (temp.nrm != 0) {ECHO $fmt.banner_alert() Loaded $temp.nrm saved message$plural($temp.nrm)};
+  @ close($awayfd);
+  };
+  @ awayfd = open($lice.save_path/lice.awaylog W);
+};
+
+#tjh/15
