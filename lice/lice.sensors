@@ -27,18 +27,15 @@ ALIAS _proc.set_sensors (list) {
       (F) {INPUT "flood after [using: $FLOOD_AFTER]: " IF (isnumber($0) && [$0] > 0) {^SET FLOOD_AFTER $0;^SET FLOOD_RATE ${[$0] / 2}}};
       (I) {INPUT "isolate client on floods [using: $tdiff2($lice.get(main.isolate))]: " IF (isnumber($0)) {@lice.set(main.isolate $0)}};
       (J) {INPUT "seconds before joining channels on kicks [using: $tdiff2($AUTO_REJOIN_DELAY)]: " IF (isnumber($0)) {^SET AUTO_REJOIN_DELAY $0}};
-      #(K) {INPUT "kicks/$tdiff($main.fint) [using: $main.kick]: " IF (isnumber($0) && [$0] > 0) {^ASSIGN main.kick $0}};
       (L) {INPUT "maximum message logging [using: $lice.get(main.mrm)]: " IF (isnumber($0) && [$0] > 0) {@lice.set(main.mrm $0)}};
-      (M) {INPUT "maximum number of stacked messages [using: $lice.get(main.mns)]: " IF (isnumber($0) && [$0] > 0) {@lice.set(main.mns $0)}};
+      (M) {UNLESS (ismset(L)) {INPUT "maximum number of stacked messages [using: $lice.get(main.mns)]: " IF (isnumber($0) && [$0] > 0) {@lice.set(main.mns $0)}}};
       (N) {INPUT "preferred nickname (for AutoNick) [using: $lice.get(main.auto_nick)]: " IF (@) {^NOTIFY -$lice.get(main.auto_nick);@lice.set(main.auto_nick $0);^NOTIFY $lice.get(main.auto_nick)}};
       (O) {INPUT "Auto OP delay in secs [using: $tdiff2($lice.get(main.op))]: " IF (isnumber($0)) {@lice.set(main.op $0)}};
-      #(P) {INPUT "Max deops per min to be considered flood [using: $main.deop]: " IF (isnumber($0) && [$0] > 0) {^ASSIGN main.deop $0}};
       (Q) {INPUT "server queue buffer size (max 500) [using: $lice.get(main.qbuff)]: " IF (isnumber($0) && [$0] > 0 && [$0] <= 500) {@lice.set(main.qbuff $0)}};
       (R) {INPUT "maximum number of stacked modes [using: $lice.get(main.mnm)]: " IF (isnumber($0) && [$0] > 0) {@lice.set(main.mnm $0)}};
       (S) {INPUT "timestamp (strftime) format [using: $lice.get(main.tsfmt)]: " IF (@) {@lice.set(main.tsfmt $*); IF (aliasctl(ALIAS EXISTS chanlog)) {_proc.uplogtsfmt}}};
       (T) {INPUT "minutes before dccs timeout [using: $tdiff($DCC_TIMEOUT)]: " IF (isnumber($0) && [$0] > 1) {^SET DCC_TIMEOUT ${[$0] * 60}}};
       (U) {INPUT "auto usermode [using: $lice.get(main.umode)]: " IF (@) {@lice.set(main.umode $0)}};
-      #(X) {INPUT "modes/$tdiff($main.fint) [using: $main.mode]: " IF (isnumber($0) && [$0] > 0) {^ASSIGN main.mode $0}};
     };
   };
 };
@@ -59,18 +56,15 @@ ALIAS sensors {
   iecho Flood after (how many lines?)              |  F  | 5   | $FLOOD_AFTER;
   iecho Isolate client on floods (in seconds)      |  I  | 15  | $lice.get(main.isolate);
   iecho Seconds before joining channels on kicks   |  J  | 20  | $AUTO_REJOIN_DELAY;
-  #iecho Kicks/$tiff2($main.fint)                   |  K  | $main.kick | 20;
   iecho Maximum message logging                    |  L  | 100 | $lice.get(main.mrm);
-  iecho Maximum number of stacked messages         |  M  | 5   | $lice.get(main.mns);
+  UNLESS (ismset(L)) {iecho Maximum number of stacked messages         |  M  | 5   | $lice.get(main.mns)};
   iecho Preferred nickname (for AutoNick)          |  N  |none | $lice.get(main.auto_nick);
   iecho Auto OP delay (in seconds)                 |  O  | 10  | $lice.get(main.op);
-  #iecho Max deops per min to be considered flood   |  P  | 3   | $main.deop;
   iecho Server queue buffer size (max 500)         |  Q  | 200 | $lice.get(main.qbuff);
   iecho Maximum number of stacked channel modes    |  R  | 3   | $lice.get(main.mnm);
   iecho Timestamp (strftime) format                |  S  | $lice.get(main.tsfmt);
   iecho Minutes before dccs timeout                |  T  | 5   | ${DCC_TIMEOUT / 60};
   iecho Default usermodes on connect               |  U  | $lice.get(main.umode);
-  #iecho Modes/$tdiff2($main.fint)                  |  X  | $main.mode | 5;
   INPUT "Letters to change sensors (ENTER to skip): " IF (@) {_proc.set_sensors $toupper($0)};
 };
-#tjh/11
+#tjh/15

@@ -1,4 +1,5 @@
  *** Changes in version 5.2.8 - 15/07/15
+	- Fixed /WALL not working correctly.
 	- Litte code optimisations to database and main routines.
 	- Lots of little help file updates
 
