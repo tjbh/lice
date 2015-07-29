@@ -23,7 +23,7 @@ ALIAS fmt.invite    RETURN 16$0 Invites You to $1
 ALIAS fmt.join      RETURN 11$0 14\[10$214\] has joined $1
 ALIAS fmt.kick      RETURN $0 was kicked off $2 by 10$1 14\($3-14\)
 ALIAS fmt.kick_me       RETURN You have been kicked off 10$2 by 10$1 14\($3-14\) 
-ALIAS fmt.leave     RETURN $0 14\[$userhost()14\] has left $1 14\[$3-14\]
+ALIAS fmt.leave     RETURN $0 14\[-1$userhost()14\] has left $1 14\[$3-14\]
 ALIAS fmt.mode      RETURN mode14/10$1 14\[$2-14\] by 16$0
 ALIAS fmt.mode_bans RETURN stack14/10$1 14\[$214\] by 16$0
 ALIAS fmt.mode_me   RETURN Mode change 14\[$2-14\] for user 10$N
@@ -71,7 +71,7 @@ ALIAS fmt.wallop_me RETURN \[9Wall/16$0:$1\] $2-
 ALIAS -fmt.whois_bot
 ALIAS fmt.whois_mid {
   IF (temp.bx.whois_nick) {
-    ECHO 9|16 $temp.bx.whois_nick 14\($temp.bx.whois_uh14\)
+    ECHO 9|16 $temp.bx.whois_nick 14\(-1$temp.bx.whois_uh14\)
     ^ASSIGN -temp.bx.whois_nick
     ^ASSIGN -temp.bx.whois_uh
   }
