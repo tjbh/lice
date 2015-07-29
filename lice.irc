@@ -1616,9 +1616,8 @@ ALIAS main_init {
   };
 
   # Check for updates on startup, if enabled!
-  UNLESS (dlu == 1) {
-    IF (isset(U)) {^TIMER -REF UPDATE 60 UPDATE};
-  };
+  IF ((dlu != 1) && isset(U)) {^TIMER -REF UPDATE 60 UPDATE};
+
   # misc /set's
   IF (isset(Q)) {
     ^STACK POP SET CLIENT_INFORMATION;
