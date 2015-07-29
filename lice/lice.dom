@@ -282,10 +282,8 @@ ALIAS dom {
   @ :dot = toupper($dot);
   @ :dom = domain[$dot] ? domain[$dot] : [Unknown];
   IF (temp.whois_away > 0) {
-#    ECHO $fmt.whois_mid(Domain ".$dot\" is "$dom\");
      ECHO $fmt.whois_mid(Domain ".$dot\" is $dom);
   }{
-#    iecho Top-level domain '.$dot' is '$dom\'.;
      iecho Top-level domain '$dot' is $dom\.;
   };
 };

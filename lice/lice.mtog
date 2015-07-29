@@ -54,7 +54,7 @@ ALIAS mtog {
         (E) {IF ((fexist($lice.save_path/lice.awaylog)) == 1) {
                @ close($awayfd);
                @ unlink($lice.save_path/lice.awaylog)}};
-        (L) {@ main.mns = main.old_mns ? main.old_mns : 5;^ASSIGN -main.old_mns};
+        (L) {@ lice.set(main.mns ${lice.get(main.old_mns) ? lice.get(main.old_mns) : 5}); @lice.del(main.old_mns);};
         (T) {^SET -OUTPUT_REWRITE};
       };
     }{
@@ -66,7 +66,7 @@ ALIAS mtog {
                 @ write($awayfd + $encode($getitem(AM $num)));
               };
             };
-        (L) {@ main.old_mns = main.mns;@ main.mns = 1};
+        (L) {@ lice.set(main.old_mns $lice.get(main.mns));@ lice.set(main.mns 1)};
         (T) {^SET OUTPUT_REWRITE [$$strftime\($$lice.get(main.tsfmt)\)] $$1-};
       };
     };
