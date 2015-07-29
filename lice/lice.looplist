@@ -50,7 +50,7 @@ ALIAS _proc.loop_send {
   ^LOCAL msg.send;
   FE ($msg.nicks) msg.1 {
     @ :msg.send #= msg.1 ## [,];
-    IF (#msg.send == lice.get(main.mns)) {
+    IF (#split(, $msg.send) == lice.get(main.mns)) {
       _proc.quote_add $0 $1 $msg.send :$msg.msg $chr(18)$rand(999);
       @ :msg.send = [];
     };
@@ -60,4 +60,4 @@ ALIAS _proc.loop_send {
   ^ASSIGN -$2;
   ^ASSIGN -$3;
 };
-#tjh/10
+#tjh/15
