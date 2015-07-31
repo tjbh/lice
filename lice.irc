@@ -510,13 +510,6 @@ ON ^DCC_CHAT * {dmecho $fmt.dcc_chat($*)};
 ON -GENERAL_NOTICE '% $servernick() *' #;
 ON ^GENERAL_NOTICE "% @#% *" {mecho $fmt.notice($0 WALLOP:$1 $2-)};
 ON ^GENERAL_NOTICE "% %.% *" {mecho $fmt.notice($0 [$1] $2-)};
-# TODO: Figure out why this is commented out. tjh
-#ON ^GENERAL_NOTICE * {
-#      IF (left(1 $1) == [@] && ischannel($rest(1 $1))) {
-#          mecho $fmt.notice($0 WALLOP:$1 $2-)
-#      }{mecho $fmt.notice($0 [$1] $2-)}
-#    }
-#}
 ON ^INVITE * {ECHO $fmt.banner_invite() $fmt.invite($*)};
 ON ^JOIN * {XECHO -W $chanwin($1) $fmt.banner_join() $fmt.join($*)};
 ON ^KICK * {
@@ -1251,11 +1244,6 @@ ON #-KICK -13 * {
   IF (nick != [$1] && [$0]!=[$1] && ischanop($nick $2)) {
     @ :hash = hash_32bit($2);
     @ :mode = get_cookie(User $2 $1 $hash);
-    # XXX - Should we always kick for KICK floods?
-    # @ :test = _proc.mass_check($userhost($1) $hash);
-    # IF (test && !(mode & 2) && (iscset(C $hash) || iscset(F $hash))) {
-    #   _proc.flood_chan KICK $1 $userhost($1) $serv $2 $hash;
-    # };
     IF (iscset(P $hash) && !(mode & 4)) {
       @ :mode = get_cookie(User $2 $0 $hash);
       IF (mode & 64) {_proc.quote_add $serv INVITE $0 $2};

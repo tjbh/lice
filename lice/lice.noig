@@ -29,8 +29,8 @@ ALIAS noig {
     @ :list = igmask(*);
     IF (isnumber($0) || [$[1]0]==[#]) {
       @ :cnt = pass(0123456789 $0) - 1;
-      @lice.del(|$hash_32bit($word($cnt $list)));
       //IGNORE $word($cnt $list) NONE;
+      @lice.del(|$hash_32bit($word($cnt $list)));
     };
     IF ([$0]==[*]) {FE ($list) patt {//IGNORE $patt NONE;@lice.del(|$hash_32bit($patt))}};
   };

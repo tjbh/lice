@@ -71,7 +71,7 @@ ALIAS tog {
       };
     };
   };
-  UNLESS (lice.get(main.set)) {lice.del(main.set)};
+  UNLESS (lice.get(main.set)) {@lice.del(main.set)};
   XECHO -B Main toggles now: $lice.get(main.set);
   ^SET STATUS_USER $lice.get(main.set);
 };

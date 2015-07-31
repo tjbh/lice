@@ -70,8 +70,6 @@ ALIAS _proc.ban (chan,serv,opat,nick,phash) {
       IF (ischanop($ban $chan)) {_proc.mode_add $serv $chan -o $ban};
     };
   };
-  #getmatches(<array> <pattern>)
-  #getrmatches(<array> <string>)
   ^ASSIGN -temp_list;
   @ :hash = phash ? phash : hash_32bit($chan);
   @ :list = [B] ## serv ## [-] ## hash;
@@ -92,4 +90,4 @@ ALIAS _proc.ban (chan,serv,opat,nick,phash) {
      @ setitem(AUTOUNBAN $numitems(AUTOUNBAN) ${time() + lice.get(main.auto_unban)} $serv $chan $patt);
   };
 };
-#tjh/10
+#tjh/15

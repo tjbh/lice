@@ -87,13 +87,12 @@ BIND ^Wr PARSE_COMMAND {//WINDOW SHRINK 1};
 BIND ^Ws PARSE_COMMAND {INPUT "Server[:port[:password[:nick[:network[:IRC/IRC-SSL]]]]]: " IF (@) {win_new SERVER $0;}};
 # time :)
 BIND ^Wt PARSE_COMMAND {echo.status Current time: $strftime($time() %a, %d \(%H:%M\) %b %Y [%Z])};
-#$strftime($time() %c %Z) - http://lice.muppetz.com}
 # uptime / away time
-BIND ^Wu PARSE_COMMAND {echo.status Uptime: $tdiff2(${time() - F}) - Started: $strftime($F %c %Z)};
+BIND ^Wu PARSE_COMMAND {echo.status Uptime: $tdiff2(${time() - F}) - Started: $strftime($F %c %Z) };
 # list windows
 BIND ^Ww PARSE_COMMAND {//WINDOW LIST};
 # prog version
-BIND ^Wv PARSE_COMMAND {echo.status LiCe v$id.v for EPIC5 - http://lice.muppetz.com  };
+BIND ^Wv PARSE_COMMAND {echo.status LiCe v$id.v for EPIC5 - http://lice.muppetz.com };
 # change win's name
 BIND ^Wy PARSE_COMMAND {INPUT "Set window's name to: " IF (@) {//^WINDOW NAME $0}};
 # suspend
@@ -241,5 +240,5 @@ ALIAS win {//WINDOW $*};
 ALIAS fri {friend $*};
 
 #HS/03
-#tjh/14
+#tjh/15
 #tjbh/13

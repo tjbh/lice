@@ -74,7 +74,6 @@ ON ^DCC_CHAT * {
   IF (c_user[$hash_32bit($0)]) {
     chat.cmd.parse $*;
   }{
-    #mecho =$0= $1-;
     dmecho $fmt.dcc_chat($*);
   };
 };
@@ -304,7 +303,6 @@ ON ^DCC_RAW "% % N %" {
     //^DCC RAW $0 $1 SYN;
   };
 };
-#ON ^DCC_RAW "% % E %"
 
 # Server/Internal routines.
 ON #-TIMER 26 * {chat.net.say dummy RPING $N $time()};
@@ -370,7 +368,7 @@ ALIAS chat.cmd.motd {
 ^MSG =$0 : :     @..@   \( Welcome to the LiCe partyline on $[9]N \)   :;
 ^MSG =$0 : :    (\--/) /                                                 :;
 ^MSG =$0 : :   (.>__<.)   Use '.HELP' for command help.                  :;
-^MSG =$0 : :   ^^^  ^^^   Send all comments to SrfRoG (cag@codehack.com)   :;
+^MSG =$0 : :   ^^^  ^^^   Send all comments to tjh (tim@muppetz.com)  :;
 ^MSG =$0 : :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::;
 };
 ALIAS chat.cmd.quit {
@@ -692,4 +690,4 @@ ALIAS .status {
   pecho Active settings: $main.pset;
 };
 ALIAS party .status;
-#tjh/09
+#tjh/15

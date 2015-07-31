@@ -64,7 +64,7 @@ IF (lice.get(db.status) == 1) {TIMER 2 uecho Warning: The LiCe database is alr
 # Erase old client state
 @lice.del(*CLIENT_INFORMATION);
 
-# Read all sets, ignores, Chanlog assigns and servers from the database.
+# Read all sets, ignores, chanlog assigns and servers from the database.
 ALIAS lice.load_db {
   FE ($numsort($dbmctl(ALL_KEYS $lice.fd))) dbi {
     SWITCH ($left(1 $dbi)) {
