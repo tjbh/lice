@@ -128,8 +128,6 @@ ALIAS _proc.ul_chg_host (indx,hand,spatt) {
   IF (mode == [-]) {
     IF (test < 0) {
       ulecho $indx\list: could not find '$host\' in '$hand\'.;
-      #RETURN
-      #TODO Figure out WTF is going on here.
       CONTINUE;
     };
     IF (delitem($list $test)) {

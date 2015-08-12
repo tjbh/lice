@@ -1,5 +1,5 @@
 #
-#   LICE.ADCC v3.6.0 ircii script module for use with LiCe v4.x
+#   LICE.ADCC v3.6.1 ircii script module for use with LiCe v5.x
 #   Copyright (C) 2000 SrfRoG (cag@codehack.com)
 #
 # ----------------------------------------------------------------------
@@ -73,13 +73,12 @@ ALIAS _proc.adcc_proc_pass (pak,pass) {
   IF (isdset(S)) {
     @ :tmp = getitem(PAKS $pak);
     UNLESS (word(2 $tmp) == [<none>]) {
-# The following function doesn't appear to work, even in LiCe4 for older EPIC. Need to debug this. TODO
-#    @FUNCTION_RETURN = isset(P) ? setitem(PAKS $pak ${word(0 $tmp) + 1} $restw(1 $tmp)) : (word(2 $tmp) == pass) ? setitem(PAKS $pak ${word(0 $tmp) + 1} $restw(1 $tmp)) : -1;
+    @ FUNCTION_RETURN = isset(P) ? setitem(PAKS $pak ${word(0 $tmp) + 1} $restw(1 $tmp)) : (word(2 $tmp) == pass) ? setitem(PAKS $pak ${word(0 $tmp) + 1} $restw(1 $tmp))) : -1;
     }{
-      @FUNCTION_RETURN = setitem(PAKS $pak ${word(0 $tmp) + 1} $restw(1 $tmp));
+      @ FUNCTION_RETURN = setitem(PAKS $pak ${word(0 $tmp) + 1} $restw(1 $tmp));
     };
   }{
-    @FUNCTION_RETURN = -1;
+    @ FUNCTION_RETURN = -1;
   };
 };
 
@@ -89,12 +88,10 @@ ALIAS bytecount (bytes) {
     ^STACK PUSH SET FLOATING_POINT_MATH;
     ^SET FLOATING_POINT_MATH ON;
     @ :xx = bytes / 1024.0;
-#   @FUNCTION_RETURN = (xx >= 1024.0) ? (xx >= 1048576.0) ? trunc(3 ${xx / 1048576.0}) ## [GB] : trunc(3 ${xx / 1024.0}) ## [MB] : trunc(3 $xx) ## [KB];
-#   I think this is right! TODO - Check.
-    @FUNCTION_RETURN = (xx >= 1024.0) ? ((xx >= 1048576.0) ? (trunc(3 ${xx / 1048576.0}) ## [GB]) : trunc(3 ${xx / 1024.0}) ## [MB]) : trunc(3 $xx) ## [KB]);
+    @ FUNCTION_RETURN = (xx >= 1024.0) ? ((xx >= 1048576.0) ? (trunc(3 ${xx / 1048576.0}) ## [GB]) : trunc(3 ${xx / 1024.0}) ## [MB]) : trunc(3 $xx) ## [KB]);
     ^STACK POP SET FLOATING_POINT_MATH;
   }{
-    @FUNCTION_RETURN = bytes ## [B];
+    @ FUNCTION_RETURN = bytes ## [B];
   };
 };
 
@@ -496,3 +493,4 @@ ALIAS _proc.adcc_msg_send (nick,uh,pak,pass) {
 # we need the queue routines
 LOAD -pf $LiCePath/lice/lice.dcclist;
 
+#tjh/15
