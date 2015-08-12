@@ -1,6 +1,7 @@
  *** Changes in version 5.2.8 - 15/07/15
 	- Fixed /WALL not working correctly.
 	- Fixed /SENS M not being saved.
+	- Add bind to add new window to current ^WC
 	- Fixed error when all /SENS settings were removed.
 	- Litte code optimisations to database and main routines.
 	- Removed dead and commented out code.

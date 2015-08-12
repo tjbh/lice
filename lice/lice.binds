@@ -1,5 +1,5 @@
 #
-#   LICE.BINDS v1.5.6 ircii script module for use with EPIC5
+#   LICE.BINDS v1.5.7 ircii script module for use with EPIC5
 #   Copyright (C) 2000 SrfRoG (cag@codehack.com)
 #   refurbished by UNKNOWN and HSOC to work with latest EPIC.4
 #   Refurbished cleaned and leaned by tjh to work with latest EPIC5
@@ -35,6 +35,8 @@ BIND ^Wb PARSE_COMMAND {
 # create win
 BIND ^Wc PARSE_COMMAND {win_new};
 BIND ^W^c PARSE_COMMAND {win_new};
+# add win to current
+BIND ^WC PARSE_COMMAND {//^WINDOW NEW};
 # clear win
 BIND ^Wf {CLEAR_SCREEN};
 # grow size (shared)
@@ -240,5 +242,5 @@ ALIAS win {//WINDOW $*};
 ALIAS fri {friend $*};
 
 #HS/03
-#tjh/15
 #tjbh/13
+#tjh/15

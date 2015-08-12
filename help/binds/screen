@@ -15,7 +15,7 @@
     * kill win    K          * next win    N          * prev win    P
       beep        ^G           opervision  o            jump win    0-9
       double bar  d            partyline   L            
-    ^ double bar  D 
+    ^ double bar  D 	       add win	   C
  
       * - only for shared windows on same screen.
       + - creates a new window.
