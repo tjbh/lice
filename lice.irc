@@ -1274,10 +1274,7 @@ ON #-JOIN -13 * {
       IF (iscset(P $hash)) {_proc.join_usr2 $0 $2 $1 $hash $serv};
     };
     IF (iscset(H $hash) && !join.test) {_proc.join_ip $0 $2 $1};
-    IF (iscset(J $hash) && !join.test) {
-       IF (iscset(2 $hash)) {_proc.join_socks $0 $2 $1 $hash $serv};
-       _proc.join_clones $0 $2 $1 $hash $serv;
-    };
+    IF (iscset(J $hash) && !join.test) {_proc.join_clones $0 $2 $1 $hash $serv};
     IF (iscset(E $hash)) {_proc.note_get $0};
   }{
     UNLESS (strlen($temp.my_ip_address)) {@ temp.my_ip_address = nametoip($after(@ $2))};

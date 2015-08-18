@@ -1,8 +1,13 @@
 #
-# Modular loading for LiCe.
-# Updated by tjh for LiCe5 - http://lice.muppetz.com/
-# tjh - tim@muppetz.com
+#   IRC Script Program. For use with ircii-EPIC5 clients.
+#   Copyright (C) 2000 SrfRoG (cag@codehack.com)
 #
+#   Modular loading for LiCe.
+#    Updated by tjh for LiCe5 - http://lice.muppetz.com/
+#
+# ---------------------------------------------------------------------------
+# All code by SrfRoG, unless specified. Visit http://lice.muppetz.com
+# ---------------------------------------------------------------------------
 
 IF (word(2 $loadinfo()) != [pf]) {
   LOAD -pf $word(1 $loadinfo());
@@ -44,7 +49,6 @@ STUB ALIAS book $LiCePath/lice/lice.imail;
 STUB ALIAS bye $LiCePath/lice/lice.signoff;
 STUB ALIAS chanlog $LiCePath/lice/lice.chanlog;
 STUB ALIAS chanst $LiCePath/lice/lice.chanst;
-STUB ALIAS color $LiCePath/extra/lice.color;
 STUB ALIAS country $LiCePath/lice/lice.dom;
 STUB ALIAS ctog $LiCePath/lice/lice.ctog;
 STUB ALIAS cwho $LiCePath/lice/lice.cwho;
@@ -59,8 +63,6 @@ STUB ALIAS et $LiCePath/lice/lice.et;
 STUB ALIAS exit $LiCePath/lice/lice.signoff;
 STUB ALIAS findip $LiCePath/lice/lice.dns;
 STUB ALIAS finger $LiCePath/lice/lice.finger;
-STUB ALIAS fwall $LiCePath/extra/lice.fwall;
-STUB ALIAS gdcc $LiCePath/extra/lice.sdcc;
 STUB ALIAS gone $LiCePath/lice/lice.gone;
 STUB ALIAS help $LiCePath/lice/lice.help;
 STUB ALIAS ignore $LiCePath/lice/lice.ignore;
@@ -92,10 +94,8 @@ STUB ALIAS relwk $LiCePath/lice/lice.rel;
 STUB ALIAS reuser $LiCePath/lice/lice.refriend;
 STUB ALIAS rdcc $LiCePath/lice/lice.rdcc;
 STUB ALIAS rtab $LiCePath/lice/lice.tab_comp;
-STUB ALIAS scan $LiCePath/extra/lice.scan;
 STUB ALIAS sc $LiCePath/lice/lice.sc;
 STUB ALIAS sb $LiCePath/lice/lice.show_list;
-STUB ALIAS sdcc $LiCePath/extra/lice.sdcc;
 STUB ALIAS se $LiCePath/lice/lice.show_list;
 STUB ALIAS sensors $LiCePath/lice/lice.sensors;
 STUB ALIAS si $LiCePath/lice/lice.show_list;
@@ -107,7 +107,6 @@ STUB ALIAS tlm $LiCePath/lice/lice.rel;
 STUB ALIAS tln $LiCePath/lice/lice.rel;
 STUB ALIAS tlw $LiCePath/lice/lice.rel;
 STUB ALIAS tog $LiCePath/lice/lice.tog;
-STUB ALIAS trace $LiCePath/extra/lice.trace;
 STUB ALIAS trans $LiCePath/lice/lice.trans;
 STUB ALIAS msg_completion $LiCePath/lice/lice.tab_comp;
 # If update has been disabled, we don't stub these in.
@@ -140,7 +139,6 @@ STUB ALIAS _proc.disp_file $LiCePath/lice/lice.pager;
 STUB ALIAS _proc.flood_chan $LiCePath/lice/lice.floodlist;
 STUB ALIAS _proc.flood_nick $LiCePath/lice/lice.floodlist;
 STUB ALIAS _proc.join_clones $LiCePath/lice/lice.joinlist;
-STUB ALIAS _proc.join_socks $LiCePath/extra/lice.scan;
 STUB ALIAS _proc.join_shit $LiCePath/lice/lice.joinlist;
 STUB ALIAS _proc.join_bans $LiCePath/lice/lice.joinlist;
 STUB ALIAS _proc.join_usr1 $LiCePath/lice/lice.joinlist;

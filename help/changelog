@@ -5,6 +5,9 @@
 	- Fixed error when all /SENS settings were removed.
 	- Litte code optimisations to database and main routines.
 	- Removed dead and commented out code.
+	- Removed extra folder files from stubs files. If you want
+	  extra functions, you must load them yourself via .epicrc
+	  or manually using /load
 	- Lots of little help file updates
 
 *** Changes in version 5.2.7 - 15/07/15
