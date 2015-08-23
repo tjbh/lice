@@ -8,7 +8,9 @@
 	- Removed extra folder files from stubs files. If you want
 	  extra functions, you must load them yourself via .epicrc
 	  or manually using /load
-	- Lots of little help file updates
+	- Fixed duplicate logs when loading LiCe on top of already 
+	  running LiCe.
+	- Lots of little help file updates.
 
 *** Changes in version 5.2.7 - 15/07/15
 	- We now use epic's built in logging function instead of many ON's for

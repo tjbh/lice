@@ -59,6 +59,7 @@ EVAL IF (word(0 $info(v)) != [epic5] || V < 20140711 || info(i) < 1810) {
 };
 
 # Make sure there's nothing else loaded.
+FE ($logctl(REFNUMS ALL)) logs {//^LOG $logs KILL};
 //^DUMP ALL;
 
 PACKAGE LiCe;
