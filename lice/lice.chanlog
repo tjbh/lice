@@ -75,7 +75,7 @@ ALIAS chanlog {
 };
 
 ALIAS _proc.startlog (channel) {
-  //^LOG NEW NAME $channel FILENAME $lice.save_path/logs/$tolower($channel)\.log ADD $channel MANGLE ALL SERVER -2 REWRITE "$$strftime($lice.get(main.tsfmt)): $$1-" ON;
+  //^LOG NEW NAME $channel FILENAME $lice.save_path/logs/$tolower($channel)\.log ADD $channel MANGLE ALL SERVER -2 REWRITE "$$strftime($lice.get(main.tsfmt)) $$1-" ON;
 };
 
 ALIAS _proc.uplogtsfmt {

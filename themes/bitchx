@@ -90,6 +90,7 @@ ALIAS fmt.whois_mid {
     (Spoof)     {RETURN 14: spoof    : $1-}
     (Notes)     {RETURN 14³ note     : $1-}
     (Identity)  {RETURN 14³ identity : $1-}
+    (Security)  {RETURN 14³ identity : $1-}
   }
 }
 ALIAS fmt.whois_top {
