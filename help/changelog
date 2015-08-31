@@ -1,4 +1,5 @@
- *** Changes in version 5.2.8 - 15/07/15
+*** Changes in version 5.2.8 - 15/07/15
+	- Added 3 more startup ANSI's from old LiCe versions.
 	- Fixed /WALL not working correctly.
 	- Fixed /SENS M not being saved.
 	- Add bind to add new window to current ^WC
