@@ -47,3 +47,14 @@ These are triggered if someone sends you a lot of MSG/NOTICE/
 CTCP messages.
 
 There is no control offered other than the global settings.
+
+If you are flooded, you will automatically IGNORE the person
+flooding you.  This will be:
+  Permanently if /SENS 2 is 0
+  Temporary, for the amount of seconds that /SENS 2 is set to.
+
+Additionally, the client will fully isolate itself, that is 
+IGNORE *!*@* for the number of seconds in /SENS I.  This helps
+ensure client stability.  If the server supports SILENCE or
+CALLERID (both forms of server-side ignore), these will be 
+enabled as well for the amount of time in /SENS I.

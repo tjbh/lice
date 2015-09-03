@@ -27,6 +27,7 @@ ALIAS _proc.flood_nick (type,nick,uh,serv) {
   //^IGNORE *!*@* MSGS CTCPS INVITES NOTICES NOTES NICKS TIMEOUT $lice.get(main.isolate);
   XECHO -W $winnum() $fmt.banner_alert() Alert: Isolating client for $lice.get(main.isolate)\s due to flood;
   //^IGNORE $mask(3 $nick!$uh) $type REASON "$type FLOOD" ${lice.get(main.auto_noig) > 0 ? [TIMEOUT $lice.get(main.auto_noig)] : []};
+  UNLESS (lice.get(main.auto_noig) > 0) {@lice.set(|$hash_32bit($uh) $uh $igtype($uh))};
   ECHO $fmt.banner_alert() Alert: $type flood detected from $nick \($uh\);
   UNLESS (isset(Q) || type == [PUBLICS] || type == [NICK] || type == [JOIN] || type == [PART]) {
     XQUOTE -S $serv NOTICE $nick :$type Flood! You'll be ignored now. $randread($main.reason_error);
