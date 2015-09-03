@@ -1,0 +1,49 @@
+-----------------------
++ LiCe Flood Routines +
+-----------------------
+
+LiCe flood protection is broken down into two catagories
+The first is channel (or public) protections and the second is
+private (or message) protections.
+
+Each of these can be toggled globally using:
+/TOG C - Toggle Public/Channel protections
+/TOG F - Toggle Private/Message protections
+
+If they are toggled off at the global level, they will not be 
+triggered, regardless of other settings. Therefore if you wish
+to disable all LiCe flood protections, ensure that TOG C and F
+are off.
+
+You can trigger how sensitive flood protection is using /SENS F
+
+Public / Channel Proections
+This flood protection is triggered if someone floods a channel
+you are on with public messages. Usually this would be a big
+wall of public text to the channel, but may be lots of nick
+changes or joins/parts.
+
+NOTE:These will not be triggered unless you are a chanop in the
+channel being flooded. The reason for this is because you are
+unable to do anything (kick/ban) the flooder unless you are an
+op.
+
+For chanops, the flood protection works like this:
+
+If the flooder is in your FRIEND list with the +F
+flag, no flood protection will be triggered.
+
+If /CTOG C is on, the flooder will be kicked unless:
+  /CTOG O is on, and the flooder is an OP
+  /CTOG V is on, and the flooder is a Voice
+
+If /CTOG C is off, the flooder will not be kicked.
+
+If /CTOG F is on, the flooder will be banned (regardless of
+the state of /CTOG C) 
+
+Private / Message Protections
+These are triggered if someone sends you a lot of MSG/NOTICE/
+CTCP messages.
+
+There is no control offered other than the global settings.
