@@ -1,10 +1,14 @@
 *** Changes in version 5.2.8 - 15/07/15
 	- Added 3 more startup ANSI's from old LiCe versions.
+	- Make /TOG C actually do something. (LiCe4 bug!)
 	- Fixed /WALL not working correctly.
 	- Fixed /SENS M not being saved.
+	- Fixed server queue bug.
+	- Big cleanup and optimisation of flood routines
 	- Add bind to add new window to current ^WC
+	- Add QUITS to /CTOG Q
 	- Fixed error when all /SENS settings were removed.
-	- Litte code optimisations to database and main routines.
+	- Code optimisations to database and main routines.
 	- Removed dead and commented out code.
 	- Removed extra folder files from stubs files. If you want
 	  extra functions, you must load them yourself via .epicrc

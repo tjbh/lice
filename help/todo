@@ -1,4 +1,4 @@
-Latest update: 20th Oct 2014
+Latest update: 1st Sept 2015
 ============================
 
 This is a list of random bits and pieces I'll be working on for
@@ -10,7 +10,7 @@ Feel free to email me, tim@muppetz.com with any thing else you'd like to see!
 
 * Update /ctog to support server+channel instead of just channel. [Hard]
 * Fix broken /adcc - Nearly. - DONE(?)
-* Update /noig to not display /ctog Q channels.
+* Update /noig to not display /ctog Q channels. [DONE - Displays a notice instead though]
 * Make autocompelte work for HELP
 * Add NOTE into dbmctl
 [DONE] Use epic's built in log function, rather than the chanlog ^ON method?

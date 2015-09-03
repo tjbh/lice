@@ -1,5 +1,5 @@
 # LiCe5 - srfrog's LiCe4 ported and enhanced for epic5 by tjh [tim@muppetz.com] and whitefang
-# Homepage: http://lice.muppetz.com/
+# Homepage: https://lice.muppetz.com/
 # git: https://github.com/tjbh/lice
 #
 # Version: 5.2.8
@@ -7,6 +7,7 @@
 #
 #   IRCII Script Program. For use with ircii-EPIC5 clients.
 #   Copyright (C) 1993-2000 SrfRoG (cag@codehack.com)
+#   Copyright (C) 2008-2015 tjh (tim@muppetz.com)
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -22,13 +23,9 @@
 #   along with this program; if not, write to the Free Software
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
-# ---------------------------------------------------------------------------
-# All code by SrfRoG, UNLESS specified. Visit http://lice.muppetz.com
-# ---------------------------------------------------------------------------
-#
-#   Lots of code change and modifications by tjh & whitefang.
-#   Most routines are all SrfRoG original though, just updated or
-#   modified to work with epic5.
+# --------------------------------------------------------------------------------------
+# All code by SrfRoG, tjh and whitefang UNLESS specified. Visit https://lice.muppetz.com
+# --------------------------------------------------------------------------------------
 
 IF (word(2 $loadinfo()) != [pf]) {LOAD -pf $word(1 $loadinfo());RETURN};
 
@@ -291,7 +288,7 @@ ON #-CONNECT 13 * {
   IF (strlen($lice.get(main.umode))) {^TIMER 1 {MODE $servernick() $lice.get(main.umode)}};
 };
 ON #-DISCONNECT 13 * {
-  IF (ismset(U)) {_proc.away_save LiCe licelogd $0-};
+  IF (ismset(U)) {_proc.away_save LiCe licelogd $*};
   UNLESS ([$0]==[Killed]) {//SERVER +};
   UNLESS ([$0]!=[Killed] || [$1]!=[Connection]) {//RECONNECT}
 };
@@ -612,7 +609,7 @@ ON ^478 * {
 
 ### Small commands
 ALIAS sv {//MSG ${@?[$0]:C} $J \($info(r)\) + $lice(+sv)};
-ALIAS umode {//MODE $N $*};
+ALIAS umode {//MODE $servernick() $*};
 ALIAS ww {//WHOWAS $*};
 ALIAS wi {//WHOIS $*};
 ALIAS wii {//WHOIS $0 $0};
@@ -926,7 +923,7 @@ ON #^FLOOD -13 * {
   @ :host = userhost();
   IF (ischannel($2)) {
     @ :hash = hash_32bit($2);
-    IF ((!iscset(C $hash) && !iscset(F $hash)) || (iscset(O $hash) && ischanop($0 $2)) || (iscset(V $hash) && ischanvoice($0 $2))) {RETURN};
+    IF (!isset(C) || (!iscset(C $hash) && !iscset(F $hash)) || (iscset(O $hash) && ischanop($0 $2)) || (iscset(V $hash) && ischanvoice($0 $2))) {RETURN};
     @ :mode = get_cookie(User $2 $0 $hash);
     IF (mode & 2) {RETURN};
     _proc.flood_chan $1 $0 $host $serv $2 $hash;
@@ -1187,7 +1184,6 @@ ALIAS _proc.mass_check (uh,hash) {
     @ :when = word(0 $test);
     @ :many = word(1 $test) + 1;
     @ :diff = (time() - when) % 60;
-    #@ :diff = time() - when;
     IF (diff < 60 && many >= FLOOD_AFTER) {RETURN 1};
   }{
     @ :when = time();
@@ -1223,7 +1219,7 @@ ALIAS _proc.mode_flush (serv,chan) {
 # $0=server $1=message
 ALIAS _proc.quote_add (serv,text) {
   @ :len = strlen($text);
-  IF ((strlen($quote[$serv]) + len) >= $lice.get(main.qbuff)) {_proc.quote_flush $serv};
+  IF ((strlen($quote[$serv]) + len) >= lice.get(main.qbuff)) {_proc.quote_flush $serv};
   @ quote[$serv] #= text ## chr(13);
 };
 # $0=server

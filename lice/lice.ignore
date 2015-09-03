@@ -39,24 +39,19 @@ ALIAS ignore {
 ALIAS protect {
   UNLESS (rmatch(*!*@*.* $igmask(*)) > 0) {
     //IGNORE *!*@*.* ALL;
-    IF (_proc.silence()) {
-      //^SILENCE +*@*;
-    };
+    IF (_proc.silence()) {//^SILENCE +*@*};
     IF (_proc.callerid() && !count(g $usermode())) {
       ^ASSIGN callerid_test = 1;
-      //MODE $N +g;
+      //MODE $servernick() +g;
     };
   }{
     //IGNORE *!*@*.* NONE;
-    IF (_proc.silence()) {
-      //^SILENCE -*@*;
-    };
+    IF (_proc.silence()) {//^SILENCE -*@*};
     IF (_proc.callerid() && count(g $usermode()) && callerid_test) {
-      //MODE $N -g;
+      //MODE $servernick() -g;
       ^ASSIGN -callerid_test;
     };
   };
 };
-
 #HS/03
-#tjh/14
+#tjh/15

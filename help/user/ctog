@@ -15,6 +15,7 @@ Usage: CTOG [channel toggle letter(s)] 
 
 C
    Channel protection: AutoKICK channel flooders
+   Note: If /SENSORS C is OFF there will be no channel flood protection.
 
 D
    AutoKICK users matching channel bans and shitlist. Makes sure that
@@ -68,8 +69,8 @@ Usage: CTOG [channel toggle letter(s)] 
    Friend CTCP commands, Protection, AutoOP and AutoGREET.
 
 Q
-   Make channel quiet. Ignore CTCPs, JOINs and NICK changes
-   sent to the channel.
+   Make channel quiet. Ignore CTCPs, JOINs, PARTS, QUITS and NICK 
+   changes sent to the channel.
 
 S
    AutoSHIT of flooders. When enabled, it will add users that flood your
@@ -82,6 +83,7 @@ Usage: CTOG [channel toggle letter(s)] 
 V
    Don't kick channel voices that flood. When a voice (+v) floods
    the channel, you'll get the warning but the user won't be kicked.
+   Note: If /SENSORS C is off there will be no channel flood protection.
 
 See also: [SENSORS] [TOG]
 
