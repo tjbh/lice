@@ -119,7 +119,7 @@ ALIAS lice (addon) {
 };
 
 # display random LiCe logo
-EVAL load $LiCePath/logos/lice.logo${rand(5)+1};
+EVAL load $LiCePath/logos/lice.logo${rand($numwords($glob($LiCePath/logos/*)))+1};
 
 ### ONs
 ON ^DCC_RAW * #;

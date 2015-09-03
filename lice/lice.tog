@@ -24,7 +24,7 @@ ALIAS _proc.setup_tog {
   iecho Auto change to preferred nick (AutoNick).  |  A  | $[3]isset.show($isset(A)) | On;
   iecho Enable actions for SHIT users.             |  B  | $[3]isset.show($isset(B)) | On;
   iecho Channel Protection: Auto KICK flooders.    |  C  | $[3]isset.show($isset(C)) | Off;
-  iecho Flood Protection or Auto IGNORE flooders.  |  F  | $[3]isset.show($isset(F)) | On;
+  iecho Personal Flood Protection: IGNORE flooders |  F  | $[3]isset.show($isset(F)) | On;
   iecho Auto lookup IP addresses in WHOIS/WHOWAS.  |  H  | $[3]isset.show($isset(H)) | Off;
   iecho Auto JOIN all channels you are invited.    |  I  | $[3]isset.show($isset(I)) | Off;
   iecho Auto clone bot notification on JOIN.       |  J  | $[3]isset.show($isset(J)) | Off;

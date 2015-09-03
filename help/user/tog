@@ -8,11 +8,13 @@ Usage: TOG [toggle letter(s)] 
    (*)
 
 C
-   Channel protection: Auto KICK channel flooders (*)
+   Channel protection: Global toggle for Auto KICK channel flooders. If
+   this is disabled, no channel flood protection will be enabled,
+   regardless of specific /CTOG settings.
 
 F
    Flood protection. Enables all personal flood protection. If disabled,
-   makes you vulnerable to floods.
+   makes you vulnerable to MSG/NOTICE/CTCP etc floods.
 
 G
    aDCC AutoGET all GET requets.
