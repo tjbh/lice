@@ -24,7 +24,7 @@ ALIAS noig {
   FE ($list) patt {
     @ :reason = ignorectl(GET $ignorectl(REFNUM $patt) REASON);
     @ :timeout = word(0 $ignorectl(GET $ignorectl(REFNUM $patt) EXPIRATION));
-    iecho [$[2]cnt] $[50]patt $igtype($patt) ${(strlen($reason))?[\[Reason: $reason\]]:[]} ${(timeout)?[\[Expires: ${timeout - time()}\s\]]:[]} ${(ischannel($patt) && iscset(Q $hash_32bit($patt)))?[\[/CTOG Q\]]:[]};
+    iecho [$[2]cnt] $[50]patt $igtype($patt) ${(strlen($reason))?[\[Reason: $reason\]]:[]} ${(timeout)?[\[Expires: ${timeout - time()}\s\]]:[]};
     @cnt++;
   };
   INPUT "Select # to unignore, * for all (ENTER cancels): " IF (@) {
