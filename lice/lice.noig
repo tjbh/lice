@@ -19,11 +19,12 @@ ALIAS noig {
     //IGNORE;
     RETURN;
   };
-  iecho ---- Ignore Pattern ------ Types ----------------;
+  iecho ---- Ignore Pattern ----------------------------------- Types ----------------;
   @ :cnt = 1;
   FE ($list) patt {
     @ :reason = ignorectl(GET $ignorectl(REFNUM $patt) REASON);
-    iecho [$[2]cnt] $[20]patt $igtype($patt) ${(strlen($reason))?[\[Reason: $reason\]]:[]} ${(ischannel($patt) && iscset(Q $hash_32bit($patt)))?[\[Set by /CTOG Q\]]:[]};
+    @ :timeout = word(0 $ignorectl(GET $ignorectl(REFNUM $patt) EXPIRATION));
+    iecho [$[2]cnt] $[50]patt $igtype($patt) ${(strlen($reason))?[\[Reason: $reason\]]:[]} ${(timeout)?[\[Expires: ${timeout - time()}\s\]]:[]} ${(ischannel($patt) && iscset(Q $hash_32bit($patt)))?[\[/CTOG Q\]]:[]};
     @cnt++;
   };
   INPUT "Select # to unignore, * for all (ENTER cancels): " IF (@) {

@@ -16,13 +16,14 @@ PACKAGE LiCe;
 
 ALIAS ignore {
   @ :types = strlen($1) ? [$1-] : [MSGS WALLS WALLOPS INVITES NOTICES SNOTES CTCPS TOPICS NICKS JOINS PARTS CRAP];
+  IF (match(timeout $1-)) {@ :tempig = 1};
   SWITCH ($0) {
     () {
       uecho Usage: IGNORE < nick | n!u@h pattern > [[-|+]Ignore types] [reason "your reason"] [timeout <time in secs>];
       uecho Usage: IGNORE < channel | channel pattern > [[-|+]Ignore types] [reason "your reason"] [timeout <time in secs>];
     }
-    (#*) (&*) (!*) {//IGNORE $0 $types; @lice.set(|$hash_32bit($0) $0 $igtype($0))};
-    (*!*) (*@*) (*.*) {//IGNORE $uhc($0) $types; @lice.set(|$hash_32bit($0) $0 $igtype($uhc($0)))};
+    (#*) (&*) (!*) {//IGNORE $0 $types; UNLESS (tempig) {@lice.set(|$hash_32bit($0) $0 $igtype($0) reason \"$ignorectl(GET $ignorectl(REFNUM $0) REASON)\")}};
+    (*!*) (*@*) (*.*) {//IGNORE $uhc($0) $types; UNLESS (tempig) {@lice.set(|$hash_32bit($uhc($0)) $0 $igtype($uhc($0)) reason \"$ignorectl(GET $ignorectl(REFNUM $uhc($0)) REASON)\")}};
     (*) {
       @ :user = get_uh($0);
       UNLESS (strlen($user)) {
@@ -31,7 +32,7 @@ ALIAS ignore {
       };
       @ :pattern = mask(0 $0!$user);
       //IGNORE $pattern $types;
-      @lice.set(|$hash_32bit($pattern) $pattern $igtype($pattern));
+      UNLESS (tempig) {@lice.set(|$hash_32bit($pattern) $pattern $igtype($pattern) reason \"$ignorectl(GET $ignorectl(REFNUM $pattern) REASON)\")};
     };
   };
 };

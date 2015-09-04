@@ -1,4 +1,4 @@
-*** Changes in version 5.2.8 - 15/07/15
+*** Changes in version 5.2.8 - XX/09/15
 	- Added 3 more startup ANSI's from old LiCe versions!
 	- Fixed /WALL not working correctly.
 	- Fixed /SENS M not being saved.
@@ -6,12 +6,15 @@
 	- Make /TOG C actually do something. (LiCe4 bug!)
 	- Big cleanup and optimisation of flood routines
 	  Documented how they operate in user/flood
+	- /NOIG now shows ignore reason and/or timeout if set.
+	- Fixed temporary ignores being written to the database
+	- Ensure ignore reason is written to database
 	- Add bind to add new window to current ^WC
 	- Add QUITS to /CTOG Q
 	- Fixed error when all /SENS settings were removed.
 	- Code optimisations to database and main routines.
 	- Removed dead and commented out code.
-	- Removed extra folder files from stubs files. If you want
+	- Removed "extra" folder files from stubs files. If you want
 	  extra functions, you must load them yourself via .epicrc
 	  or manually using /load
 	- Fixed duplicate logs when loading LiCe on top of already 
