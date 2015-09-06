@@ -1,5 +1,6 @@
 Usage: NOIG 
-   Removes user(s) from IGNORE list. It will prompt for which 
+   Shows all current ignores and gives you the option to
+   remove user(s) from IGNORE list. It will prompt for which 
    user to remove from IGNORE list.
 
 See also: [IGNORE] [USERLIST]

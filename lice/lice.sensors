@@ -53,7 +53,7 @@ ALIAS sensors {
   iecho Seconds before creating channels           |  C  | 15  | $lice.get(main.cch);
   iecho Maximum simultaneaous dcc processes        |  D  | 10  | $lice.get(main.dcc_active_limit);
   iecho Minutes before netsplit data expires       |  E  | 5   | $lice.get(main.nst);
-  iecho Flood after (how many lines?)              |  F  | 5   | $FLOOD_AFTER;
+  iecho Flood after (how many lines?)              |  F  | 8   | $FLOOD_AFTER;
   iecho Isolate client on floods (in seconds)      |  I  | 15  | $lice.get(main.isolate);
   iecho Seconds before joining channels on kicks   |  J  | 20  | $AUTO_REJOIN_DELAY;
   iecho Maximum message logging                    |  L  | 100 | $lice.get(main.mrm);

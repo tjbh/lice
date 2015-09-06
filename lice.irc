@@ -1474,7 +1474,7 @@ ALIAS _proc.reply_action (uh,nick,chan,text) {
 ON #-MSG 13 * {
   @ :serv = servernum();
   IF (ismset(M)) {_proc.away_save $0 $userhost() $1-};
-  IF (ismset(R) && A && gone_away[$serv] && (findw($0 $tabnick[$serv]) == -1)) {QUOTE NOTICE $0 :Gone for $tdiff(${time() - gone_away[$serv]}) ${ismset(M) ? [please leave me a message.] : []}};
+  IF (!isset(Q) && ismset(R) && A && gone_away[$serv] && (findw($0 $tabnick[$serv]) == -1)) {QUOTE NOTICE $0 :Gone for $tdiff(${time() - gone_away[$serv]}) ${ismset(M) ? [please leave me a message.] : []}};
   _proc.tab_add $serv $0;
   queue.add ML 7 $fmt.msg($*);
 };

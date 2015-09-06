@@ -5,7 +5,7 @@
 	- Fixed server queue bug.
 	- Make /TOG C actually do something. (LiCe4 bug!)
 	- Big cleanup and optimisation of flood routines
-	  Documented how they operate in user/flood
+	  Documented how they operate in help/flood
 	- /NOIG now shows ignore reason and/or timeout if set.
 	- Fixed temporary ignores being written to the database
 	- Ensure ignore reason is written to database
@@ -19,7 +19,9 @@
 	  or manually using /load
 	- Fixed duplicate logs when loading LiCe on top of already 
 	  running LiCe.
-	- Lots of little help file updates.
+	- Ensure no away time information is sent when /TOG Q is set
+	- Changed the default for "Flood After" to 8 instead of 5.
+	- Lots of help file updates and additions of missing commands.
 
 *** Changes in version 5.2.7 - 15/07/15
 	- We now use epic's built in logging function instead of many ON's for

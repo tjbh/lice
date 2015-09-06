@@ -1,4 +1,4 @@
-Usage: IGNORE < nick | n!u@h pattern > [[-|+]Ignore types]
+Usage: IGNORE < nick | n!u@h pattern > [[-|+]Ignore types] [timeout <timeout in seconds>] [reason "<reason for ignore">
 Usage: IGNORE < channel | channel pattern > [[-|+]Ignore types]
 
    IGNOREs a nick or users matching the wildcard pattern specified.
@@ -23,6 +23,14 @@ Examples:
    /IGNORE #exceed NONE          - removes previous ignore for #exceed.
 
    /IGNORE *!*@*                 - ignores everyone! be careful!
+
+   /IGNORE tjh MSGS timeout 120 reason "You're a lousy coder"
+                                 - ignores messages from tjh for 2 
+                                   minutes with the reason "You're
+                                   a lousy coder"
+
+NOTE: It is assumed that a ignore with a timeout is temporary and
+      therefore it is not saved to the database.
                                  
 See also: [NOIG] [epic 1 IGNORE]
 
