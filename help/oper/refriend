@@ -1,0 +1,9 @@
+Usage: refriend [channel]
+    Cycle through the current (or specified) channel
+    and reop everyone in your friend list who has the
+    +o flag.
+    This can be used to ensure everyone on your friend
+    list has op status.
+
+See also: [FRIEND] [OP]
+

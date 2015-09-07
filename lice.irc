@@ -820,7 +820,7 @@ ALIAS makeban {
     (BF) {@ :ban = mask(10 $1)};
     (BG) {@ :ban = mask(3 $1)};
     (BH) {@ :ban = mask(2 $1)};
-    (BI) {@ :ban = mask(4 $nametoip($after(@ $1)))};
+    (BI) {@ :ban = mask(4 $before(@ $1)\@$nametoip($after(@ $1)))};
     (BP) {@ :ban = mask(4 $1)};
     (BS) {@ :ban = mask(4 $1)};
     (BU) {
@@ -1039,7 +1039,6 @@ ON #^HOOK -13 "MODE+e *" {@ setitem(E$4\-$6 $numitems(E$4\-$6) $5)};
 ON #^HOOK -13 "MODE+I *" {@ setitem(I$4\-$6 $numitems(I$4\-$6) $5)};
 ON #^HOOK -13 "MODE+b *" {
   @ setitem(B$4\-$6 $numitems(B$4\-$6) $5);
-  #${ismset(V)?[$1!$2]:[$1]};
   IF (!oper.test || self.test || [$2]==[SERVER]) {RETURN};
   @ :m.nick = servernick($4);
   IF (match($5 $m.nick!$X $m.nick!%@$temp.my_ip_address)) {

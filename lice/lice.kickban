@@ -37,10 +37,10 @@ ALIAS _proc.kick_ban {
   @ :serv = winserv();
   _proc.ban $C $serv $pat $nick;
   _proc.loop_kick $serv $C kick_list kick_msg;
-  IF ([$0]==[I]) {
+  IF ([$0]==[S]) {
     ECHO $fmt.banner_kick() Ignoring all crap from $pat;
-    //^IGNORE $pat ALL CRAP -PUBLIC;
-    @lice.set(|$hash_32bit($pat) $pat ALL CRAP -PUBLIC);
+    //^IGNORE $pat ALL CRAP -PUBLIC REASON "Kickban on $stime($time())";
+    @lice.set(|$hash_32bit($pat) $pat ALL CRAP -PUBLIC REASON "Kickban on $stime($time())");
   };
 };
 ALIAS kb {_proc.kick_ban N $*};
@@ -48,6 +48,6 @@ ALIAS ka {_proc.kick_ban A $*};
 ALIAS kh {_proc.kick_ban H $*};
 ALIAS kf {_proc.kick_ban F $*};
 ALIAS ku {_proc.kick_ban U $*};
-ALIAS ki {_proc.kick_ban I $*};
-ALIAS kbi {k};
-#tjh/09
+ALIAS ki {_proc.kick_ban S $*};
+ALIAS kbi {ki $*};
+#tjh/15
