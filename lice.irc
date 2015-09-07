@@ -810,8 +810,6 @@ ALIAS queue.tail {
   @ FUNCTION_RETURN = getitem($0 $q_tail);
   @ delitem($0 $q_tail);
 };
-#
-# TODO replace first two mask 1's with 11, when fixed by EPIC. tjh
 ALIAS makeban {
   SWITCH ($0) {
     (BN) (B) {@ :ban = mask(1 $1)};
@@ -827,7 +825,6 @@ ALIAS makeban {
        @ :uhm = pass(! $1) ? word(1 $split(!@ $1)) ##[@*] : before(@ $1) ##[@*];
        @ :ban = mask(1 $uhm);
     };
-# TODO replace with mask 11
     (*) {@ :ban = mask(1 $0)};
   };
   RETURN $ban;

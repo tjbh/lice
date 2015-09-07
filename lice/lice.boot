@@ -25,9 +25,10 @@ ALIAS boot {
   @ :serv = winserv();
   @ :patt = mask(0 $get_uh($nick));
   FE ($mychannels()) chan {
-    UNLESS (onchannel($nick $chan)) {CONTINUE;};
+    UNLESS (ischanop($N $chan) && onchannel($nick $chan)) {CONTINUE};
     _proc.ban $chan $serv $patt $nick;
     _proc.quote_add $serv KICK $chan $nick :$kmsg;
   };
   _proc.quote_flush $serv;
 };
+#tjh/15
