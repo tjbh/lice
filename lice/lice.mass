@@ -16,18 +16,18 @@ IF (word(2 $loadinfo()) != [pf]) {
 PACKAGE LiCe;
 
 # Mass commands
-ALIAS _proc.mass_match {
-  get_user_match $C $1 temp_list;
+ALIAS _proc.mass_match (mode,patt) {
+  get_user_match $C $patt temp_list;
   @ temp_list = remw($N $temp_list);
-  FE ($temp_list) mm.1 {
-    SWITCH ($0) {
-      (+k) { PUSH $2 $mm.1 };
-      (+o) { IF (ischanop($mm.1 $C)) { PUSH $2 $mm.1 } };
-      (-h) { IF (ishalfop($mm.1 $C)) { PUSH $2 $mm.1 } };
-      (+h) { UNLESS (ishalfop($mm.1 $C)) { PUSH $2 $mm.1 } };
-      (-k) (-o) { UNLESS (ischanop($mm.1 $C)) { PUSH $2 $mm.1 } };
-      (+v) { IF (ischanvoice($mm.1 $C) == 1) { PUSH $2 $mm.1 } };
-      (-v) { IF (ischanvoice($mm.1 $C) == 0) { PUSH $2 $mm.1 } };
+  FE ($temp_list) nick {
+    SWITCH ($mode) {
+      (+k) {PUSH mass_list $nick};
+      (+o) {IF (ischanop($nick $C)) {PUSH mass_list $nick}};
+      (-h) {IF (ishalfop($nick $C)) {PUSH mass_list $nick}};
+      (+h) {UNLESS (ishalfop($nick $C)) {PUSH mass_list $nick}};
+      (-k) (-o) {UNLESS (ischanop($nick $C)) {PUSH mass_list $nick}};
+      (+v) {IF (ischanvoice($nick $C)) {PUSH mass_list $nick}};
+      (-v) {UNLESS (ischanvoice($nick $C)) {PUSH mass_list $nick}};
     };
   };
   ^ASSIGN -temp_list;
@@ -38,11 +38,11 @@ ALIAS mass {
     @ :mass.p = strlen($1) ? uhc($1) : [*!*];
     SWITCH ($0) {
       (-d) {
-        _proc.mass_match +o $mass.p mass_list;
+        _proc.mass_match +o $mass.p;
         _proc.loop_mode $winserv() - o $C mass_list;
       };
       (-n) {
-        _proc.mass_match -h $mass.p mass_list;
+        _proc.mass_match +h $mass.p;
         _proc.loop_mode $winserv() - h $C mass_list;
       };
       (-k) {
@@ -56,19 +56,19 @@ ALIAS mass {
         _proc.loop_kick $winserv() $C mass_list mass_msg;
       };
       (-o) {
-        _proc.mass_match -o $mass.p mass_list;
+        _proc.mass_match -o $mass.p;
         _proc.loop_mode $winserv() + o $C mass_list;
       };
       (-h) {
-        _proc.mass_match +h $mass.p mass_list;
+        _proc.mass_match -h $mass.p;
         _proc.loop_mode $winserv() + h $C mass_list;
       };
       (-q) {
-        _proc.mass_match +v $mass.p mass_list;
+        _proc.mass_match +v $mass.p;
         _proc.loop_mode $winserv() - v $C mass_list;
       };
       (-v) {
-        _proc.mass_match -v $mass.p mass_list;
+        _proc.mass_match -v $mass.p;
         _proc.loop_mode $winserv() + v $C mass_list;
       };
     };
@@ -77,4 +77,4 @@ ALIAS mass {
     uecho Usage: /MASS <-k|-l> [pattern [reason]];
   };
 };
-#tjh/12
+#tjh/15

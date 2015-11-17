@@ -23,6 +23,8 @@
 	  running LiCe.
 	- Ensure no away time information is sent when /TOG Q is set
 	- Changed the default for "Flood After" to 8 instead of 5.
+	- Fixed /mass to work as expected (Same as LiCe4). Reported 
+	  by brandon
 	- Lots of help file updates and additions of missing commands.
 
 *** Changes in version 5.2.7 - 15/07/15

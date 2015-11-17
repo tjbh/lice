@@ -18,7 +18,10 @@ PACKAGE LiCe;
 
 ### Silence
 ALIAS silence {
-  UNLESS (_proc.silence()) {iecho $S does not support silence.; RETURN};
+  UNLESS (_proc.silence()) {
+    iecho $S does not support silence.;
+    RETURN;
+  };
   IF (match($left(1 $0) + -)) {
      @ sil.sign = left(1 $0);
      @ sil.dork = rest(1 $0);
@@ -29,28 +32,46 @@ ALIAS silence {
         }{//SILENCE $sil.sign$sil.dork*}
      }{//SILENCE $0}
   }{
-  @ sil.cnt = 1;
-  @ sil.pers = (@ ? [$0] : [$N]);
-  iecho ---- Silence List for $sil.pers@$S;
-  ^ON ^271 * {
-    @ sil.mask = [$2];
-    iecho [$[2]sil.cnt] $sil.mask;
-    @sil.cnt++;
-  };
+    @ sil.cnt = 1;
+    @ sil.pers = (@ ? [$0] : [$N]);
+    iecho ---- Silence List for $sil.pers@$S;
+    ^ON ^271 * {
+      @ sil.mask = [$2];
+      iecho [$[2]sil.cnt] $sil.mask;
+      @sil.cnt++;
+    };
   //SILENCE $sil.pers;
-  }
+  };
 };
 
-ON ^272 * {iecho ---- End of Silence List;purge sil};
+ON ^272 * {
+  iecho ---- End of Silence List;
+  purge sil;
+};
 
 ### CallerID
 ALIAS accept {
-  UNLESS (_proc.callerid()) {iecho $S does not support callerid.; RETURN};
+  UNLESS (_proc.callerid()) {
+    iecho $S does not support callerid.;
+    RETURN;
+  };
   UNLESS (@) {
-    iecho ---- Accept List for $N@$S;
-    //QUOTE ACCEPT *;
+    uecho Usage: /ACCEPT -l;
+    uecho Usage: /ACCEPT -a <nick1 [nick2...nicks]>;
+    uecho Usage: /ACCEPT -d <nick1 [nick2...nicks]>;
+    RETURN;
   }{
-    //QUOTE ACCEPT $0;
+    SWITCH ($0) {
+     (-L) {
+       iecho Blah;
+       QUOTE ACCEPT *;}
+    };
+     (-A) {
+       iecho Adding;
+    };
+     (-D) {
+       iecho Deleting;
+    };
   };
 };
 
