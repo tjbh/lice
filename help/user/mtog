@@ -57,7 +57,7 @@ Usage: MTOG [message toggle letter(s)] 
 
 T
    Event time stamping. When enabled, all important events will display
-   their time of occurrance. You can change the format under /SENSORS:w
+   their time of occurrance. You can change the format under /SENSORS
 
 U
    Personal Status Logs. Records some important information while you
@@ -70,6 +70,9 @@ Usage: MTOG [message toggle letter(s)] 
 W
    Record channel WALLOPs that are revelant to you, when you are AWAY.
 
+X
+   Disables AutoAWAY status logging. When enabled, LiCe will not log
+   "Changed to AWAY status" when you go away automatically.
 
 See also: [SENSORS] [TOG] [AR] [DTOG] [CTOG] [WTOG]
 

@@ -39,6 +39,7 @@ ALIAS _proc.setup_mtog {
   iecho Personal log of events (view with /PLAY)   |  U  | $[3]isset.show($ismset(U)) | On;
   iecho Extended view status. Details on displays. |  V  | $[3]isset.show($ismset(V)) | On;
   iecho Recording of channel WALLOPs when AWAY.    |  W  | $[3]isset.show($ismset(W)) | Off;
+  iecho Disable AutoAWAY event logging             |  X  | $[3]isset.show($ismset(X)) | Off;
   INPUT "Letters to change toggles (ENTER to skip): " IF (@) {mtog $*};
 };
 ALIAS mtog {
@@ -58,7 +59,7 @@ ALIAS mtog {
         (T) {^SET -OUTPUT_REWRITE};
       };
     }{
-      @ lice.set(main.mset $pass(12ABCEHILMNOPQRTUVW $lice.get(main.mset) $_t));
+      @ lice.set(main.mset $pass(12ABCEHILMNOPQRTUVWX $lice.get(main.mset) $_t));
       SWITCH ($_t) {
         (B) {^ON #-MSG 617 * {IF (A) {BEEP}}};
         (E) { @ awayfd = open($lice.save_path/lice.awaylog W);
@@ -75,4 +76,4 @@ ALIAS mtog {
   XECHO -B Message toggles now: $lice.get(main.mset);
 
 };
-#tjh/10
+#tjh/16

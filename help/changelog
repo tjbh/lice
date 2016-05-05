@@ -23,7 +23,7 @@
 	- Fixed duplicate logs when loading LiCe on top of already 
 	  running LiCe.
 	- Ensure no away time information is sent when /TOG Q is set
-	- Only log that you went away automatically when MTOG V is set
+	- New /MTOG X to disable logging of AutoAWAY events
 	- Fixed /mass to work as expected (Same as LiCe4). Reported 
 	  by brandon
 	- Lots of help file updates and additions of missing commands.
