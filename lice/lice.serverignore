@@ -6,7 +6,7 @@
 # All code by tjh, unless specified. Visit http://lice.muppetz.com
 # ---------------------------------------------------------------------------
 
-# Silence support Written by HSOC, slightly modified to support silence toggle by tjh
+# Silence originally written by HSOC, heavily modified to support silence toggle by tjh
 # CallerID/Accept support added by tjh
 
 IF (word(2 $loadinfo()) != [pf]) {
@@ -63,14 +63,24 @@ ALIAS accept {
   }{
     SWITCH ($0) {
      (-L) {
-       iecho Blah;
-       QUOTE ACCEPT *;}
-    };
+       iecho ---- Accept List for $N;
+       //QUOTE ACCEPT *;
+      };
      (-A) {
-       iecho Adding;
-    };
+       iecho Adding $1-;
+       //QUOTE ACCEPT $sar(g/ /,/$1-);
+       iecho ---- Accept List for $N is now;
+       //QUOTE ACCEPT *;
+      };
      (-D) {
-       iecho Deleting;
+       iecho Deleting $1-;
+       //QUOTE ACCEPT -$sar(g/ /,-/$1-);
+       iecho ---- Accept List for $N is now;
+       //QUOTE ACCEPT *;
+      };
+     (*) {
+       iecho Unknown Option;
+      };
     };
   };
 };
