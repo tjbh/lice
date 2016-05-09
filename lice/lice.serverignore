@@ -68,15 +68,11 @@ ALIAS accept {
       };
      (-A) {
        iecho Adding $1-;
-       //QUOTE ACCEPT $sar(g/ /,/$1-);
-       iecho ---- Accept List for $N is now;
-       //QUOTE ACCEPT *;
+       //QUOTE ACCEPT $unsplit(, $1-);
       };
      (-D) {
        iecho Deleting $1-;
-       //QUOTE ACCEPT -$sar(g/ /,-/$1-);
-       iecho ---- Accept List for $N is now;
-       //QUOTE ACCEPT *;
+       //QUOTE ACCEPT -$sar(g/,/,-/$unsplit(, $1-));
       };
      (*) {
        iecho Unknown Option;
