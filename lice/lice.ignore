@@ -22,8 +22,8 @@ ALIAS ignore {
       uecho Usage: IGNORE < nick | n!u@h pattern > [[-|+]Ignore types] [reason "your reason"] [timeout <time in secs>];
       uecho Usage: IGNORE < channel | channel pattern > [[-|+]Ignore types] [reason "your reason"] [timeout <time in secs>];
     }
-    (#*) (&*) (!*) {//IGNORE $0 $types; UNLESS (tempig) {@lice.set(|$hash_32bit($0) $0 $igtype($0) reason \"$ignorectl(GET $ignorectl(REFNUM $0) REASON)\")}};
-    (*!*) (*@*) (*.*) {//IGNORE $uhc($0) $types; UNLESS (tempig) {@lice.set(|$hash_32bit($uhc($0)) $0 $igtype($uhc($0)) reason \"$ignorectl(GET $ignorectl(REFNUM $uhc($0)) REASON)\")}};
+    (#*) (&*) (!*) {//IGNORE $0 $types; UNLESS (tempig) {@lice.set(|$hash_32bit($0) $0 $igtype($0) REASON \"$ignorectl(GET $ignorectl(REFNUM $0) REASON)\")}};
+    (*!*) (*@*) (*.*) {//IGNORE $uhc($0) $types; UNLESS (tempig) {@lice.set(|$hash_32bit($uhc($0)) $0 $igtype($uhc($0)) REASON \"$ignorectl(GET $ignorectl(REFNUM $uhc($0)) REASON)\")}};
     (*) {
       @ :user = get_uh($0);
       UNLESS (strlen($user)) {
@@ -32,7 +32,7 @@ ALIAS ignore {
       };
       @ :pattern = mask(0 $0!$user);
       //IGNORE $pattern $types;
-      UNLESS (tempig) {@lice.set(|$hash_32bit($pattern) $pattern $igtype($pattern) reason \"$ignorectl(GET $ignorectl(REFNUM $pattern) REASON)\")};
+      UNLESS (tempig) {@lice.set(|$hash_32bit($pattern) $pattern $igtype($pattern) REASON \"$ignorectl(GET $ignorectl(REFNUM $pattern) REASON)\")};
     };
   };
 };
