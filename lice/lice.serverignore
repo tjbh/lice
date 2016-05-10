@@ -63,16 +63,15 @@ ALIAS accept {
   }{
     SWITCH ($0) {
      (-L) {
-       iecho ---- Accept List for $N;
-       //QUOTE ACCEPT *;
+       showaccept;
       };
      (-A) {
-       iecho Adding $1-;
-       //QUOTE ACCEPT $unsplit(, $1-);
+       XQUOTE ACCEPT $unsplit(, $1-);
+       showaccept;
       };
      (-D) {
-       iecho Deleting $1-;
-       //QUOTE ACCEPT -$sar(g/,/,-/$unsplit(, $1-));
+       XQUOTE ACCEPT -$sar(g/,/,-/$unsplit(, $1-));
+       showaccept;
       };
      (*) {
        iecho Unknown Option;
@@ -81,8 +80,12 @@ ALIAS accept {
   };
 };
 
-^ON ^281 * {$echo.recursive($1-)};
-^ON ^282 * {iecho ---- End of Accept List};
+ALIAS showaccept {
+  iecho ---- Accept List for $N is currently:;
+  ^ON ^281 * {$echo.recursive($1-)};
+  ^ON ^282 * { ^ON ^281 -};
+  XQUOTE ACCEPT *;
+};
 
 ALIAS _proc.silence {@:FUNCTION_RETURN = (MATCH(SILENCE $serverctl(GET $serverctl(FROM_SERVER) 005s))) > 0): 0 ? 1};
 ALIAS _proc.callerid {@:FUNCTION_RETURN = (MATCH(CALLERID $serverctl(GET $serverctl(FROM_SERVER) 005s))) > 0): 0 ? 1};

@@ -1,8 +1,8 @@
-*** Changes in version 5.3.0 - XX/09/16
+*** Changes in version 5.3.0 - 13/05/16
 	- Added 3 more startup ANSI's from old LiCe versions!
 	- Fixed /WALL not working correctly.
 	- Fixed /SENS M not being saved.
-	- Fixed server queue bug. (MAJOR)
+	- Fixed server queue bug. (MAJOR BUG)
 	- Make /TOG C actually do something. (LiCe4 bug!)
 	- Big cleanup and optimisation of flood routines
 	  Documented how they operate in help/flood
@@ -17,13 +17,14 @@
 	- Fixed error when all /SENS settings were removed.
 	- Code optimisations to database and main routines.
 	- Removed dead and commented out code.
+	- Added /ACCEPT to manage the CallerID (UMODE +g) list
 	- Removed "extra" folder files from stubs files. If you want
 	  extra functions, you must load them yourself via .epicrc
 	  or manually using /load
 	- Fixed duplicate logs when loading LiCe on top of already 
 	  running LiCe.
 	- Ensure no away time information is sent when /TOG Q is set
-	- New /MTOG X to disable logging of AutoAWAY events
+	- New /MTOG X to disable logging that you were set AutoAWAY
 	- Fixed /mass to work as expected (Same as LiCe4). Reported 
 	  by brandon
 	- Lots of help file updates and additions of missing commands.
