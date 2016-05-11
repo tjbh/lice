@@ -2,20 +2,21 @@ Usage: ACCEPT -l
 Usage: ACCEPT -a <nick1> <nick2> .... <nick>
 Usage: ACCEPT -d <nick1> <nick2> .... <nick>
 
-UMODE +g is a setting that some servers support, that is a form of server
-side ignore.
-When UMODE +g is set, you can only recieve messages from NICK's on your
-accept list.  This allows you to manage this list.
+UMODE +g is a setting that some servers support, that is a form
+of server side ignore.
+
+When UMODE +g is set, you can only recieve messages from NICK's 
+on you accept list.  This allows you to manage this list.
 
 ACCEPT -l will show you your current accept list
-ACCEPT -a tjh whitefang - will add tjh and whitefang to the list you'll
-accept messages from
-ACCEPT -d tjh whitefang - will remove tjh and whitefrom from the list you'll
-acept messages from
+ACCEPT -a tjh whitefang - will add tjh and whitefang to the list
+you'll accept messages from
+ACCEPT -d tjh whitefang - will remove tjh and whitefrom from 
+the list you'll accept messages from
 
-   Note: Only some servers support accept. This command will report
-   if your server doesn't support it. Servers that don't support accept
-   may use the SILENCE command instead.
+   Note: Only some servers support accept. This command will 
+   report if your server doesn't support it. Servers that don't
+   support accept may use the SILENCE command instead.
                                  
 See also: [NOIG] [IGNORE] [SILENCE]
 
