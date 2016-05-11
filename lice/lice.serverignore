@@ -49,7 +49,7 @@ ON ^272 * {
   purge sil;
 };
 
-### CallerID
+### CallerID / Accept (usermode +g)
 ALIAS accept {
   UNLESS (_proc.callerid()) {
     iecho $S does not support callerid.;
@@ -81,8 +81,8 @@ ALIAS accept {
 };
 
 ALIAS showaccept {
-  iecho ---- Accept List for $N is currently:;
-  ^ON ^281 * {$echo.recursive($1-)};
+  iecho Accept List for $N;
+  ^ON ^281 * {XECHO $fmt.sc_mid($1-)};
   ^ON ^282 * { ^ON ^281 -};
   XQUOTE ACCEPT *;
 };
