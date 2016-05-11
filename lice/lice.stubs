@@ -3,10 +3,10 @@
 #   Copyright (C) 2000 SrfRoG (cag@codehack.com)
 #
 #   Modular loading for LiCe.
-#    Updated by tjh for LiCe5 - http://lice.muppetz.com/
+#    Updated by tjh for LiCe5 - https://lice.muppetz.com/
 #
 # ---------------------------------------------------------------------------
-# All code by SrfRoG, unless specified. Visit http://lice.muppetz.com
+# All code by SrfRoG, unless specified. Visit https://lice.muppetz.com
 # ---------------------------------------------------------------------------
 
 IF (word(2 $loadinfo()) != [pf]) {

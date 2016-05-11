@@ -18,7 +18,7 @@ SET DISPLAY_ANSI ON
 ECHO               ,------------------------------------------------------------.
 ECHO    3  11@3..11@     |    Welcome to LiCe designed for the ircii-EPIC5 client!    |
 ECHO    3 (\--/)    | Send all comments to:        10tim@muppetz.com               |
-ECHO    3(.>__<.)   | Online help: Type 16/HELP, or visit 16http://lice.muppetz.com   |
+ECHO    3(.>__<.)   | Online help: Type 16/HELP, or visit 16https://lice.muppetz.com  |
 ECHO    3^^^  ^^^   `------------------------------------------------------------'
 SET DISPLAY OFF
 ^SET -CONTINUED_LINE

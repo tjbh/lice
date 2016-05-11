@@ -11,7 +11,7 @@
 # Notes      : This module was made specifically for LiCe v4.x
 #            : tjh updated it to work specifically for LiCe v5.x
 # ----------------------------------------------------------------------
-# All originally by code by SrfRoG, unless specified. Visit http://lice.muppetz.com
+# All originally by code by SrfRoG, unless specified. Visit https://lice.muppetz.com
 # ---------------------------------------------------------------------------
 
 IF (word(2 $loadinfo()) != [pf]) {
@@ -94,7 +94,7 @@ BIND ^Wu PARSE_COMMAND {echo.status Uptime: $tdiff2(${time() - F}) - Started: $s
 # list windows
 BIND ^Ww PARSE_COMMAND {//WINDOW LIST};
 # prog version
-BIND ^Wv PARSE_COMMAND {echo.status LiCe v$id.v for EPIC5 - http://lice.muppetz.com };
+BIND ^Wv PARSE_COMMAND {echo.status LiCe v$id.v for EPIC5 - https://lice.muppetz.com };
 # change win's name
 BIND ^Wy PARSE_COMMAND {INPUT "Set window's name to: " IF (@) {//^WINDOW NAME $0}};
 # suspend

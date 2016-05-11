@@ -3,9 +3,9 @@
 #   Copyright (C) 2000 SrfRoG (cag@codehack.com)
 #
 # ---------------------------------------------------------------------------
-# All code by SrfRoG, unless specified. Visit http://lice.codehack.com
+# All code by SrfRoG, unless specified. Visit https://lice.muppetz.com
 # ---------------------------------------------------------------------------
-# Updated for EPIC5 by tjh - http://lice.muppetz.com
+# Updated for EPIC5 by tjh - https://lice.muppetz.com
 # Updated so that theme change will redraw toplines correctly. 11/06/10 - tjh
 
 IF (word(2 $loadinfo()) != [pf]) {

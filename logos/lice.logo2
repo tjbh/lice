@@ -24,7 +24,7 @@ ECHO 14d````d`d`d`d`d`cc`bbbb```bb`14dddkd   10http://www.vim.org        V
 ECHO `ccc`````d`d``ccc`bbbbbbbbb`14dddsd   10http://www.freebsd.org    FreeBSD
 ECHO `cccccccc```cccc`bbbbbbbbbb`14ddddd   10http://www.opensource.org OSI
 ECHO 14d```ccccccccccc`bbbbbbbbbb`14dddddd  14--------------------------------------
-ECHO 14dd`b````ccccc``bbbbbbbbbbb`14dddddd  Online help: 10http://lice.muppetz.com
+ECHO 14dd`b````ccccc``bbbbbbbbbbb`14dddddd  Online help: 10https://lice.muppetz.com
 ECHO 14dd`bbbbb`````bbbbbbbbbbbb`14ddddddd  Help at IRC: 3Channel #LiCe on EFNet
 ECHO 14ddd`bbbbbbbbbbbbbbbbbbbb`14dddddddd  Help prompt: 3/HELP
 ECHO 14dddd`bbbbbbbbbbbbbbbbb``14ddddddddd  Send your comments and suggestions to:

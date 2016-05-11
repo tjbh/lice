@@ -59,7 +59,7 @@ WHILE (main.pport < 2048) {@ main.pport = rand(59999)};
 
 # Partyline's topic
 ^ASSIGN chat.tnick SrfRoG;
-^ASSIGN chat.ttext Visit http://lice.muppetz.com;
+^ASSIGN chat.ttext Visit https://lice.muppetz.com;
 @ chat.ttime = time();
 
 # Internal routines.

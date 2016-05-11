@@ -3,7 +3,7 @@
 #   Copyright (C) 2000 SrfRoG (cag@codehack.com)
 #
 # ---------------------------------------------------------------------------
-# All code by SrfRoG, unless specified. Visit http://lice.muppetz.com
+# All code by SrfRoG, unless specified. Visit https://lice.muppetz.com
 # ---------------------------------------------------------------------------
 # Updated for EPIC5 by tjh
 
@@ -18,7 +18,7 @@ ALIAS gone {
   @ :serv = serverctl(FROM_SERVER);
   @ quiet_test[$serv] = ismset(Q);
   @ :gone.msg = randread($main.reason_gone);
-  UNLESS (strlen($gone.msg)) {@ :gone.msg = [http://lice.muppetz.com]};
+  UNLESS (strlen($gone.msg)) {@ :gone.msg = [https://lice.muppetz.com]};
   SWITCH ($0) {
     () {AWAY $gone.msg};
     (-a) {AWAY -all ${strlen($1)?[$1-]:gone.msg}};
