@@ -4,6 +4,7 @@
 # ---------------------------------------------------------------------------
 #
 # Written by tjh 2012 - tim@muppetz.com
+# Minor updates in 2016 - tim@muppetz.com
 #
 # Much help and guidance from #epic on efnet.  Couldn't have written this
 # without the help of hop, caf, CrazyEddy & many other helpful friendly souls
@@ -16,7 +17,7 @@ IF (word(2 $loadinfo()) != [pf]) {
 };
 
 # database editor version
-ASSIGN db.ev 1.1;
+ASSIGN db.ev 1.2;
 UNLESS (id.v) {XECHO -B What? You need to have loaded LiCe 5.2.0+ first before you can edit its Database!;RETURN}
 
 XECHO;
@@ -142,4 +143,4 @@ ALIAS finddb (query) {
   };
 };
 
-#tjh/12
+#tjh/16
