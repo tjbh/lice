@@ -38,7 +38,7 @@ ALIAS dbedit {
     XECHO -B  -d <variable>  Delete <variable>;
     RETURN;
   };
-  UNLESS (finddb($1) && ($0 != [-c])) {XECHO ERROR: $1 doesn't exist in the database;RETURN};
+  UNLESS (finddb($1) | [$0] == [-c]) {XECHO ERROR: $1 doesn't exist in the database;RETURN};
   @ dbvar = [$1];
   @ dbval = dbmctl(READ $lice.fd $1); 
   SWITCH ($0) {
@@ -55,6 +55,7 @@ ALIAS dbedit {
     };
     (-d)  {@ dbmctl(DELETE $lice.fd $dbvar); XECHO $dbvar Deleted;}
     (-c)  {
+      UNLESS (!finddb($1)) {XECHO ERROR: $1 already exists in the database!;RETURN};
       INPUT "New value for new variable $1: " {
           @ dbmctl(ADD $lice.fd $dbvar $*);
           XECHO $dbvar created with value: $*;
