@@ -1,4 +1,4 @@
-*** Changes in version 5.3.0 - 13/05/16
+*** Changes in version 5.3.0 - 05/13/16
 	- Added 3 more startup ANSI's from old LiCe versions!
 	- Fixed /WALL not working correctly.
 	- Fixed /SENS M not being saved.
@@ -29,7 +29,7 @@
 	  by brandon
 	- Lots of help file updates and additions of missing commands.
 
-*** Changes in version 5.2.7 - 15/07/15
+*** Changes in version 5.2.7 - 07/15/15
 	- We now use epic's built in logging function instead of many ON's for
 	  the chanlog feature. Log file formats have changed slightly because
 	  of this. Timestamp used is /SENS S value.
