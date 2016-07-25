@@ -349,7 +349,6 @@ ON -366 * {
   };
 };
 ON ^353 * {
-  IF (iscset(Q $hash_32bit($2))) {RETURN};
   UNLESS (names.max) {
     @ :max = fmt.sc_max() ? fmt.sc_max() : (word(0 $geom()) - 1) / 11;
     @ :min = ismset(T) ? ((strlen($strftime($lice.get(main.tsfmt))) + 2) / 11) + 1 : 0;
