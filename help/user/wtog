@@ -15,6 +15,8 @@ Usage: WTOG [window toggle letter(s)] 
    Message View Window. Moves all incoming MSG's to a window. For people
    that join large channels and loose their MSGs in scroll, this option
    creates another window were all MSGs are sent.
+   NOTE: It is not possible to send messages from this window as it is
+   not attached to a server. It collects incoming messages only.
 
 See also: [SENSORS] [TOG] [AR] [DTOG] [CTOG] [MTOG]
 
