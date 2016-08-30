@@ -120,7 +120,7 @@ ALIAS ctog {
   }{
     @ lice.set(chan[$_c][S] $_o);
   };
-  IF (iscset(Q $_c) && (iscset(A $_c)) {@ lice.set(|$_c $C JOINS NICKS CTCPS NOTICES TOPICS PARTS QUITS REASON "CTOG Q")};
+  IF (iscset(Q $_c) && (iscset(A $_c))) {@ lice.set(|$_c $C JOINS NICKS CTCPS NOTICES TOPICS PARTS QUITS REASON "CTOG Q")};
   XECHO -B Toggles for $C are now: $_o;
 };
 #tjh/16
