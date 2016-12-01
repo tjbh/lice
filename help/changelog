@@ -1,6 +1,9 @@
 *** Changes in version 5.3.1 - TBA
 	- Fixed /SC -f not working with /CTOG Q set.
 	- Fixed /CTOG Q ignore database issue.
+	- Fixed logging of disconnects when away to use correct flag
+	- Added extra/push_it.irc - send push messages to your phone
+	  on MSG/PUBLIC/NOTIFY
 
 *** Changes in version 5.3.0 - 05/13/16
 	- Added 3 more startup ANSI's from old LiCe versions!

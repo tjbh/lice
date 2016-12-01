@@ -3,11 +3,11 @@
 #   Copyright (C) 2000 whitefang (thall@magenet.com) - Broken email.
 #
 # ---------------------------------------------------------------------------
-# All code by whitefang, unless specified. Visit http://wolf.magenet.com
+# All code originally by whitefang, unless specified. Visit http://wolf.magenet.com
 # ---------------------------------------------------------------------------
 #
 # Prior to LiCe 5.3 this file was taken from whitefang's wolf addon for LiCe4
-# Since LiCe 5.3 we now use epic5's built in logging function.
+# Since LiCe 5.3 we now use epic5's built in logging function, most code written by tjh
 #
 
 IF (word(2 $loadinfo()) != [pf]) {

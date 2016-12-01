@@ -1,0 +1,206 @@
+# __________             .__      .___  __   
+# \______   \__ __  _____|  |__   |   |/  |_ 
+#  |     ___/  |  \/  ___/  |  \  |   \   __\
+#  |    |   |  |  /\___ \|   Y  \ |   ||  |  
+#  |____|   |____//____  >___|  / |___||__|  
+#                      \/     \/  For LiCe 5
+#
+# https://lice.muppetz.com
+#
+# Send private messages, auto-reply and notify messages to your pushover.net / pushbullet.com / Join by joaoapps connected devices
+# by tjh [tim@muppetz.com] - December 2016
+# Assistance from: caf, desaster, hop and everyone in #epic
+# You must have a pushover.net Token and Userkey to use the http://pushover.net functionality.
+# You must put your Pushbullet API Token (https://www.pushbullet.com/#settings/account) for pushbullet access.
+# You must put your Join by joaoapps API Token for Join access.
+#
+# - Changes -
+# v2.0 Fixed only 1 nick/channel being able to be ignored
+#      Now use temp file for curl push, so no need to escape or strip characters anymore. Thanks very much 
+#      desaster in #epic for help and guidance (and his excellent pushover.irc for hinoea script)
+#      Renamed to push_it.irc, now supports pushbullet as well.
+# v2.1 Lots of little cleanups and fixes.
+# v2.2 More cleanup/optimisation
+# v2.3 Added ability to only push every X seconds, stops your device going crazy if you get a lot of messages at once
+#      Fixed bug where .pushover and .pushbullet files would be left behind after rapid message receipt. Thanks caf.
+# v2.4 Added support for Join by joaoapps
+# v2.41 Small typos fixed
+
+IF (word(2 $loadinfo()) != [pf]) {
+  LOAD -pf $word(1 $loadinfo());
+  RETURN;
+};
+^ASSIGN -DontPushIt;
+PACKAGE PushIt;
+UNLESS (id.v) {
+  XECHO You need LiCe 5.2+ for this script to work!;
+  XECHO Visit https://lice.muppetz.com;
+  XECHO Load Failed;
+  RETURN;
+};
+^ASSIGN pushit.v 2.41;
+LICE 2PushIt $pushit.v;
+ALIAS phelp {
+  uecho PushIt v$pushit.v Script for LiCe $id.v - by tjh - tim@muppetz.com;
+  uecho +--------------------------------------------------------------------------------------+;
+  uecho Commands:;
+  uecho   /pset - Setup your keys, notification sounds, ignores and time between pushes; 
+  uecho   /ptog - Toggle PushIt script settings;
+};
+UNLESS (lice.get(addon.push)) {
+  @lice.add(addon.push EAMR);
+  @lice.add(addon.push.token UNSET);
+  @lice.add(addon.push.pbtoken UNSET);
+  @lice.add(addon.push.jointoken UNSET);
+  @lice.add(addon.push.userkey UNSET);
+  @lice.add(addon.push.psound pushover);
+  @lice.add(addon.push.msound pushover);
+  @lice.add(addon.push.nsound pushover);
+  @lice.add(addon.push.between 0);
+  uecho ############# PushIt for LiCe #############;
+  uecho You must set your Pushover/Pushbullet/Join Tokens/Keys with /pset;
+  uecho Otherwise this script will do nothing!;
+  uecho You also must have CURL with https support in your path!;
+  uecho;
+  phelp;
+};
+ALIAS ispset {@ FUNCTION_RETURN = !!pass($0 $lice.get(addon.push))};
+ALIAS _proc.pushpublics {
+  ^ON #-PUBLIC 43 '% % *\\\\[\$lice.get(main.buf)\\\\]*' {$push_message(Channel $1 $0 $2-)};
+  ^ON #-PUBLIC_MSG 43 '% % *\\\\[\$lice.get(main.buf)\\\\]*' {$push_message(Channel $1 $0 $2-)};
+  ^ON #-PUBLIC_OTHER 43 '% % *\\\\[\$lice.get(main.buf)\\\\]*' {$push_message(Channel $1 $0 $2-)};
+};
+ALIAS _proc.pushmessages {^ON #-MSG 43 * {$push_message(Private MSG $0 $1-)}};
+ALIAS _proc.pushnotify {^ON #-NOTIFY_SIGNON 43 '*\\\\[\$lice.get(lice.notify)\\\\]*' {$push_message(Notify $0 $1 is online)}};
+IF (ispset(R)) {_proc.pushpublics};
+IF (ispset(M)) {_proc.pushmessages};
+IF (ispset(N)) {_proc.pushnotify};
+ALIAS _proc.setup_ptog {
+  iecho +------- Current LiCe PushIt Toggle Settings --------------------+;
+  iecho | Description                              | Tog | Set | Default |;
+  iecho +------------------------------------------+-----+-----+---------+;
+  iecho Enable PushIt (Global)                     |  E  | $[3]isset.show($ispset(E)) | On;
+  iecho Push via PushOver.net                      |  P  | $[3]isset.show($ispset(P)) | On;
+  iecho Push via PushBullet.com                    |  B  | $[3]isset.show($ispset(B)) | Off;
+  iecho Push via Join by joaoapps                  |  J  | $[3]isset.show($ispset(J)) | Off;
+  iecho Send Pushes only when away.                |  A  | $[3]isset.show($ispset(A)) | On;
+  iecho Send Pushes for Private Messages           |  M  | $[3]isset.show($ispset(M)) | On;
+  iecho Send Pushes for Auto-Reply matches         |  R  | $[3]isset.show($ispset(R)) | On;
+  iecho Send Pushes for Notify Signon              |  N  | $[3]isset.show($ispset(N)) | Off;
+  INPUT "Letters to change toggles (ENTER to skip): " IF (@) {ptog $*;};
+};
+ALIAS ptog {
+  UNLESS (@) {
+    _proc.setup_ptog;
+    RETURN;
+  };
+  FEC ($toupper($0)) _t {
+    IF (ispset($_t)) {
+      @ lice.set(addon.push $strip($_t $lice.get(addon.push)));
+      IF (_t == [R]) {
+        ^ON #-PUBLIC 43 -;
+        ^ON #-PUBLIC_MSG 43 -;
+        ^ON #-PUBLIC_OTHER 43 -;
+      };
+      IF (_t == [M]) {
+        ^ON #-MSG 43 -;
+      };       
+      IF (_t == [N]) {
+        ^ON #-NOTIFY_SIGNON 43 -;
+      };
+    }{
+       @ lice.set(addon.push $pass(EPBAMRNJ $lice.get(addon.push) $_t));
+       IF (_t == [R]) {_proc.pushpublics};
+       IF (_t == [M]) {_proc.pushmessages};
+       IF (_t == [N]) {_proc.pushnotify};
+    };
+  };
+  UNLESS (lice.get(addon.push)) {@lice.del(addon.push)};
+  XECHO -B Push toggles now: $lice.get(addon.push);
+  ^ASSIGN -DontPushIt;
+};
+ALIAS pset {
+  IF (@) {
+    _proc.set_pset $toupper($0);
+    RETURN;
+  };
+  iecho +--------- Current LiCe PushIt Settings -----------------------------------------+;
+  iecho | Description                              | Ref | Set;
+  iecho +------------------------------------------+-----+-------------------------------+;
+  iecho PushOver Application Token                 |  T  | $lice.get(addon.push.token);
+  iecho PushOver User Key                          |  K  | $lice.get(addon.push.userkey);
+  iecho PushBullet Access Token                    |  B  | $lice.get(addon.push.pbtoken);
+  iecho Join by joaoapps Access Token              |  J  | $lice.get(addon.push.jointoken);
+  iecho PushOver Public Sound                      |  P  | $lice.get(addon.push.psound);
+  iecho PushOver Message Sound                     |  M  | $lice.get(addon.push.msound);
+  iecho PushOver Notify Sound                      |  N  | $lice.get(addon.push.nsound);
+  iecho Channels to Ignore                         |  C  | $lice.get(addon.push.cignore);
+  iecho Nicks to Ignore                            |  I  | $lice.get(addon.push.nignore);
+  iecho Wait this many seconds between pushes      |  D  | $lice.get(addon.push.between);
+  INPUT "Letters to change PushIt Settings (ENTER to skip): " IF (@) {_proc.set_pset $toupper($0)};
+};
+ALIAS _proc.set_pset (list) {
+  FEC ($list) opts {
+    SWITCH ($opts) {
+      (T) {INPUT "PushOver Application Token: " IF (@) {@lice.set(addon.push.token $0)}};
+      (K) {INPUT "PushOver User Key: " IF (@) {@lice.set(addon.push.userkey $0)}};
+      (B) {INPUT "PushBullet Access Token: " IF (@) {@lice.set(addon.push.pbtoken $0)}};
+      (J) {INPUT "Join by joaoapps Access Token: " IF (@) {@lice.set(addon.push.jointoken $0)}};
+      (P) {INPUT "PushOver Public Sound: " IF (@) {@lice.set(addon.push.psound $0)}};
+      (M) {INPUT "PushOver Message Sound: " IF (@) {@lice.set(addon.push.msound $0)}}; 
+      (N) {INPUT "PushOver Notify Sound: " IF (@) {@lice.set(addon.push.nsound $0)}};
+      (C) {INPUT "Channels to Ignore: " IF (@) {@lice.set(addon.push.cignore $0-)}};
+      (I) {INPUT "Nicks to Ignore: " IF (@) {@lice.set(addon.push.nignore $0-)}};
+      (D) {INPUT "Wait this many seconds between pushes (0 = always push): " IF (@) {@lice.set(addon.push.between $0-)}};
+    };
+  };
+};
+ALIAS push_message (type,chan,nick,message) {
+  IF (DontPushIt || !ispset(E) || (!A) && (ispset(A)) || pattern($chan $lice.get(addon.push.cignore)) || pattern($nick $lice.get(addon.push.nignore))) {RETURN};
+  IF (ispset(P)) {
+    IF (!lice.get(addon.push.token) || (lice.get(addon.push.token) == [UNSET]) || !lice.get(addon.push.userkey) || (lice.get(addon.push.userkey) == [UNSET]))  {
+      iecho Can't send to PushOver.net, Token and/or userkey not set!;
+      iecho Please set them using /PSET T and /PSET K;
+      RETURN;
+    };
+    SWITCH ($type) {
+      (Channel) {@ :sound = lice.get(addon.push.psound)};
+      (Private) {@ :sound = lice.get(addon.push.msound)};
+      (Notify)  {@ :sound = lice.get(addon.push.nsound)};
+    };
+    @ pushoverfile = [$lice.save_path/.pushover] ## [$rand(10000)];
+    @ :pushfd = open ($pushoverfile W);
+    @ write($pushfd [$chan/$nick] $stripcrap(ALL $message)); 
+    @ close($pushfd);
+    @ :endcmd = [\{@unlink\(\"$pushoverfile\"\)\}];
+    //^EXEC -DIRECT -END $endcmd curl -s -o /dev/null --form-string "sound=$sound" --form-string "token=$lice.get(addon.push.token)" --form-string "user=$lice.get(addon.push.userkey)" --form-string "title=LiCe - $type" -F "message=<$pushoverfile" https://api.pushover.net/1/messages.json;
+  };
+  IF (ispset(J)) {
+    IF (!lice.get(addon.push.jointoken) || (lice.get(addon.push.jointoken) == [UNSET])) {
+      iecho Can't send to Join by joaoapps, no API Token Set;
+      iecho Please set one using /PSET J;
+      RETURN;
+    };
+    //^EXEC -DIRECT curl -s -o /dev/null https://joinjoaomgcd.appspot.com/_ah/api/messaging/v1/sendPush?apikey=$lice.get(addon.push.jointoken)&title=$xform(+URL LiCe - $type)&text=$xform(+URL $stripcrap(ALL [$chan/$nick] $message))&deviceId=group.all;
+  };
+  IF (ispset(B)) {
+    IF (!lice.get(addon.push.pbtoken) || (lice.get(addon.push.pbtoken) == [UNSET])) {
+      iecho Can't send to PushBullet.com, no API Token Set;
+      iecho Please set one using /PSET B;
+      RETURN;
+    };
+    @ pushbulletfile = [$lice.save_path/.pushbullet] ## [$rand(10000)];
+    @ :pushfd = open ($pushbulletfile W);
+    @ write($pushfd \{"type": "note", "title": "LiCe - $type", "body": "[$chan/$nick] $stripcrap(ALL $^"^\message)"\});
+    @ close($pushfd);
+    @ :endcmd = [\{@unlink\(\"$pushbulletfile\"\)\}];
+    //^EXEC -DIRECT -END $endcmd curl -s -o /dev/null -X POST --header "Access-Token: $lice.get(addon.push.pbtoken)" --header "Content-Type: application/json" --data-binary @$pushbulletfile https://api.pushbullet.com/v2/pushes;
+  };
+  IF (lice.get(addon.push.between)) {
+    ASSIGN DontPushIt 1;
+    TIMER -REFNUM PushIT $lice.get(addon.push.between) {^ASSIGN -DontPushIt};
+  };
+};
+uecho PushIt Addon for LiCe $id.v - v$pushit.v loaded! Type /phelp for help.
+#
+#tjh/16

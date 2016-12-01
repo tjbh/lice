@@ -144,6 +144,7 @@ ON #-306 13 * {
   IF (!quiet_test[$serv] && !ismset(Q) && servername($winserv()) == S) {DESCRIBE ${C?C:T?T:N} is gone. $A};
   ^ASSIGN -quiet_test[$serv];
 };
+# Formatting ON's
 ON ^275 * {ECHO $fmt.whois_mid(Security $1-)};
 ON ^276 * {ECHO $fmt.whois_mid(Notice $1-)};
 ON ^307 * {ECHO $fmt.whois_mid(Services $1-)};
@@ -284,7 +285,7 @@ ON #-DCC_CHAT 13 * {
   IF (ismset(C)) {_proc.away_save $0 licelogd [CHAT] $1-};
 };
 ON #-CONNECT 13 * {
-  IF (ismset(V)) {_proc.away_save LiCe licelogd Connected to $0 [$2]};
+  IF (ismset(U)) {_proc.away_save LiCe licelogd Connected to $0 [$2]};
   IF (strlen($lice.get(main.umode))) {^TIMER 1 {MODE $servernick() $lice.get(main.umode)}};
 };
 ON #-DISCONNECT 13 * {
