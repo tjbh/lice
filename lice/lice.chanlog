@@ -70,7 +70,7 @@ ALIAS chanlog {
           iecho   $logctl(GET $logs NAME) $repeat($pad1  ) $file $repeat($pad2  ) $fsize($file);
         };
       };
-    }};
+    };
   };
 };
 
