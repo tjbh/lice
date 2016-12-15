@@ -157,6 +157,7 @@ ALIAS _proc.set_pset (list) {
 };
 ALIAS push_message (type,chan,nick,message) {
   IF (DontPushIt || !ispset(E) || (!A) && (ispset(A)) || pattern($chan $lice.get(addon.push.cignore)) || pattern($nick $lice.get(addon.push.nignore))) {RETURN};
+# Pushover Routine #
   IF (ispset(P)) {
     IF (!lice.get(addon.push.token) || (lice.get(addon.push.token) == [UNSET]) || !lice.get(addon.push.userkey) || (lice.get(addon.push.userkey) == [UNSET]))  {
       iecho Can't send to PushOver.net, Token and/or userkey not set!;
@@ -175,6 +176,7 @@ ALIAS push_message (type,chan,nick,message) {
     @ :endcmd = [\{@unlink\(\"$pushoverfile\"\)\}];
     //^EXEC -DIRECT -END $endcmd curl -s -o /dev/null --form-string "sound=$sound" --form-string "token=$lice.get(addon.push.token)" --form-string "user=$lice.get(addon.push.userkey)" --form-string "title=LiCe - $type" -F "message=<$pushoverfile" https://api.pushover.net/1/messages.json;
   };
+# Join Routine #
   IF (ispset(J)) {
     IF (!lice.get(addon.push.jointoken) || (lice.get(addon.push.jointoken) == [UNSET])) {
       iecho Can't send to Join by joaoapps, no API Token Set;
@@ -183,6 +185,7 @@ ALIAS push_message (type,chan,nick,message) {
     };
     //^EXEC -DIRECT curl -s -o /dev/null https://joinjoaomgcd.appspot.com/_ah/api/messaging/v1/sendPush?apikey=$lice.get(addon.push.jointoken)&title=$xform(+URL LiCe - $type)&text=$xform(+URL $stripcrap(ALL [$chan/$nick] $message))&deviceId=group.all;
   };
+# PushBullet Routine #
   IF (ispset(B)) {
     IF (!lice.get(addon.push.pbtoken) || (lice.get(addon.push.pbtoken) == [UNSET])) {
       iecho Can't send to PushBullet.com, no API Token Set;

@@ -1579,8 +1579,8 @@ ALIAS main_init {
 
   IF (lice.get(main.theme) != [default]) {LOAD $which($LiCePath/themes/$lice.get(main.theme))};
 
-  # Read all settings from the database
-  lice.load_db;
+  # Read all dynamic settings from the database
+  lice.parse_db;
 
   # load notify list from db
   //^NOTIFY $lice.get(lice.notify);
@@ -1634,7 +1634,7 @@ ALIAS main_init {
 
   # hook to catch /SETs and write them to the db
   ^ON #-SET 13 * (set,data) {
-    IF (getsets($set) && (@data)) {
+    IF (getsets($set) && (@data) && !match(*FLOATING_POINT* $set) && !match(*STATUS_USER* $set)) {
       @lice.set(*$set $data);
     };
   };

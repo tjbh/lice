@@ -3,6 +3,7 @@
 	- Fixed /CTOG Q ignore database issue.
 	- Fixed logging of disconnects when away to use correct flag
 	- Display /TOG toggles in alphabetical order on status bar
+	- Optimised database writes
 	- Added extra/push_it.irc - send push messages to your phone
 	  on MSG/PUBLIC/NOTIFY
 

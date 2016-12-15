@@ -6,7 +6,7 @@
 # All code by SrfRoG, unless specified. Visit https://lice.muppetz.com
 # ---------------------------------------------------------------------------
 #
-# Modified by tjh 2010
+# Modified by tjh 2016
 #
 
 
@@ -75,4 +75,4 @@ ALIAS tog {
   XECHO -B Main toggles now: $lice.get(main.set);
   ^SET STATUS_USER $chr($numsort($ascii($lice.get(main.set))));
 };
-#tjh/10
+#tjh/16
