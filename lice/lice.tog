@@ -46,7 +46,7 @@ ALIAS tog {
   };
   FEC ($toupper($0)) _t {
     IF (isset($_t)) {
-      @ lice.set(main.set $strip($_t $lice.get(main.set)));
+      @ lice.set(main.set $chr($numsort($ascii($strip($_t $lice.get(main.set))))));
       SWITCH ($_t) {
 	(F) {@ main.old_flood_users = FLOOD_USERS;^SET FLOOD_USERS 0};
         (B) (C) (I) (J) (N) (P) {
@@ -57,9 +57,9 @@ ALIAS tog {
       };
     }{
       UNLESS (dlu == 1) {
-        @ lice.set(main.set $pass(ABCFHIJNPRTQUX $lice.get(main.set) $_t));
+        @ lice.set(main.set $chr($numsort($ascii($pass(ABCFHIJNPRTQUX $lice.get(main.set) $_t)))));
       }{
-        @ lice.set(main.set $pass(ABCFHIJNPRTQX $lice.get(main.set) $_t));
+        @ lice.set(main.set $chr($numsort($ascii($pass(ABCFHIJNPRTQX $lice.get(main.set) $_t)))));
       };
       SWITCH ($_t) {
 	(F) {^SET FLOOD_USERS $main.old_flood_users;^ASSIGN -main.old_flood_users};
@@ -73,6 +73,6 @@ ALIAS tog {
   };
   UNLESS (lice.get(main.set)) {@lice.del(main.set)};
   XECHO -B Main toggles now: $lice.get(main.set);
-  ^SET STATUS_USER $chr($numsort($ascii($lice.get(main.set))));
+  ^SET STATUS_USER $lice.get(main.set);
 };
 #tjh/16
