@@ -42,7 +42,7 @@ ALIAS PIC {
         RETURN;
       };
       iecho Your picture collection:;
-      echo.recursive $pic.list;
+      echo $pic.list;
       uecho Usage: /PIC <picture> [target] [message];
     }{
       XECHO -B Path not found: $LiCePath/pics;
