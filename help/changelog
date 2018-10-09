@@ -1,4 +1,6 @@
 *** Changes in version 5.3.1 - TBA
+	- Fixed logging to disk saving/restoring more than Maximum
+	  message logging.
 	- Fixed /SC -f not working with /CTOG Q set.
 	- Fixed /CTOG Q ignore database issue.
 	- Fixed logging of disconnects when away to use correct flag

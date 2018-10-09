@@ -74,6 +74,5 @@ ALIAS mtog {
   };
   UNLESS (lice.get(main.mset)) {@lice.del(main.mset)};
   XECHO -B Message toggles now: $lice.get(main.mset);
-
 };
-#tjh/16
+#tjh/18
