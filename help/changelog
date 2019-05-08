@@ -1,4 +1,8 @@
-*** Changes in version 5.3.1 - TBA
+*** Changes in version 5.4.0 - TBA
+	- No longer set LOAD_PATH in lice.defaults. It's not
+	  necessary. Set it in .epicrc if you need to modify it
+	- Removed TOPIC from /CTOG Q.  If you're on a channel with
+	  heaps of topic changes you'll have to manually ignore
 	- Fixed logging to disk saving/restoring more than Maximum
 	  message logging.
 	- Fixed /SC -f not working with /CTOG Q set.

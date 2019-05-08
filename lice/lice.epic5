@@ -875,9 +875,6 @@ on ?unknown_command "*" (cmd, args) {
   return 0;
 };
 
-# Inform about SAVE's removal
-ALIAS SAVE {XECHO -B Save isn't needed in LiCe 5.2+ anymore! Please read /help changelog};
-
 # AUTO_RECONNECT
 
 addset auto_reconnect bool;

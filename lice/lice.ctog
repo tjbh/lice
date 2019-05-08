@@ -108,8 +108,8 @@ ALIAS ctog {
       SWITCH ($_t) {
         (L) (T) {_proc.ctog_do_locks ${(_t == [L]) ? [Mode] : [Topic]} $_t $_c $C $winserv()};
         (Q) {
-          @ ignorectl(ADD $C JOINS NICKS CTCPS NOTICES TOPICS PARTS QUITS REASON "CTOG Q");
-          ECHO $fmt.banner_alert() Ignoring JOINS NICKS CTCPS NOTICES TOPICS PARTS and QUITS on $C;
+          @ ignorectl(ADD $C JOINS NICKS CTCPS NOTICES PARTS QUITS REASON "CTOG Q");
+          ECHO $fmt.banner_alert() Ignoring JOINS NICKS CTCPS NOTICES PARTS and QUITS on $C;
         };
       };
     };
@@ -120,7 +120,7 @@ ALIAS ctog {
   }{
     @ lice.set(chan[$_c][S] $_o);
   };
-  IF (iscset(Q $_c) && (iscset(A $_c))) {@ lice.set(|$_c $C JOINS NICKS CTCPS NOTICES TOPICS PARTS QUITS REASON "CTOG Q")};
+  IF (iscset(Q $_c) && (iscset(A $_c))) {@ lice.set(|$_c $C JOINS NICKS CTCPS NOTICES PARTS QUITS REASON "CTOG Q")};
   XECHO -B Toggles for $C are now: $_o;
 };
 #tjh/16

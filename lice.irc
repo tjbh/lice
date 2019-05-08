@@ -2,7 +2,7 @@
 # Homepage: https://lice.muppetz.com/
 # git: https://github.com/tjbh/lice
 #
-# Version: 5.3.1
+# Version: 5.4.0
 # Released: 
 #
 #   IRCII Script Program. For use with ircii-EPIC5 clients.
@@ -1325,7 +1325,7 @@ ALIAS _proc.channel_create (serv,hash,chan) {
   XEVAL -S $serv {
    UNLESS (onchannel($servernick() $chan)) {RETURN};
    @lice.set(chan[$hash][S] ${strlen($lice.get(chan[$hash][S])) ? lice.get(chan[$hash][S]) : lice.get(main.cset)});
-   IF (iscset(Q $hash)) {//^IGNORE $chan CTCPS TOPICS NOTICES JOINS NICKS PARTS};
+   IF (iscset(Q $hash)) {//^IGNORE $chan CTCPS NOTICES JOINS NICKS PARTS};
    IF (iscset(E $hash)) {_proc.note_get $chan};
    IF (ischanop($servernick($serv) $chan)) {
       IF (iscset(L $hash) && strlen($lice.get(chan[$hash][L]))) {QUOTE MODE $chan $lice.get(chan[$hash][L])};
