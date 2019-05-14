@@ -12,6 +12,7 @@
 	- Optimised database writes
 	- Added extra/push_it.irc - send push messages to your phone
 	  on MSG/PUBLIC/NOTIFY
+	- Fixed small /RTAB and /ACCEPT bugs
 
 *** Changes in version 5.3.0 - 05/13/16
 	- Added 3 more startup ANSI's from old LiCe versions!
