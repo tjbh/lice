@@ -116,9 +116,8 @@ ALIAS rtab {
         uecho Tablist\: Removed \"$0\";
       };
     };
-  };
-  {
-  uecho Usage\: /RTAB <nick> [esc+r to cycle current server tablist]
+  }{
+  uecho Usage\: /RTAB <nick> [esc+r to cycle current server tablist];
   };
 };
 
