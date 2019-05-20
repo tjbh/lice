@@ -127,6 +127,7 @@ ALIAS fmt.whois_mid {
     (Spoof)     {RETURN 7³ 14[   16s15poof14 ] ³ $1-}
     (Notes)     {RETURN 7³ 14[   16n15otes14 ] ³ $1-}
     (Identity)  {RETURN 7³ 14[ 16i15dentity14] ³ $1-}
+    (Security)  {RETURN 7³ 14[ 16s15ecurity14] ³ $1-}
   }
 }
 
@@ -151,4 +152,4 @@ ALIAS -fmt.banner_server
 ALIAS fmt.banner_usage			RETURN $G
 
 # tjbh/99
-#tjh/12
+#tjh/19
