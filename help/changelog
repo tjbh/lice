@@ -1,4 +1,6 @@
 *** Changes in version 5.4.0 - TBA
+	- Don't display bootup logo if environment variable 
+	  IRCNOLOGO is set to 1
 	- No longer set LOAD_PATH in lice.defaults. It's not
 	  necessary. Set it in .epicrc if you need to modify it
 	- Removed TOPIC from /CTOG Q.  If you're on a channel with

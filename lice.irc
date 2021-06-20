@@ -118,8 +118,8 @@ ALIAS lice (addon) {
   @ FUNCTION_RETURN = ret;
 };
 
-# display random LiCe logo
-EVAL LOAD $LiCePath/logos/lice.logo${rand($numwords($glob($LiCePath/logos/*)))+1};
+# display random LiCe logo unless IRCNOLOGO environment variable is set to 1
+UNLESS (getenv(IRCNOLOGO) == 1) {EVAL LOAD $LiCePath/logos/lice.logo${rand($numwords($glob($LiCePath/logos/*)))+1}};
 
 ### ONs
 ON ^DCC_RAW * #;
