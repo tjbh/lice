@@ -30,7 +30,7 @@
 IF (word(2 $loadinfo()) != [pf]) {LOAD -pf $word(1 $loadinfo());RETURN};
 
 # warning to people who dare use lame clients.
-EVAL IF (word(0 $info(v)) != [epic5] || V < 20140711 || info(i) < 1810) {
+EVAL IF (word(0 $info(v)) != [epic5] || V < 20210529 || info(i) < 1967) {
   CLEAR;
   ECHO;
   ECHO The LiCe5 script needs the latest ircii-EPIC5 client, else it won't;
