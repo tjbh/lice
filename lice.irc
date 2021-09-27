@@ -30,7 +30,7 @@
 IF (word(2 $loadinfo()) != [pf]) {LOAD -pf $word(1 $loadinfo());RETURN};
 
 # warning to people who dare use lame clients.
-EVAL IF (word(0 $info(v)) != [epic5] || V < 20210529 || info(i) < 1967) {
+EVAL IF (word(0 $info(v)) != [epic5] || V < 20210529 || info(i) < 1970) {
   CLEAR;
   ECHO;
   ECHO The LiCe5 script needs the latest ircii-EPIC5 client, else it won't;
@@ -39,13 +39,13 @@ EVAL IF (word(0 $info(v)) != [epic5] || V < 20210529 || info(i) < 1967) {
   ECHO;
   ECHO   http://ftp.epicsol.org/pub/epic/EPIC5-PRODUCTION/; 
   ECHO;
-  ECHO EPIC5 1.1.11 is the minimum recommended version for LiCe5, though any;
+  ECHO EPIC5 2.1.5 is the minimum recommended version for LiCe5, though any;
   ECHO version of EPIC5 will work. Bugs reported on earlier versions will;
   ECHO be ignored though!  You've been warned....;
   ECHO;
   IF (word(0 $info(v)) == [epic5]) {
     ECHO You are using $word(0 $info(v)) release:$V commit_id:#$info(i);
-    ECHO You should have EPIC5 release:20140711 commit_id:#1810 [EPIC5-1.1.11] or greater;
+    ECHO You should have EPIC5 release:20210529 commit_id:#1970 [EPIC5-2.1.5] or greater;
   };
   IF (word(0 $info(v)) != [epic5]) {
     ECHO You need EPIC5! You have $word(0 $info(v)) ! Bye...;
