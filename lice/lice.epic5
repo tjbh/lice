@@ -910,7 +910,7 @@ on ?unknown_command "*" (cmd, args) {
 ## All of this is sacrificed for simplicity of the implementation.
 
 addset auto_reconnect_delay int;
-set auto_reconnect_delay 15;
+set auto_reconnect_delay 75;
 
 addset auto_reconnect_retries int;
 set auto_reconnect_retries 5;
@@ -968,10 +968,16 @@ addset auto_reconnect bool {
 					@ :group_enc = encode($serverctl(GET $server NAME));
 				};
 
+				if (serverctl(GET $server CONNECTED)) {
+					timer -delete auto_reconnect.$group_enc;
+					assign -auto_reconnect.failures[$group_enc];
+					return;
+				};
+
 				if (!serverctl(GET $server OPEN)) {
 					if (auto_reconnect.failures[$group_enc] < auto_reconnect_retries) {
 						@ ::auto_reconnect.failures[$group_enc]++;
-						reconnect;
+						server +$server;
 					} else {
 						@ ::auto_reconnect.failures[$group_enc] = 0;
 						server +;

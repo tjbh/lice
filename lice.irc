@@ -5,7 +5,7 @@
 # Version: 5.4.0
 # Released: 
 #
-#   IRCII Script Program. For use with ircii-EPIC5 clients.
+#   IRCII Script Program. For use with ircii-epic5 clients.
 #   Copyright (C) 1993-2000 SrfRoG (cag@codehack.com)
 #   Copyright (C) 2008-2015 tjh (tim@muppetz.com)
 #
@@ -30,25 +30,25 @@
 IF (word(2 $loadinfo()) != [pf]) {LOAD -pf $word(1 $loadinfo());RETURN};
 
 # warning to people who dare use lame clients.
-EVAL IF (word(0 $info(v)) != [epic5] || V < 20210529 || info(i) < 1970) {
+EVAL IF (word(0 $info(v)) != [epic5] || V < 20210529 || info(i) < 1972) {
   CLEAR;
   ECHO;
-  ECHO The LiCe5 script needs the latest ircii-EPIC5 client, else it won't;
+  ECHO The LiCe5 script needs the latest ircii-epic5 client, else it won't;
   ECHO work as intended. Tell your administrator to upgrade your client, or;
   ECHO you can obtain a copy of the source and compile it for yourself from:;
   ECHO;
   ECHO   http://ftp.epicsol.org/pub/epic/EPIC5-PRODUCTION/; 
   ECHO;
-  ECHO EPIC5 2.1.5 is the minimum recommended version for LiCe5, though any;
-  ECHO version of EPIC5 will work. Bugs reported on earlier versions will;
+  ECHO epic5 2.1.5 is the minimum recommended version for LiCe5, though any;
+  ECHO version of epic5 will work. Bugs reported on earlier versions will;
   ECHO be ignored though!  You've been warned....;
   ECHO;
   IF (word(0 $info(v)) == [epic5]) {
     ECHO You are using $word(0 $info(v)) release:$V commit_id:#$info(i);
-    ECHO You should have EPIC5 release:20210529 commit_id:#1970 [EPIC5-2.1.5] or greater;
+    ECHO You should have epic5 release:20210529 commit_id:#1972 [epic5-2.1.5] or greater;
   };
   IF (word(0 $info(v)) != [epic5]) {
-    ECHO You need EPIC5! You have $word(0 $info(v)) ! Bye...;
+    ECHO You need epic5! You have $word(0 $info(v)) ! Bye...;
     RETURN;
   }; 
   ECHO Pausing 5 seconds...;
