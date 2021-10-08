@@ -915,6 +915,9 @@ set auto_reconnect_delay 75;
 addset auto_reconnect_retries int;
 set auto_reconnect_retries 5;
 
+addset auto_reconnect_try_other_servers bool;
+set auto_reconnect_try_other_servers on;
+
 addset auto_reconnect bool {
 	if (*0 == [on]) {
 		on #-server_state 100 '% % ACTIVE' {
@@ -980,7 +983,11 @@ addset auto_reconnect bool {
 						server +$server;
 					} else {
 						@ ::auto_reconnect.failures[$group_enc] = 0;
-						server +;
+						if (auto_reconnect_try_other_servers == [on] && group != [<default>]) {
+							server +;
+						} else {
+							xecho -b Maximum auto reconnect retries failed - Use /RECONNECT to reconnect;
+						};
 					};
 				};
 			};
