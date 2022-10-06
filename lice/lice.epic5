@@ -889,16 +889,6 @@ addset auto_reconnect bool {
 		on #-server_state 100 '% % ACTIVE' {
 			@ :group = serverctl(GET $0 GROUP);
 
-			## If we use default group for more than one server
-			## we need to encode server name as a tag for our
-			## counters and variables, since user may be connected
-			## to more than one server in default group, and when
-			## we will experience disconnect for more than one server,
-			## timers and variables will share encoded "<default>"
-			## tag.
-			##
-			## We encode(), because default "<default>" group
-			## isn't accepted as lval for auto_reconnect array
 			if (group == [<default>]) {
 				@ :group_enc = encode($serverctl(GET $0 NAME));
 			} else {
@@ -908,18 +898,39 @@ addset auto_reconnect bool {
 			timer -delete auto_reconnect.$group_enc;
 			^assign -auto_reconnect.failures[$group_enc];
 
-			foreach auto_reconnect[$group_enc] uuid {
-				fe ($auto_reconnect[$group_enc][$uuid]) chan key {
-					@ :win = windowctl(REFNUM $uuid);
+			@ :chans = auto_reconnect[$group_enc][chans];
+			@ :keys = auto_reconnect[$group_enc][keys];
 
-					## window could've been removed by user during reconnect
-					if (@win)
-						window $win channel "$chan $key";
-				};
-				^assign -auto_reconnect[$group_enc][$uuid];
+			if (@chans) {
+				quote join $sar(g/ /,/$chans) $sar(g/ /,/$keys);
 			};
 
-			^assign -auto_reconnect[$group_enc];
+		};
+		on #-channel_claim 100 * {
+			@ :group = serverctl(GET $0 GROUP);
+
+			if (group == [<default>]) {
+				@ :group_enc = encode($serverctl(GET $0 NAME));
+			} else {
+				@ :group_enc = encode($serverctl(GET $0 GROUP));
+			};
+
+			@ :idx = findw($1 $auto_reconnect[$group_enc][chans]);
+			if (idx == -1) {
+				return;
+			};
+
+			@ :key = word($idx $auto_reconnect[$group_enc][keys]);
+			@ :uuid = word($idx $auto_reconnect[$group_enc][wins]);
+			@ :win = windowctl(REFNUM $uuid);
+
+			if (windowctl(GET $win SERVER) == *0 && windowctl(GET $2 uuid) != uuid) {
+				window $uuid claim $1;
+			};
+
+			@ ::auto_reconnect[$group_enc][chans] = notw($idx $auto_reconnect[$group_enc][chans]);
+			@ ::auto_reconnect[$group_enc][keys] = notw($idx $auto_reconnect[$group_enc][keys]);
+			@ ::auto_reconnect[$group_enc][wins] = notw($idx $auto_reconnect[$group_enc][wins]);
 
 		};
 		alias auto_reconnect.handler (server, void) {
@@ -932,7 +943,6 @@ addset auto_reconnect bool {
 				@ :group_enc = encode($serverctl(GET $server GROUP));
 			};
 
-			## Check if we're reconnecting already
 			if (timerctl(REFNUM auto_reconnect.$group_enc)) {
 				return;
 			};
@@ -942,8 +952,6 @@ addset auto_reconnect bool {
 				@ auto_reconnect.failures[$group_enc]++;
 
 				if (attempt <= auto_reconnect_retries && auto_reconnect.overflow != 1) {
-					## This is ugly hack for detecting when we must
-					## try next server in a group
 					@ auto_reconnect.overflow = (attempt == auto_reconnect_retries);
 
 					xecho -b Autoreconnecting to $server_name [group $group] - attempt $attempt;
@@ -997,7 +1005,9 @@ addset auto_reconnect bool {
 					@ :group_enc = encode($group);
 				};
 
-				push auto_reconnect[$group_enc][$uuid] $1 $key($1);
+				push auto_reconnect[$group_enc][chans] $1;
+				push auto_reconnect[$group_enc][keys] $key($1);
+				push auto_reconnect[$group_enc][wins] $uuid;
 			};
 		};
 		alias lsreconnects (void) {
