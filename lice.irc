@@ -1461,7 +1461,7 @@ ALIAS _proc.reply_action (uh,nick,chan,text) {
     @ :lame = iscurchan($chan) ? fmt.auto_reply($nick $chan $text) : fmt.auto_reply_other($nick $chan $text);
     XECHO -W $chan $lame;
     IF (winnum() != cwin && ismset(1)) {
-       XECHO -C $fmt.banner_info() Auto-reply in window #$cwin ${servername($winserv()) != S ? [\($chan@$servername($servernum())\)] : [\($chan\)]};
+       XECHO -V $fmt.banner_info() Auto-reply in window #$cwin ${servername($winserv()) != S ? [\($chan@$servername($servernum())\)] : [\($chan\)]};
     };
   };
   IF (ismset(P)) {_proc.away_save $nick $uh [$chan] $text};
