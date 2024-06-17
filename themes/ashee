@@ -14,9 +14,9 @@ SET STATUS_CHANOP @
 SET STATUS_CLOCK [%T]
 SET -STATUS_CPU_SAVER
 SET STATUS_DOES_EXPANDOS OFF
-SET STATUS_FORMAT 16,2%T %*%N%# %@%C%+ %W%A %H%B %F%M%Q %>[Lag: %2] [%1:%0]
-SET STATUS_FORMAT1 16,2%T %*%N%# %@%=%C%+ %A %>%Q %M  [%1:%0]
-SET STATUS_FORMAT2 16,2[Win: %W%R%F]  %H%B %D%>[Lag: %2] [%3]
+SET STATUS_FORMAT 15,2%T %*%N%# %@%C%+ %W%A %H%B %F%M%Q %>[Lag: %2] [%1:%0]
+SET STATUS_FORMAT1 15,2%T %*%N%# %@%=%C%+ %A %>%Q %M  [%1:%0]
+SET STATUS_FORMAT2 15,2[Win: %W%R%F]  %H%B %D%>[Lag: %2] [%3]
 SET STATUS_HOLD Press ENTER
 SET STATUS_HOLD_LINES :%B
 SET -STATUS_INSERT
@@ -95,7 +95,7 @@ ALIAS fmt.server_notice		RETURN [ $0 ] $2-
 ALIAS fmt.talk_reply		RETURN $0:
 ALIAS fmt.topic			RETURN Topic change on $1 by $0: $2-
 ALIAS fmt.topic_set		RETURN Topic on $0 $1-
-ALIAS fmt.titlebar		RETURN 16,2 $0 - $1-
+ALIAS fmt.titlebar		RETURN 15,2 $0 - $1-
 ALIAS fmt.usercmd		RETURN Friend $1 request: $0 \($userhost()\)
 ALIAS fmt.wallop		RETURN Wallop: <$0> $2-
 ALIAS fmt.wallop_me		RETURN [WallOp:$0\\($1\)]  $N  $2-

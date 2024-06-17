@@ -29,16 +29,16 @@ SET input_prompt 14[$C14]11+$chanmode()14> 
 
 ALIAS fmt.talk_reply    RETURN $0-
 ALIAS fmt.whois_bot     RETURN 14... end.14of.14$0 ...
-ALIAS fmt.whois_mid     RETURN 14: 14$[-9]0 16: $1-
-ALIAS fmt.whois_top     RETURN 16.15.14. whodat! $1 \14[10$211@10$3\14] ..
+ALIAS fmt.whois_mid     RETURN 14: 14$[-9]0 15: $1-
+ALIAS fmt.whois_top     RETURN 15.15.14. whodat! $1 \14[10$211@10$3\14] ..
 ALIAS fmt.msg           RETURN 14[15[2$uh($0)\15] $1-
 ALIAS fmt.msg_group     RETURN 14[15[2$uh($0)\15] \($1:$S\) $2-
 ALIAS fmt.send_msg      RETURN 14>> 15[ 2$0 15] $1-
 ALIAS fmt.dcc_chat      RETURN 14=:$0:14= $1-
 ALIAS fmt.send_dcc_chat RETURN 14>> =$014= $1-
-ALIAS fmt.notice        RETURN 16- 11$uh($0)\ 16- $1-
+ALIAS fmt.notice        RETURN 15- 11$uh($0)\ 15- $1-
 ALIAS fmt.titlebar	RETURN 14[10$014] [$1-14]
-ALIAS fmt.send_notice   RETURN 14>> 16- 10$0 16- $1-
+ALIAS fmt.send_notice   RETURN 14>> 15- 10$0 15- $1-
 
 
 ALIAS fmt.banner_info   RETURN 4$G
@@ -57,8 +57,8 @@ ALIAS fmt.banner_alert  RETURN 8$G
 ALIAS fmt.banner_userlist       RETURN 9$G
 ALIAS fmt.banner_server RETURN 14$G
 ALIAS fmt.banner_chan   RETURN 14$G
-ALIAS fmt.banner_usage  RETURN 16$G
-ALIAS fmt.banner_tip    RETURN 16+++
+ALIAS fmt.banner_usage  RETURN 15$G
+ALIAS fmt.banner_tip    RETURN 15+++
 
 XECHO -b (k) 11haze theme by invalid
 XECHO -b <invalid@worldnetoh.com>

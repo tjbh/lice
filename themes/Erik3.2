@@ -43,12 +43,12 @@ ALIAS fmt.action	RETURN 9 * $0${iscurchan($1)?[]:[\:0]##ch($1)} $2-
 ALIAS fmt.action_me	RETURN > \(7$servernick()\\) 7* $0 $2-
 
 
-ALIAS fmt.auto_reply	RETURN 2<16$02> $2-
+ALIAS fmt.auto_reply	RETURN 2<15$02> $2-
 
 #
 #
 
-ALIAS fmt.auto_reply_other RETURN 2<16$0:$1\2> $2-
+ALIAS fmt.auto_reply_other RETURN 2<15$0:$1\2> $2-
 ALIAS fmt.back_msg	RETURN is back. $0-
 ALIAS fmt.cant_join	RETURN You can't join $ch($0) \($1-\)
 #ALIAS fmt.channel_nick	RETURN $1 is now known as $2
@@ -95,7 +95,7 @@ ALIAS fmt.sc_mid (list) {
   FE ($list) xx {
     @ :mod = pass(@+% $xx)
     IF (strlen($mod)) {
-      @ :spc = [16] ## mod ## []
+      @ :spc = [15] ## mod ## []
       @ :nic = mid(0 9 $strip(@+% $xx))
     }{
       @ :spc = [ ]
@@ -130,7 +130,7 @@ ALIAS fmt.wallop_me	RETURN 14>> 12- 13$servernick() 12- WallOp:$0\\($1
 ALIAS fmt.wallop_server	RETURN Wallop: #$0# $2-
 ALIAS fmt.whois_bot	RETURN $()
 ALIAS fmt.whois_mid	RETURN 2: 10$[-9]0 2: $1-
-ALIAS fmt.whois_top	RETURN 1,2[ 10,2$0 8,2$1 16,2\($28,2@16,2$3\) 1,2]
+ALIAS fmt.whois_top	RETURN 1,2[ 10,2$0 8,2$1 15,2\($28,2@15,2$3\) 1,2]
 
 # Banner for this theme
 ^SET BANNER [+]
@@ -152,6 +152,6 @@ ALIAS fmt.banner_alert	RETURN 8$G
 ALIAS fmt.banner_userlist	RETURN 9$G
 ALIAS fmt.banner_server	RETURN 5$G
 ALIAS fmt.banner_chan	RETURN 5$G
-ALIAS fmt.banner_usage	RETURN 16$G
-ALIAS fmt.banner_tip	RETURN 16+++
+ALIAS fmt.banner_usage	RETURN 15$G
+ALIAS fmt.banner_tip	RETURN 15+++
 XECHO -b Erik's Theme v3.2 <erik@z2e.org>

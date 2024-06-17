@@ -60,7 +60,7 @@ ALIAS ts.time RETURN 10@
 
 # Event formats
 ALIAS fmt.action 	RETURN * ${ischanop($0 $1)?[12@$0]:[${ischanvoice($0 $1)?[12+$0]:[$0]}]}${iscurchan($1)?[]:[12/$rest(1 $1)]} $2-
-ALIAS fmt.action_me 	RETURN > \(16$N\\) * $0 $2-
+ALIAS fmt.action_me 	RETURN > \(15$N\\) * $0 $2-
 ALIAS fmt.auto_reply 	RETURN 10\(${ischanop($0 $1)?[12@8$0]:[${ischanvoice($0 $1)?[12+8$0]:[8$0]}]}10\)8: $2-
 ALIAS fmt.auto_reply_other 	RETURN 10\(${ischanop($0 $1)?[12@8$012/$rest(1 $1)]:[${ischanvoice($0 $1)?[12+8$012/$rest(1 $1)]:[8$012/$rest(1 $1)]}]}\2\)8: $2-
 ALIAS fmt.cant_join 	RETURN 10$0\: You can't join \($1-\)
@@ -111,7 +111,7 @@ ALIAS fmt.sc_bot	 {
 	^set floating_point_math OFF
 }
 ALIAS fmt.send_action 	RETURN 10* ${ischanop($N $0)?[12@$N]:[${ischanvoice($N $0)?[12+$N]:[$N]}]}${iscurchan($0)?[]:[12/$rest(1 $0)]} $1-
-ALIAS fmt.send_action_me 	RETURN 14>> \(16$0\\) 10* $N $1-
+ALIAS fmt.send_action_me 	RETURN 14>> \(15$0\\) 10* $N $1-
 ALIAS fmt.send_dcc_chat RETURN 14>> 11=9$011= $1-
 ALIAS fmt.send_msg 	RETURN 14>> 11\( 2$0 11\)\ $1-
 ALIAS fmt.send_notice 	RETURN 14>> 11- 13$0 11- $1-
@@ -147,8 +147,8 @@ ALIAS fmt.banner_alert 		RETURN 8$G
 ALIAS fmt.banner_userlist 	RETURN 9$G
 ALIAS fmt.banner_server 	RETURN 5$G
 ALIAS fmt.banner_chan 		RETURN 5$G
-ALIAS fmt.banner_usage 		RETURN 16$G
-ALIAS fmt.banner_tip 		RETURN 16+++
+ALIAS fmt.banner_usage 		RETURN 15$G
+ALIAS fmt.banner_tip 		RETURN 15+++
 
 # I'm bad :p
 @ mytheme = [ToTal]

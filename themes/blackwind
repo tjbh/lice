@@ -12,7 +12,7 @@ ALIAS vvsar (host) {
 }
 
 ALIAS bbsar (host) {
- @ :hst = msar(g/@/14@16/./14.16/~/14~16/!/14!16/$host)
+ @ :hst = msar(g/@/14@15/./14.15/~/14~15/!/14!15/$host)
  RETURN $hst
 }
 # shade
@@ -57,7 +57,7 @@ set status_insert 12-14ins12-
 set -status_mail
 set status_mode +%+
 set status_nickname %N14/
-set status_notify 16%F
+set status_notify 15%F
 set status_no_repeat on
 set status_oper 7*
 set status_overwrite 14-rep14-
@@ -72,38 +72,38 @@ set status_window +
 alias fmt.back_msg return is back, $0-
 alias fmt.gone_msg return is away, $0-
 alias fmt.usergreet return <$0> $1-
-alias fmt.action return 12* 16$0${iscurchan($1)?[]:[\14:$1]} $2-
-alias fmt.action_me return 12* 16$014/12$N $2-
-alias fmt.auto_reply return 12<${ischanop($0 $1)?[14@]:ischanvoice($0 $1)?[14+]:[]}16$012> $2-
-alias fmt.auto_reply_other return 12<${ischanop($0 $1)?[14@]:ischanvoice($0 $1)?[14+]:[]}16$014:$112> $2-
+alias fmt.action return 12* 15$0${iscurchan($1)?[]:[\14:$1]} $2-
+alias fmt.action_me return 12* 15$014/12$N $2-
+alias fmt.auto_reply return 12<${ischanop($0 $1)?[14@]:ischanvoice($0 $1)?[14+]:[]}15$012> $2-
+alias fmt.auto_reply_other return 12<${ischanop($0 $1)?[14@]:ischanvoice($0 $1)?[14+]:[]}15$014:$112> $2-
 alias fmt.channel_nick return $shade(nick 3 9 14) $shade($0 14 9 3) 3:: $1 to $2
 alias fmt.channel_signoff return $shade(quit 2 12 14) $shade($0 14 12 2) 2:: $1 14\($2-14\)
-alias fmt.ctcp_channel return 3CTCP 9$toupper($2)  request14: 16$0 14\($userhost()14\) to 16$1
-alias fmt.ctcp_me return 3CTCP 9$toupper($2) request14: 16$014 \($userhost()14\) to 16You
-alias fmt.ctcp_server return 3CTCP 9$toupper($2) request14: 16$014 \($userhost()14\) to 16$1
+alias fmt.ctcp_channel return 3CTCP 9$toupper($2)  request14: 15$0 14\($userhost()14\) to 15$1
+alias fmt.ctcp_me return 3CTCP 9$toupper($2) request14: 15$014 \($userhost()14\) to 15You
+alias fmt.ctcp_server return 3CTCP 9$toupper($2) request14: 15$014 \($userhost()14\) to 15$1
 
 alias fmt.dcc_chat return 6::14=$014=6:: $1-
-alias fmt.invite return $shade(invite 4 7 14) $shade($1 7 4 14) 4:: 16$014 \($2-14\)
+alias fmt.invite return $shade(invite 4 7 14) $shade($1 7 4 14) 4:: 15$014 \($2-14\)
 alias fmt.join return $shade(join 11 10 14) $shade($1 14 10 11) 11:: ${iscurchan($1)?[$0]:[$0]} 14\($vvsar($2)14\)
 alias fmt.kick return $shade(kick 7 4 14) $shade($2 14 4 7) 7:: $1 kicked ${iscurchan($2)?[$0]:[$0]} 14\($3-14\)
 alias fmt.kick_me return $shade(kick 7 4 14) $shade($2 14 4 7) 7:: $1 kicked You 14\($3-14\)
 alias fmt.leave return $shade(part 12 2 14) $shade($1 14 2 12) 14:: ${iscurchan($1)?[$0]:[$0]} 14\($vvsar($2)14\)
-alias fmt.mode return $shade(mode 4 7 14) $shade($1 14 7 4) 4:: 14\(16$bbsar($2-)14\) by $0
-alias fmt.mode_bans return $shade(mode 4 7 14) $shade($1 14 7 4) 4:: 14\(16$bbsar($2-)14\) by $0
-alias fmt.mode_me return $shade(umode 4 7 14) $shade($N 14 7 4) 4:: 14\(16$2-14\) on $S
-alias fmt.mode_server return $shade(servermode 4 7 14) $shade($1 14 7 4) 4:: 14\(16$2-14\) by $0
+alias fmt.mode return $shade(mode 4 7 14) $shade($1 14 7 4) 4:: 14\(15$bbsar($2-)14\) by $0
+alias fmt.mode_bans return $shade(mode 4 7 14) $shade($1 14 7 4) 4:: 14\(15$bbsar($2-)14\) by $0
+alias fmt.mode_me return $shade(umode 4 7 14) $shade($N 14 7 4) 4:: 14\(15$2-14\) on $S
+alias fmt.mode_server return $shade(servermode 4 7 14) $shade($1 14 7 4) 4:: 14\(15$2-14\) by $0
 alias fmt.msg return 14\[13$014\(6$userhost()14\)\] $1-
 alias fmt.msg_group return 14\[\$114\($userhost()14\)\]:3$S $2-
-alias fmt.notice return 2-12\(16$012\)2- $1-
+alias fmt.notice return 2-12\(15$012\)2- $1-
 alias fmt.notify_signoff return notify14:12off2:: $0 at $Z
 alias fmt.notify_signon return notify14:12on2:: $0 at $Z
-alias fmt.notify_signon_uh return notify14:12on2:: 16$0 14\($vvsar($1)14\) at $Z
+alias fmt.notify_signon_uh return notify14:12on2:: 15$0 14\($vvsar($1)14\) at $Z
 alias fmt.public return 12<${ischanop($0 $1)?[14@]:ischanvoice($0 $1)?[14+]:[]}$012> $2-
 alias fmt.public_msg return <${ischanop($0 $1)?[14@]:ischanvoice($0 $1)?[14+]:[]}$0::$1> $2-
 alias fmt.public_other return 12<${ischanop($0 $1)?[14@]:ischanvoice($0 $1)?[14+]:[]}$014::$112> $2-
-alias fmt.public_notice return 2-12\(16$014:16$112\)2- $2-
-alias fmt.send_action return 12* 16$N${iscurchan($0)?[]:[\14:$0]} $1-
-alias fmt.send_action_me return 12* 16$N14/12$0 $1-
+alias fmt.public_notice return 2-12\(15$014:15$112\)2- $2-
+alias fmt.send_action return 12* 15$N${iscurchan($0)?[]:[\14:$0]} $1-
+alias fmt.send_action_me return 12* 15$N14/12$0 $1-
 alias fmt.send_dcc_chat return 6:>14=$014=6<: $1-
 alias fmt.send_msg return 14\[4msg14\(7$014\)\] $1-
 alias fmt.send_public return 13<${ischanop($N $0)?[14@]:ischanvoice($N $0)?[14+]:[]}$N13> $1-

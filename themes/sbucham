@@ -15,31 +15,31 @@ SET CLOCK ON
 SET CLOCK_24HOUR OFF
 SET NOTIFY_USERHOST_AUTOMATIC ON
 
-SET STATUS_AWAY 16,8+A+
-SET STATUS_CHANNEL 16,7%C
-SET STATUS_CHANOP 16,4@
+SET STATUS_AWAY 15,8+A+
+SET STATUS_CHANNEL 15,7%C
+SET STATUS_CHANOP 15,4@
 SET STATUS_CLOCK %T
 SET STATUS_CPU_SAVER {%L}
 SET STATUS_DOES_EXPANDOS ON
 SET STATUS_FORMAT %T %*%N%# %@%C%+ %W %A %H%B %F %Q%M %>[Lag: %2] [%1:%0]
-SET STATUS_FORMAT1 [16,2Lag\: %2] %*%N16,12@$servername($winserv())%# %D %>%Q%M [16,2%1:%0]
-SET STATUS_FORMAT2 [16,2Win\: %W%R%F] %@%=%C%+ [16,2@\: $#chops()/$numonchannel()] %L%H%B%I%O %>%A[%3][%T]
+SET STATUS_FORMAT1 [15,2Lag\: %2] %*%N15,12@$servername($winserv())%# %D %>%Q%M [15,2%1:%0]
+SET STATUS_FORMAT2 [15,2Win\: %W%R%F] %@%=%C%+ [15,2@\: $#chops()/$numonchannel()] %L%H%B%I%O %>%A[%3][%T]
 SET -INPUT_PROMPT
 SET STATUS_HOLD MORE
 SET STATUS_HOLD_LINES :%B
-SET STATUS_MAIL [16,2Mail\: %M]
+SET STATUS_MAIL [15,2Mail\: %M]
 SET STATUS_MODE (+%+)
 SET STATUS_NICKNAME %N
 SET STATUS_NOTIFY (%F)
 SET STATUS_NO_REPEAT ON
-SET STATUS_OPER 16,7*
+SET STATUS_OPER 15,7*
 SET -STATUS_INSERT
 SET STATUS_OVERWRITE (Overwrite)
-SET STATUS_QUERY [16,2Query\: %Q]
+SET STATUS_QUERY [15,2Query\: %Q]
 SET STATUS_SERVER %S
 SET STATUS_TRUNCATE_RHS ON
 SET STATUS_UMODE (+%#)
-SET STATUS_VOICE 16,8+
+SET STATUS_VOICE 15,8+
 SET STATUS_WINDOW +++
 ^WINDOW DOUBLE ON
 
@@ -48,7 +48,7 @@ ALIAS ts.time RETURN 12@
 
 # Event formats
 ALIAS fmt.action 	RETURN * $0${iscurchan($1)?[]:[12@$rest(1 $1)]} $2-
-ALIAS fmt.action_me 	RETURN > \(16$N\\) * $0 $2-
+ALIAS fmt.action_me 	RETURN > \(15$N\\) * $0 $2-
 ALIAS fmt.auto_reply 	RETURN 12\($012\)8: $2-
 ALIAS fmt.auto_reply_other 	RETURN 12\($012@$112\)\8: $2-
 ALIAS fmt.cant_join 	RETURN You can't join $0 \($1-\)
@@ -92,14 +92,14 @@ ALIAS fmt.sc_mid (list) {
 }
 ALIAS fmt.sc_bot	RETURN $cparse(%K:\(%n%Wscanned %C@%B $tolower($strftime(%I:%M %p))%n%K\)$repeat(33 :)\(%n%Wo:%n%B$repeat(${3-strlen($1)} $chr(32))$1%n%K\)=\(%n%Wv:%n%B$repeat(${3-strlen($2)} $chr(32))$2%n%K\)=\(%n%Wt:%n%B$repeat(${3-strlen($4)} $chr(32))$4%n%K\):%n)
 ALIAS fmt.send_action 	RETURN 10* $N${iscurchan($0)?[]:[12@$rest(1 $0)]} $1-
-ALIAS fmt.send_action_me 	RETURN 14> \(16$0\\) 10* $N $1-
+ALIAS fmt.send_action_me 	RETURN 14> \(15$0\\) 10* $N $1-
 ALIAS fmt.send_dcc_chat RETURN 14> 6=$0= $1-
 ALIAS fmt.send_msg 	RETURN 14> 11[ 10$0 11] $1-
 ALIAS fmt.send_notice 	RETURN 14> 4- 13$0 4- $1-
 ALIAS fmt.send_public 	RETURN 12\($N${iscurchan($0)?[]:[12@$rest(1 $0)]}12\)\10: $1-
 ALIAS fmt.server_notice RETURN #11$0# $2-
 ALIAS fmt.talk_reply 	RETURN -$0\-:
-ALIAS fmt.titlebar	RETURN 16,2$0: $1-
+ALIAS fmt.titlebar	RETURN 15,2$0: $1-
 ALIAS fmt.topic 	RETURN 12Topic $tolower($1)\: ${[$2]!=[]?[$2-]:[12\\*UNSET12*\\]} 12\(by $0\)
 ALIAS fmt.topic_set 	RETURN 12Topic $tolower($0)\: $1-
 ALIAS fmt.usercmd 	RETURN Friend !$1 request\: $uh($0)
@@ -108,7 +108,7 @@ ALIAS fmt.wallop_me 	RETURN 14> 4-7WallOp12@$0\\($1\)4- $2-
 ALIAS fmt.wallop_server RETURN 7WallOp\: #11$0# $2-
 ALIAS fmt.whois_bot 	RETURN 14--- End of $0 info ---
 ALIAS fmt.whois_mid 	RETURN 11: 12$[-9]0 11: $1-
-ALIAS fmt.whois_top 	RETURN 1,12[ 8,12$0 for 1,12: 16,12$1 9,12\($2@$3\) 1,12]
+ALIAS fmt.whois_top 	RETURN 1,12[ 8,12$0 for 1,12: 15,12$1 9,12\($2@$3\) 1,12]
 
 # Event banner colors
 ALIAS fmt.banner_info 		RETURN 4$G
@@ -127,8 +127,8 @@ ALIAS fmt.banner_alert 		RETURN 8$G
 ALIAS fmt.banner_userlist 	RETURN 9$G
 ALIAS fmt.banner_server 	RETURN 5$G
 ALIAS fmt.banner_chan 		RETURN 5$G
-ALIAS fmt.banner_usage 		RETURN 16$G
-ALIAS fmt.banner_tip 		RETURN 16+++
+ALIAS fmt.banner_usage 		RETURN 15$G
+ALIAS fmt.banner_tip 		RETURN 15+++
 
 @ mytheme = [SbauCham]
 ON ^CTCP "% % THEME *" {

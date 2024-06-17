@@ -53,7 +53,7 @@ ALIAS ts.time RETURN 10@ $sar(/AM/am/$sar(/PM/pm/$0))
 
 # Event formats
 ALIAS fmt.action 	RETURN * $0${iscurchan($1)?[]:[\:10$tolower($1)]} $2-
-ALIAS fmt.action_me 	RETURN > \(16$N\\) * $0 $2-
+ALIAS fmt.action_me 	RETURN > \(15$N\\) * $0 $2-
 ALIAS fmt.auto_reply 	RETURN 2<8$02> $2-
 ALIAS fmt.auto_reply_other 	RETURN 2<8$0:10$1\2> $2-
 ALIAS fmt.cant_join 	RETURN 10Join $tolower($0)\: Can't join $0 \($1-\)
@@ -101,7 +101,7 @@ ALIAS fmt.sc_mid (list) {
 }
 ALIAS fmt.sc_bot	RETURN $cparse(%K=\(%nscanned %B@%c $tolower($strftime(%I:%M %p))%n%K\)$repeat(17 =)\(%no:%n%c$repeat(${3-strlen($1)} $chr(32))$1%n%K\)=\(%nh:%n%c$repeat(${3-strlen($2)} $chr(32))$2%n%K\)=\(%nv:%n%c$repeat(${3-strlen($3)} $chr(32))$3%n%K\)=\(%nt:%n%c$repeat(${3-strlen($5)} $chr(32))$5%n%K\)=\(%nb:%n%c$repeat(${3-strlen($numitems(B$winserv()\-$hash_32bit($0)))} $chr(32))$numitems(B$winserv()\-$hash_32bit($0))%n%K\)=%n)
 ALIAS fmt.send_action 	RETURN 10* $N${iscurchan($0)?[]:[\:10$tolower($0)]} $1-
-ALIAS fmt.send_action_me 	RETURN 14>> \(16$0\\) 10* $N $1-
+ALIAS fmt.send_action_me 	RETURN 14>> \(15$0\\) 10* $N $1-
 ALIAS fmt.send_dcc_chat RETURN 14>> 12= 6$0 12= $1-
 ALIAS fmt.send_msg 	RETURN 14>> 12[ 11$0 12] $1-
 ALIAS fmt.send_notice 	RETURN 14>> 12- 9$0 12- $1-
@@ -117,7 +117,7 @@ ALIAS fmt.wallop_me 	RETURN 14>> 12-7WallOp\:12-$0\\($1\) $2-
 ALIAS fmt.wallop_server RETURN $banner 7WallOp\: #12$0# $2-
 ALIAS fmt.whois_bot 	RETURN 14--- End of $0 info ---
 ALIAS fmt.whois_mid 	RETURN 2: 10$[-9]0 2: $1-
-ALIAS fmt.whois_top 	RETURN 1,10[ 2,10$0 for 1,10: 16,10$1 2,10\($2@$3\) 1,10]
+ALIAS fmt.whois_top 	RETURN 1,10[ 2,10$0 for 1,10: 15,10$1 2,10\($2@$3\) 1,10]
 
 # Event banner colors
 ALIAS fmt.banner_info 		RETURN 4$G
@@ -136,8 +136,8 @@ ALIAS fmt.banner_alert 		RETURN 8$G
 ALIAS fmt.banner_userlist 	RETURN 9$G
 ALIAS fmt.banner_server 	RETURN 5$G
 ALIAS fmt.banner_chan 		RETURN 5$G
-ALIAS fmt.banner_usage 		RETURN 16$G
-ALIAS fmt.banner_tip 		RETURN 16+++
+ALIAS fmt.banner_usage 		RETURN 15$G
+ALIAS fmt.banner_tip 		RETURN 15+++
 
 @ mytheme = [ouzo12]
 ON ^CTCP "% % THEME *" {

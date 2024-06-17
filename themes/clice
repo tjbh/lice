@@ -89,7 +89,7 @@ ALIAS fmt.usercmd		RETURN Friend 5$1: $0 \($userhost()\)
 ALIAS fmt.wallop		RETURN Wallop: <$0> $2-
 ALIAS fmt.wallop_me		RETURN [WallOp:$0\\($1\)] 12,11 $N  $2-
 ALIAS fmt.whois_top             {
- 				ECHO 16Ъ7ДДД4ДДДДДДДДД--ДДД--ДДДДДД14ДДДДД4ДДДД14Д4Д--Д14ДД Д  Д
+ 				ECHO 15Ъ7ДДД4ДДДДДДДДД--ДДД--ДДДДДД14ДДДДД4ДДДД14Д4Д--Д14ДД Д  Д
 			       RETURN 7і $[8]0 4щ 12$1 14\($214@$314\)
 }
 ALIAS fmt.whois_mid {
