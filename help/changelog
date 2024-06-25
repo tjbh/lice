@@ -1,7 +1,5 @@
 *** Changes in version 5.4.0 - 04/13/23
-	- Needs the LATEST epic5 1.2.5 (build 1974) otherwise
-	  the bundled reconnect script (3rd party in lice.epic5) won't
-	  work as expected.
+	- Requires epic5-2.1.13! Older versions will have issues
 	- Don't display bootup logo if environment variable 
 	  IRCNOLOGO is set to 1
 	- No longer set LOAD_PATH in lice.defaults. It's not
