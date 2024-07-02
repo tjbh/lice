@@ -3,7 +3,7 @@
 # git: https://github.com/tjbh/lice
 #
 # Version: 5.4.0
-# Released: 15/03/2023
+# Released: 3rd July 2024
 #
 #   IRCII Script Program. For use with ircii-epic5 clients.
 #   Copyright (C) 1993-2000 SrfRoG (cag@codehack.com)
@@ -30,7 +30,7 @@
 IF (word(2 $loadinfo()) != [pf]) {LOAD -pf $word(1 $loadinfo());RETURN};
 
 # warning to people who dare use lame clients.
-EVAL IF (word(0 $info(v)) != [epic5] || V < 20211006 || info(i) < 1981) {
+EVAL IF (word(0 $info(v)) != [epic5] || V < 20240614 || info(i) < 2127) {
   CLEAR;
   ECHO;
   ECHO The LiCe5 script needs the latest ircii-epic5 client, else it won't;
@@ -45,7 +45,7 @@ EVAL IF (word(0 $info(v)) != [epic5] || V < 20211006 || info(i) < 1981) {
   ECHO;
   IF (word(0 $info(v)) == [epic5]) {
     ECHO You are using $word(0 $info(v)) release:$V commit_id:#$info(i);
-    ECHO You should have epic5 release:20211006 commit_id:#1981 [epic5-2.1.6] or greater;
+    ECHO You should have epic5 release:20240614 commit_id:#2127 [epic5-2.1.13] or greater;
   };
   IF (word(0 $info(v)) != [epic5]) {
     ECHO You need epic5! You have $word(0 $info(v)) ! Bye...;
@@ -1653,4 +1653,4 @@ main_init;
 # cag/00
 # HS/04-04
 # tjbh/15
-# tjh/21
+# tjh/24
