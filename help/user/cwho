@@ -1,5 +1,5 @@
 Usage: CWHO [[flag] [nick!user@host pattern]] 
-   Fast WHO list of your current channel, using the
+   Fast WHO list of your current channel,
    using the LiCe cache.
 
 Flags:
