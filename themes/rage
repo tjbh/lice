@@ -125,11 +125,11 @@ ALIAS fmt.whois_mid {
     (Idle) 	{RETURN 4³ 14[     15i15dle14] 7³ $1-}
     (Operator) 	{RETURN 14³ [ 15o15perator14] ³ $1 $tolower($2-)}
     (Spoof)     {RETURN 7³ 14[   15s15poof14 ] ³ $1-}
+    (Services)     {RETURN 7³ 14[   15s15poof14 ] ³ $1-}
     (Notes)     {RETURN 7³ 14[   15n15otes14 ] ³ $1-}
     (Identity)  {RETURN 7³ 14[ 15i15dentity14] ³ $1-}
     (Security) 	{RETURN 14³4³14[ 15s15ecurity14]   $tolower($1-)}
     (Modes) 	{RETURN 14³4³14[   15m15odes 14]   $tolower($1-)}
-    (Services) 	{RETURN 14³4³14[ 15s15ervices14]   $tolower($1-)}
   }
 }
 

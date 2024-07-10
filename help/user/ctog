@@ -33,7 +33,7 @@ Usage: CTOG [channel toggle letter(s)] 
 G
    Bitch mode. When set, LiCe will only allow friends with the +O mode
    flag get opped. Everyone else will be deopped if given ops, unless the
-   person giving ops if a friend with moode flag +E - are we confused yet? 
+   person giving ops is a friend with moode flag +E - are we confused yet? 
    :)
 
 H

@@ -39,7 +39,7 @@ EVAL IF (word(0 $info(v)) != [epic5] || V < 20240614 || info(i) < 2127) {
   ECHO;
   ECHO   http://ftp.epicsol.org/pub/epic/EPIC5-PRODUCTION/; 
   ECHO;
-  ECHO epic5 2.1.6 is the minimum recommended version for LiCe5, though any;
+  ECHO epic5 2.1.13 is the minimum recommended version for LiCe5, though any;
   ECHO version of epic5 will work. Bugs reported on earlier versions will;
   ECHO be ignored though!  You've been warned....;
   ECHO;
@@ -89,7 +89,7 @@ IF (fexist($(LiCePath)/disable_update) == 1) {@ dlu = 1};
 # setup some sane defaults.
 LOAD -pf $LiCePath/lice/lice.defaults;
 
-# load the default theme. 
+# load the default theme - can't use pf loader for themes!
 LOAD $LiCePath/themes/default;
 
 # program information
@@ -118,7 +118,7 @@ ALIAS lice (addon) {
   @ FUNCTION_RETURN = ret;
 };
 
-# display random LiCe logo unless IRCNOLOGO environment variable is set to 1
+# display random LiCe logo - unless IRCNOLOGO environment variable is set to 1
 UNLESS (getenv(IRCNOLOGO) == 1) {EVAL LOAD $LiCePath/logos/lice.logo${rand($numwords($glob($LiCePath/logos/*)))+1}};
 
 ### ONs
